@@ -6,7 +6,7 @@
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
-  "background_color": "#F7F9FC",
+  "background_color": "#8B6FD9",
   "theme_color": "#1CB0F6",
   "scope": "./",
   "categories": ["education", "games", "kids"],
