@@ -2278,16 +2278,13 @@ function speak(text){
     const lang = detectLanguage(text, currentSubject);
     const cleanText = stripForSpeech(text);
     const voice = pickVoice(lang);
-    const chunks = cleanText.split(/(?<=[.!?])\s+/);
-    chunks.forEach((chunk, i) => {
-      const utter = new SpeechSynthesisUtterance(chunk);
-      utter.lang = lang;
-      utter.rate = 0.78;
-      utter.pitch = 1.7;
-      utter.volume = 1;
-      if(voice) utter.voice = voice;
-      setTimeout(() => window.speechSynthesis.speak(utter), i * 120);
-    });
+    const utter = new SpeechSynthesisUtterance(cleanText);
+    utter.lang = lang;
+    utter.rate = 0.75;
+    utter.pitch = 1.55;
+    utter.volume = 1;
+    if(voice) utter.voice = voice;
+    window.speechSynthesis.speak(utter);
   }catch(e){}
 }
 
