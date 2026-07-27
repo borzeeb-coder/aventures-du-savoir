@@ -2220,13 +2220,6 @@ function show(id){
 /* ---------------- VOIX (synthèse vocale) ---------------- */
 let voiceEnabled = true;
 
-function initVoices(){
-  if('speechSynthesis' in window){
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = ()=>{ window.speechSynthesis.getVoices(); };
-  }
-}
-
 function stripForSpeech(str){
   return str.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').trim();
 }
@@ -2270,22 +2263,35 @@ function detectLanguage(text, subject){
   return 'fr-FR';
 }
 
+let voiceReady = false;
+function initVoices(){
+  if('speechSynthesis' in window){
+    const check = () => { if(window.speechSynthesis.getVoices().length > 0) voiceReady = true; };
+    window.speechSynthesis.getVoices();
+    check();
+    window.speechSynthesis.onvoiceschanged = check;
+  }
+}
+let speakTimer = 0;
 function speak(text){
   if(!voiceEnabled || !('speechSynthesis' in window)) return;
-  try{
-    window.speechSynthesis.cancel();
-    const currentSubject = state.current ? state.current.subject : null;
-    const lang = detectLanguage(text, currentSubject);
-    const cleanText = stripForSpeech(text);
-    const voice = pickVoice(lang);
-    const utter = new SpeechSynthesisUtterance(cleanText);
-    utter.lang = lang;
-    utter.rate = 0.75;
-    utter.pitch = 1.55;
-    utter.volume = 1;
-    if(voice) utter.voice = voice;
-    window.speechSynthesis.speak(utter);
-  }catch(e){}
+  clearTimeout(speakTimer);
+  speakTimer = setTimeout(() => {
+    try{
+      const currentSubject = state.current ? state.current.subject : null;
+      const lang = detectLanguage(text, currentSubject);
+      const cleanText = stripForSpeech(text);
+      const voice = pickVoice(lang);
+      const utter = new SpeechSynthesisUtterance(cleanText);
+      utter.lang = lang;
+      utter.rate = 0.72;
+      utter.pitch = 1.35;
+      utter.volume = 1;
+      if(voice) utter.voice = voice;
+      window.speechSynthesis.cancel();
+      setTimeout(() => window.speechSynthesis.speak(utter), 40);
+    }catch(e){}
+  }, 30);
 }
 
 function toggleVoice(){
