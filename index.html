@@ -2231,41 +2231,28 @@ function stripForSpeech(str){
   return str.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').trim();
 }
 
-function pickBestFrenchVoice(){
-  if(!('speechSynthesis' in window)) return null;
-  const voices = window.speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith('fr'));
-  if(voices.length === 0) return null;
-  const qualityHints = ['natural', 'enhanced', 'premium', 'neural', 'siri', 'amelie', 'google', 'thomas'];
-  const femaleNames = ['amelie', 'audrey', 'charlotte', 'julie', 'marie', 'celeste', 'claire', 'siri'];
-  const scored = voices.map(v=>{
-    const name = v.name.toLowerCase();
-    let score = 0;
-    qualityHints.forEach((hint, i)=>{ if(name.includes(hint)) score += (qualityHints.length - i); });
-    femaleNames.forEach((f, i)=>{ if(name.includes(f)) score += 3 - i*0.3; });
-    if(name.includes('compact') || name.includes('espeak')) score -= 5;
-    if(v.localService === false) score += 1;
-    return {voice:v, score};
-  });
-  scored.sort((a,b)=>b.score - a.score);
-  return scored[0].voice;
-}
-
-function pickBestVoice(lang){
+function pickVoice(lang){
   if(!('speechSynthesis' in window)) return null;
   const prefix = lang.split('-')[0];
-  const voices = window.speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith(prefix));
+  const allVoices = window.speechSynthesis.getVoices();
+  const voices = allVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith(prefix));
   if(voices.length === 0) return null;
-  const qualityHints = ['natural', 'enhanced', 'premium', 'neural', 'siri', 'amelie', 'google', 'samantha', 'marta', 'zira'];
-  const femaleNames = prefix === 'fr'
-    ? ['amelie', 'audrey', 'charlotte', 'julie', 'marie', 'celeste', 'claire', 'siri']
-    : ['samantha', 'siri', 'zira', 'kate', 'ava', 'emma', 'susan', 'marta', 'helena'];
+
+  const frFemale = ['amelie','audrey','charlotte','julie','marie','celeste','claire','aurelie','lea','nathalie','virginie','siri'];
+  const enFemale = ['samantha','siri','zira','kate','ava','emma','susan','marta','helena','alexa','veena','tessa','moira','fiona'];
+  const femaleNames = prefix === 'fr' ? frFemale : enFemale;
+  const maleNames = prefix === 'fr' ? ['thomas','henri','jerome','pierre','nicolas','yannick','matthieu'] : ['daniel','david','alex','fred','richard','james','lee'];
+
   const scored = voices.map(v=>{
     const name = v.name.toLowerCase();
     let score = 0;
-    qualityHints.forEach((hint, i)=>{ if(name.includes(hint)) score += (qualityHints.length - i); });
-    femaleNames.forEach((f, i)=>{ if(name.includes(f)) score += 3 - i*0.3; });
-    if(name.includes('compact') || name.includes('espeak')) score -= 5;
-    if(v.localService === false) score += 1;
+    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 10;
+    if(name.includes('enhanced') || name.includes('siri')) score += 6;
+    if(name.includes('google')) score += 4;
+    femaleNames.forEach(f=>{ if(name.includes(f)) score += 12; });
+    maleNames.forEach(m=>{ if(name.includes(m)) score -= 5; });
+    if(name.includes('compact') || name.includes('espeak')) score -= 10;
+    if(v.localService === false) score += 2;
     return {voice:v, score};
   });
   scored.sort((a,b)=>b.score - a.score);
@@ -2289,13 +2276,12 @@ function speak(text){
     const currentSubject = state.current ? state.current.subject : null;
     const lang = detectLanguage(text, currentSubject);
     const cleanText = stripForSpeech(text);
-    const isLong = cleanText.length > 60;
     const utter = new SpeechSynthesisUtterance(cleanText);
     utter.lang = lang;
-    utter.rate = 0.88;
-    utter.pitch = 1.2;
+    utter.rate = 0.85;
+    utter.pitch = 1.35;
     utter.volume = 1;
-    const voice = pickBestVoice(lang);
+    const voice = pickVoice(lang);
     if(voice) utter.voice = voice;
     window.speechSynthesis.speak(utter);
   }catch(e){}
