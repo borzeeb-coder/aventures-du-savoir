@@ -2246,13 +2246,14 @@ function pickVoice(lang){
   const scored = voices.map(v=>{
     const name = v.name.toLowerCase();
     let score = 0;
-    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 10;
-    if(name.includes('enhanced') || name.includes('siri')) score += 6;
+    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 15;
+    if(name.includes('enhanced') || name.includes('siri')) score += 8;
     if(name.includes('google')) score += 4;
-    femaleNames.forEach(f=>{ if(name.includes(f)) score += 12; });
-    maleNames.forEach(m=>{ if(name.includes(m)) score -= 5; });
-    if(name.includes('compact') || name.includes('espeak')) score -= 10;
-    if(v.localService === false) score += 2;
+    if(name.includes('microsoft')) score += 6;
+    femaleNames.forEach(f=>{ if(name.includes(f)) score += 15; });
+    maleNames.forEach(m=>{ if(name.includes(m)) score -= 8; });
+    if(name.includes('compact') || name.includes('espeak') || name.includes('pcms')) score -= 15;
+    if(v.localService === false) score += 3;
     return {voice:v, score};
   });
   scored.sort((a,b)=>b.score - a.score);
@@ -2276,14 +2277,17 @@ function speak(text){
     const currentSubject = state.current ? state.current.subject : null;
     const lang = detectLanguage(text, currentSubject);
     const cleanText = stripForSpeech(text);
-    const utter = new SpeechSynthesisUtterance(cleanText);
-    utter.lang = lang;
-    utter.rate = 0.82;
-    utter.pitch = 1.65;
-    utter.volume = 1;
     const voice = pickVoice(lang);
-    if(voice) utter.voice = voice;
-    window.speechSynthesis.speak(utter);
+    const chunks = cleanText.split(/(?<=[.!?])\s+/);
+    chunks.forEach((chunk, i) => {
+      const utter = new SpeechSynthesisUtterance(chunk);
+      utter.lang = lang;
+      utter.rate = 0.78;
+      utter.pitch = 1.7;
+      utter.volume = 1;
+      if(voice) utter.voice = voice;
+      setTimeout(() => window.speechSynthesis.speak(utter), i * 120);
+    });
   }catch(e){}
 }
 
