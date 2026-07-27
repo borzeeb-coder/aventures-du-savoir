@@ -1170,6 +1170,12 @@
         <span class="level-badge" id="level-maths">Niveau 1</span>
         <span class="stars" id="stars-maths">☆ ☆ ☆</span>
       </div>
+      <div class="island multiplication" onclick="openQuiz('multiplication')" style="background:#FF6F59">
+        <span class="icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="24" r="16" fill="#fff" opacity="0.3"/><line x1="22" y1="22" x2="42" y2="42" stroke="#fff" stroke-width="5" stroke-linecap="round"/><line x1="42" y1="22" x2="22" y2="42" stroke="#fff" stroke-width="5" stroke-linecap="round"/><text x="32" y="58" font-family="'Baloo 2',sans-serif" font-weight="800" font-size="15" fill="#fff" text-anchor="middle">×</text></svg></span>
+        <h3 style="color:#fff">Île des Multiplications</h3>
+        <span class="level-badge" id="level-multiplication" style="color:#FF6F59;background:rgba(255,255,255,0.9)">Niveau 1</span>
+        <span class="stars" id="stars-multiplication">☆ ☆ ☆</span>
+      </div>
       <div class="island francais" onclick="openQuiz('francais')">
         <span class="icon"><svg viewBox="0 0 64 64"><path d="M32 18 C25 13 15 13 10 17 V47 C15 43 25 43 32 48 C39 43 49 43 54 47 V17 C49 13 39 13 32 18 Z" fill="#fff"/><line x1="32" y1="18" x2="32" y2="48" stroke="#FF6F59" stroke-width="2"/><line x1="16" y1="24" x2="27" y2="21.5" stroke="#FF6F59" stroke-width="2.2" stroke-linecap="round"/><line x1="16" y1="30" x2="27" y2="27.5" stroke="#FF6F59" stroke-width="2.2" stroke-linecap="round"/><line x1="16" y1="36" x2="27" y2="33.5" stroke="#FF6F59" stroke-width="2.2" stroke-linecap="round"/><line x1="37" y1="21.5" x2="48" y2="24" stroke="#FF6F59" stroke-width="2.2" stroke-linecap="round"/><line x1="37" y1="27.5" x2="48" y2="30" stroke="#FF6F59" stroke-width="2.2" stroke-linecap="round"/><line x1="37" y1="33.5" x2="48" y2="36" stroke="#FF6F59" stroke-width="2.2" stroke-linecap="round"/></svg></span>
         <h3>Île des Mots</h3>
@@ -1545,6 +1551,28 @@ const QUESTIONS = {
       {q:"Quel nombre vient juste avant 15 ?", opts:["13","14","16","12"], a:1},
       {q:"Combien font 3 fois 2 (3 × 2) ?", opts:["5","6","7","8"], a:1},
     ],
+    multiplication: [
+      {q:"Combien font 2 × 3 ?", opts:["5","6","7","8"], a:1},
+      {q:"Combien font 5 × 2 ?", opts:["7","8","10","12"], a:2},
+      {q:"Combien font 4 × 2 ?", opts:["6","7","8","10"], a:2},
+      {q:"Combien font 3 × 3 ?", opts:["6","8","9","12"], a:2},
+      {q:"Combien font 2 × 6 ?", opts:["10","12","14","8"], a:1},
+      {q:"Combien font 5 × 3 ?", opts:["12","15","18","10"], a:1},
+      {q:"Combien font 4 × 4 ?", opts:["12","14","16","20"], a:2},
+      {q:"Combien font 2 × 7 ?", opts:["12","14","16","9"], a:1},
+      {q:"Combien font 3 × 5 ?", opts:["12","15","18","20"], a:1},
+      {q:"Combien font 6 × 2 ?", opts:["8","10","12","14"], a:2},
+      {q:"Combien font 2 × 9 ?", opts:["16","18","20","22"], a:1},
+      {q:"Combien font 4 × 3 ?", opts:["10","12","14","16"], a:1},
+      {q:"Combien font 5 × 4 ?", opts:["16","18","20","24"], a:2},
+      {q:"Combien font 2 × 2 ?", opts:["2","3","4","6"], a:2},
+      {q:"Combien font 10 × 2 ?", opts:["12","15","18","20"], a:3},
+      {q:"Combien font 3 × 4 ?", opts:["10","12","14","16"], a:1},
+      {q:"Combien font 5 × 5 ?", opts:["20","25","30","35"], a:1},
+      {q:"Combien font 2 × 8 ?", opts:["14","15","16","18"], a:2},
+      {q:"Combien font 7 × 2 ?", opts:["12","14","16","18"], a:1},
+      {q:"Combien font 3 × 6 ?", opts:["15","16","18","21"], a:2},
+    ],
     francais:[
       {q:'Quelle est la première lettre du mot "chat" ?', opts:["H","A","C","T"], a:2},
       {q:'Combien de syllabes dans "ba-na-ne" ?', opts:["2","3","4","1"], a:1},
@@ -1716,6 +1744,28 @@ const QUESTIONS = {
       {q:"Combien de degrés au total dans un triangle ?", opts:["90","180","270","360"], a:1},
       {q:"Combien font 13 × 3 ?", opts:["36","39","42","45"], a:1},
     ],
+    multiplication: [
+      {q:"Combien font 6 × 7 ?", opts:["40","42","44","48"], a:1},
+      {q:"Combien font 8 × 8 ?", opts:["56","64","72","81"], a:1},
+      {q:"Combien font 12 × 12 ?", opts:["124","134","144","154"], a:2},
+      {q:"Combien font 7 × 9 ?", opts:["56","63","70","72"], a:1},
+      {q:"Combien font 11 × 11 ?", opts:["111","121","131","141"], a:1},
+      {q:"Un bouquet a 6 fleurs. J'ai 4 bouquets. Combien de fleurs en tout ?", opts:["20","22","24","28"], a:2},
+      {q:"Combien font 9 × 7 ?", opts:["56","63","70","72"], a:1},
+      {q:"Combien font 8 × 6 ?", opts:["42","46","48","54"], a:2},
+      {q:"Combien font 15 × 3 ?", opts:["30","35","45","50"], a:2},
+      {q:"Une boîte contient 24 crayons. J'ai 3 boîtes. Combien de crayons ?", opts:["48","60","72","84"], a:2},
+      {q:"Combien font 7 × 12 ?", opts:["72","77","84","96"], a:2},
+      {q:"Combien font 9 × 9 ?", opts:["72","81","90","99"], a:1},
+      {q:"Combien font 6 × 11 ?", opts:["55","60","66","72"], a:2},
+      {q:"Combien font 14 × 3 ?", opts:["32","38","42","48"], a:2},
+      {q:"5 amis ont 8 billes chacun. Combien de billes en tout ?", opts:["35","38","40","45"], a:2},
+      {q:"Combien font 13 × 5 ?", opts:["55","60","65","70"], a:2},
+      {q:"Combien font 4 × 9 ?", opts:["32","34","36","40"], a:2},
+      {q:"Combien font 25 × 4 ?", opts:["80","90","100","110"], a:2},
+      {q:"Combien font 7 × 11 ?", opts:["70","77","80","84"], a:1},
+      {q:"Un livre coûte 9 €. J'en achète 8. Combien je paie ?", opts:["63 €","72 €","81 €","90 €"], a:1},
+    ],
     francais:[
       {q:'Quel est le pluriel de "cheval" ?', opts:["chevals","chevaux","chevos","chevales"], a:1},
       {q:'Quel est le synonyme de "content" ?', opts:["triste","fatigué","heureux","fâché"], a:2},
@@ -1875,6 +1925,7 @@ const QUESTIONS = {
 
 const SUBJECT_META = {
   maths:{icon:"🔢", title:"Île des Maths"},
+  multiplication:{icon:"✖️", title:"Île des Multiplications"},
   francais:{icon:"📖", title:"Île des Mots"},
   sciences:{icon:"🔬", title:"Île des Sciences"},
   monde:{icon:"🌍", title:"Île du Monde"},
@@ -1992,8 +2043,8 @@ let state = {
   avatar: 'fox',
   firstName: '',
   age: null,
-  stars: { maths:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0 },
-  subjectLevel: { maths:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1 },
+  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0 },
+  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1 },
   current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false },
   lettersSession: [], lettersIndex: 0, lettersScore: 0,
   wordsSession: [], wordsIndex: 0, wordsScore: 0,
@@ -2054,6 +2105,7 @@ const BADGE_LIST = [
   {id:'10stars', icon:'🌟', name:'10 Étoiles', check:()=>totalStars()>=10},
   {id:'50stars', icon:'💫', name:'50 Étoiles', check:()=>totalStars()>=50},
   {id:'100stars', icon:'🏆', name:'100 Étoiles', check:()=>totalStars()>=100},
+  {id:'mult1', icon:'✖️', name:'Multiplicateur', check:()=>state.stars.multiplication>=2},
   {id:'maths1', icon:'🔢', name:'Matheux', check:()=>state.stars.maths>=2},
   {id:'francais1', icon:'📖', name:'Littéraire', check:()=>state.stars.francais>=2},
   {id:'sciences1', icon:'🔬', name:'Scientifique', check:()=>state.stars.sciences>=2},
@@ -2183,11 +2235,13 @@ function pickBestFrenchVoice(){
   if(!('speechSynthesis' in window)) return null;
   const voices = window.speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith('fr'));
   if(voices.length === 0) return null;
-  const qualityHints = ['google', 'natural', 'enhanced', 'premium', 'neural', 'siri', 'amelie', 'thomas'];
+  const qualityHints = ['natural', 'enhanced', 'premium', 'neural', 'siri', 'amelie', 'google', 'thomas'];
+  const femaleNames = ['amelie', 'audrey', 'charlotte', 'julie', 'marie', 'celeste', 'claire', 'siri'];
   const scored = voices.map(v=>{
     const name = v.name.toLowerCase();
     let score = 0;
     qualityHints.forEach((hint, i)=>{ if(name.includes(hint)) score += (qualityHints.length - i); });
+    femaleNames.forEach((f, i)=>{ if(name.includes(f)) score += 3 - i*0.3; });
     if(name.includes('compact') || name.includes('espeak')) score -= 5;
     if(v.localService === false) score += 1;
     return {voice:v, score};
@@ -2201,11 +2255,15 @@ function pickBestVoice(lang){
   const prefix = lang.split('-')[0];
   const voices = window.speechSynthesis.getVoices().filter(v=>v.lang && v.lang.toLowerCase().startsWith(prefix));
   if(voices.length === 0) return null;
-  const qualityHints = ['google', 'natural', 'enhanced', 'premium', 'neural', 'siri', 'amelie', 'thomas', 'samantha', 'daniel'];
+  const qualityHints = ['natural', 'enhanced', 'premium', 'neural', 'siri', 'amelie', 'google', 'samantha', 'marta', 'zira'];
+  const femaleNames = prefix === 'fr'
+    ? ['amelie', 'audrey', 'charlotte', 'julie', 'marie', 'celeste', 'claire', 'siri']
+    : ['samantha', 'siri', 'zira', 'kate', 'ava', 'emma', 'susan', 'marta', 'helena'];
   const scored = voices.map(v=>{
     const name = v.name.toLowerCase();
     let score = 0;
     qualityHints.forEach((hint, i)=>{ if(name.includes(hint)) score += (qualityHints.length - i); });
+    femaleNames.forEach((f, i)=>{ if(name.includes(f)) score += 3 - i*0.3; });
     if(name.includes('compact') || name.includes('espeak')) score -= 5;
     if(v.localService === false) score += 1;
     return {voice:v, score};
@@ -2230,10 +2288,12 @@ function speak(text){
     window.speechSynthesis.cancel();
     const currentSubject = state.current ? state.current.subject : null;
     const lang = detectLanguage(text, currentSubject);
-    const utter = new SpeechSynthesisUtterance(stripForSpeech(text));
+    const cleanText = stripForSpeech(text);
+    const isLong = cleanText.length > 60;
+    const utter = new SpeechSynthesisUtterance(cleanText);
     utter.lang = lang;
-    utter.rate = 0.92;
-    utter.pitch = 1.05 + (Math.random()*0.08 - 0.04);
+    utter.rate = 0.88;
+    utter.pitch = 1.2;
     utter.volume = 1;
     const voice = pickBestVoice(lang);
     if(voice) utter.voice = voice;
@@ -3180,6 +3240,7 @@ function showMemoryResult(){
 /* ---------------- AI CHAT (Professeur Hibou) ---------------- */
 const SUBJECT_LABELS = {
   maths:"les mathématiques (calcul, nombres, géométrie simple)",
+  multiplication:"les multiplications (tables de multiplication, problèmes de multiplication)",
   francais:"le français (vocabulaire, grammaire, conjugaison)",
   sciences:"les sciences (corps humain, nature, physique simple)",
   monde:"la culture générale (géographie, histoire, monde)",
@@ -3217,6 +3278,7 @@ function renderChatChips(){
     {label:"🔬 Défi sciences", action:()=>generateChallenge('sciences')},
     {label:"🌍 Défi monde", action:()=>generateChallenge('monde')},
     {label:"🗣️ Défi anglais", action:()=>generateChallenge('anglais')},
+    {label:"✖️ Défi multiplications", action:()=>generateChallenge('multiplication')},
     {label:"🎲 Défi surprise", action:()=>generateChallenge(null)},
     {label:"💪 Encourage-moi", action:()=>sendChatQuick("Encourage-moi, j'ai un peu de mal aujourd'hui.")},
   ];
@@ -3386,7 +3448,7 @@ async function generateChallenge(subjectKey){
 }
 
 function fallbackChallenge(subjectKey){
-  const subjects = ['maths','francais','sciences','monde','anglais'];
+  const subjects = ['maths','multiplication','francais','sciences','monde','anglais'];
   const s = subjectKey || subjects[Math.floor(Math.random()*subjects.length)];
   const list = QUESTIONS[state.level][s];
   const q = list[Math.floor(Math.random()*list.length)];
@@ -3583,8 +3645,8 @@ function resetStateDefaults(){
   state.age = null;
   state.avatar = 'fox';
   state.level = 'A';
-  state.stars = { maths:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0 };
-  state.subjectLevel = { maths:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1 };
+  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0 };
+  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1 };
   state.aiScore = 0;
   state.points = 0;
   state.streak = 0;
@@ -3756,7 +3818,7 @@ function renderDailyCard(){
 
 function openDaily(){
   stopAutoEncourage();
-  const subjects = ['maths','francais','sciences','monde','anglais'];
+  const subjects = ['maths','multiplication','francais','sciences','monde','anglais'];
   const s = subjects[Math.floor(Math.random()*subjects.length)];
   const list = QUESTIONS[state.level][s];
   const q = list[Math.floor(Math.random()*list.length)];
