@@ -2278,8 +2278,8 @@ function speak(text){
     const cleanText = stripForSpeech(text);
     const utter = new SpeechSynthesisUtterance(cleanText);
     utter.lang = lang;
-    utter.rate = 0.85;
-    utter.pitch = 1.35;
+    utter.rate = 0.82;
+    utter.pitch = 1.65;
     utter.volume = 1;
     const voice = pickVoice(lang);
     if(voice) utter.voice = voice;
