@@ -2239,14 +2239,15 @@ function pickVoice(lang){
   const scored = voices.map(v=>{
     const name = v.name.toLowerCase();
     let score = 0;
-    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 15;
-    if(name.includes('enhanced') || name.includes('siri')) score += 8;
-    if(name.includes('google')) score += 4;
-    if(name.includes('microsoft')) score += 6;
-    femaleNames.forEach(f=>{ if(name.includes(f)) score += 15; });
-    maleNames.forEach(m=>{ if(name.includes(m)) score -= 8; });
-    if(name.includes('compact') || name.includes('espeak') || name.includes('pcms')) score -= 15;
-    if(v.localService === false) score += 3;
+    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 20;
+    if(name.includes('enhanced') || name.includes('siri')) score += 10;
+    if(name.includes('microsoft')) score += 15;
+    if(name.includes('google')) score += 6;
+    if(name.includes('apple')) score += 8;
+    femaleNames.forEach(f=>{ if(name.includes(f)) score += 18; });
+    maleNames.forEach(m=>{ if(name.includes(m)) score -= 10; });
+    if(name.includes('compact') || name.includes('espeak') || name.includes('pcms')) score -= 20;
+    if(v.localService === false) score += 4;
     return {voice:v, score};
   });
   scored.sort((a,b)=>b.score - a.score);
