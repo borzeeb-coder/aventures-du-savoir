@@ -33,8 +33,9 @@
 
   if(window.Capacitor){ document.documentElement.classList.add('capacitor'); }
   if('serviceWorker' in navigator){
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' });
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (document.visibilityState === 'visible') window.location.reload();
     });
   }
 
