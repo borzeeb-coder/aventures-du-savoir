@@ -3875,29 +3875,23 @@ function prepareTextForSpeech(text){
 
 let speakTimer = 0;
 let synthInitialized = false;
+let synthReady = false;
 
 function initSynth(){
   if(synthInitialized) return;
   synthInitialized = true;
   if(!('speechSynthesis' in window)) return;
-  // Forcer le chargement des voix
   window.speechSynthesis.getVoices();
-  // Résumer le contexte (obligatoire Android Chrome)
   if(window.speechSynthesis.resume) window.speechSynthesis.resume();
-  // Silencieux pour initialiser
   try{
     const s = new SpeechSynthesisUtterance('');
     s.volume = 0;
     window.speechSynthesis.speak(s);
   }catch(e){}
-  // Rafraichir les voix
-  if(window.speechSynthesis.onvoiceschanged !== undefined){
-    const orig = window.speechSynthesis.onvoiceschanged;
-    window.speechSynthesis.onvoiceschanged = function(){
-      window.speechSynthesis.getVoices();
-      if(orig) orig.apply(this, arguments);
-    };
-  }
+  synthReady = true;
+  window.speechSynthesis.onvoiceschanged = function(){
+    synthReady = true;
+  };
 }
 
 function speak(text){
@@ -3905,8 +3899,8 @@ function speak(text){
   const cleanText = prepareTextForSpeech(text);
   if(!cleanText) return;
 
-  // Si une cle API est configuree, faire le TTS via le reseau (async)
-  if(!IS_ANDROID || (voiceApiKey && voiceApiKey.length > 5 && voiceModel !== 'native')){
+  // API TTS configurée → réseau (async) — fonctionne partout
+  if(voiceApiKey && voiceApiKey.length > 5 && voiceModel !== 'native'){
     clearTimeout(speakTimer);
     speakTimer = setTimeout(async () => {
       try{
@@ -3915,8 +3909,7 @@ function speak(text){
 
         if(audioCache.has(cacheKey)){
           window.speechSynthesis.cancel();
-          const url = audioCache.get(cacheKey);
-          await safeAudioPlay(url);
+          await safeAudioPlay(audioCache.get(cacheKey));
           return;
         }
 
@@ -3924,79 +3917,74 @@ function speak(text){
         if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
           played = await speakViaProxy(cleanText, lang, cacheKey);
         }
-        if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+        if(!played && voiceModel === 'elevenlabs'){
           played = await speakElevenLabs(cleanText, lang, cacheKey);
         }
         if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
           played = await speakOpenAI(cleanText, lang, cacheKey);
         }
-        if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
+        if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-')){
           played = await speakOpenAI(cleanText, lang, cacheKey);
         }
         if(!played) speakNative(cleanText);
       }catch(e){ speakNative(cleanText); }
-    }, IS_ANDROID ? 5 : 20);
+    }, 20);
     return;
   }
 
-  // Android sans cle API → synthese native synchrone (pas de setTimeout)
-  // car sinon le contexte du geste utilisateur est perdu
+  // Sans API TTS → synthèse native du navigateur
   clearTimeout(speakTimer);
-  if(IS_ANDROID){
-    // Direct, sans delai (dans le meme event loop)
-    speakNative(cleanText);
-  } else {
-    speakTimer = setTimeout(() => speakNative(cleanText), 20);
-  }
+  speakNative(cleanText);
 }
 
 function speakNative(text){
   if(!('speechSynthesis' in window) || !text) return;
   initSynth();
   const lang = detectLanguage(text, state.current ? state.current.subject : null);
-  if(window.speechSynthesis.resume) window.speechSynthesis.resume();
 
-  // Sur Android, reessayer si ca echoue
-  let attempts = 0;
-  function trySpeak(){
+  function doSpeak(attempt){
     try{
+      if(window.speechSynthesis.resume) window.speechSynthesis.resume();
+      if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+
       const voice = pickVoice(lang);
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = lang;
-      utter.rate = IS_ANDROID ? 0.85 : 0.7;
+      utter.rate = IS_ANDROID ? 0.85 : (/iPhone|iPad|iPod/i.test(navigator.userAgent) ? 0.95 : 0.72);
       utter.pitch = IS_ANDROID ? 1.1 : 1.2;
       utter.volume = 1;
       if(voice) utter.voice = voice;
 
-      utter.onerror = function(e){
-        if(attempts < 2 && IS_ANDROID){
-          attempts++;
-          if(window.speechSynthesis.resume) window.speechSynthesis.resume();
-          setTimeout(trySpeak, 100);
+      utter.onerror = () => {
+        if(attempt < 3 && IS_ANDROID){
+          synthInitialized = false;
+          initSynth();
+          setTimeout(()=>doSpeak(attempt+1), 120);
         }
       };
 
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utter);
-
-      // Android workaround : speechSynthesis peut se mettre en pause toute seule
+      // Android: délai obligatoire entre cancel() et speak()
       if(IS_ANDROID){
+        setTimeout(()=>window.speechSynthesis.speak(utter), 60);
+      } else {
+        window.speechSynthesis.speak(utter);
+      }
+
+      // Android: anti-silence — resume périodique
+      if(IS_ANDROID && attempt === 0){
         setTimeout(()=>{
           if(window.speechSynthesis.resume) window.speechSynthesis.resume();
-          if(window.speechSynthesis.paused || window.speechSynthesis.speaking === false){
-            if(window.speechSynthesis.resume) window.speechSynthesis.resume();
-            // Relancer si muette
-            if(attempts < 1){
-              attempts++;
-              window.speechSynthesis.speak(utter);
-            }
+          if(!window.speechSynthesis.speaking && !window.speechSynthesis.pending){
+            doSpeak(1);
           }
-        }, 150);
+        }, 250);
       }
-    }catch(e){}
+    }catch(e){
+      if(attempt < 3 && IS_ANDROID) setTimeout(()=>doSpeak(attempt+1), 120);
+    }
   }
 
-  trySpeak();
+  doSpeak(0);
 }
 
 async function speakViaProxy(text, lang, cacheKey){
@@ -4270,13 +4258,13 @@ let audioUnlocked = false;
 // Android bloque le son avant le premier geste utilisateur → débloque au premier clic
 function unlockAudio(){
   if(audioUnlocked) return;
+  audioUnlocked = true;
   const ctx = getAudioCtx();
   if(ctx && ctx.state === 'suspended'){
-    ctx.resume().then(()=>{ audioUnlocked = true; });
-  } else {
-    audioUnlocked = true;
+    ctx.resume().catch(()=>{});
   }
   playTone(0, 0.001, 'sine', 0, 0);
+  synthInitialized = false;
   initSynth();
 }
 
@@ -4287,6 +4275,14 @@ const IS_ANDROID = /android/i.test(navigator.userAgent);
 if(IS_ANDROID){
   document.addEventListener('touchstart', unlockAudio, {once:true});
   document.addEventListener('click', unlockAudio, {once:true});
+  // Retour du background → réveiller l'audio
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible'){
+      const ctx = getAudioCtx();
+      if(ctx && ctx.state === 'suspended'){ ctx.resume().catch(()=>{}); }
+      if(window.speechSynthesis && window.speechSynthesis.resume) window.speechSynthesis.resume();
+    }
+  });
 }
 
 function getAudioCtx(){
