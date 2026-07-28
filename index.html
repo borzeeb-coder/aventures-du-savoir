@@ -1134,6 +1134,7 @@
   .dark-mode .daily-card.done{background:#2d6b35;border-color:#1a4a22}
   .dark-mode .daily-card h3{color:var(--plum)}
   .dark-mode .daily-card .sub-txt{color:var(--text-muted)}
+  .badges-card{background:#fff;border:3.5px solid #2D2D3A;border-radius:22px;padding:14px 18px;margin:12px 0;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:0 4px 0 #E5E7EB,0 8px 18px rgba(30,30,40,0.08)}
   .dark-mode .badges-card{background:var(--surface)}
   .dark-mode .badges-card h3{color:var(--plum)}
   .dark-mode .trophy{background:var(--surface-hover);color:var(--plum)}
@@ -3436,6 +3437,7 @@ let state = {
   points: 0,
   coins: 0,
   streak: 0,
+  dailyStreak: 0,
   lastActiveDate: null,
   lastDailyDate: null,
   usage: {},
@@ -3939,6 +3941,7 @@ function speak(text){
   clearTimeout(speakTimer);
   speakTimer = setTimeout(async () => {
     try{
+      isSpeaking = true;
       const cleanText = prepareTextForSpeech(text);
       if(!cleanText) return;
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
@@ -3968,15 +3971,17 @@ function speak(text){
       if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
         played = await speakOpenAI(cleanText, lang, cacheKey);
       }
-      // 5) Fallback ElevenLabs vers OpenAI
+      // 5) Fallback ElevenLabs vers OpenAI (avec voix forcee Nova)
       if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
+        const savedModel = voiceModel; voiceModel = 'openai-nova';
         played = await speakOpenAI(cleanText, lang, cacheKey);
+        voiceModel = savedModel;
       }
-      // 6) Fallback gratuit Edge TTS (si aucune cle API dispo)
-      if(!played && voiceModel !== 'native' && (!voiceApiKey || voiceApiKey.length < 5)){
+      // 6) Edge TTS gratuit — toujours en fallback final
+      if(!played && voiceModel !== 'native'){
         played = await speakEdgeTTS(cleanText, lang, cacheKey);
       }
-      if(played) return;
+      if(played){ isSpeaking = false; return; }
 
       // 7) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
@@ -3996,7 +4001,8 @@ function speak(text){
       } else {
         window.speechSynthesis.speak(utter);
       }
-    }catch(e){}
+    }catch(e){ isSpeaking = false; }
+    isSpeaking = false;
   }, IS_ANDROID ? 5 : 20);
 }
 
@@ -4198,7 +4204,7 @@ function owlEncourage(specific){
 }
 function owlFunny(){
   const jokes = [
-    "Pourquoi les hiboux sont-ils自言 de bons amis ? Parce qu'ils sont toujours 🤫 chouettes ! 🦉😄",
+    "Pourquoi les hiboux sont de si bons amis ? Parce qu'ils sont toujours chouettes ! 🦉😄",
     "Savez-vous quel est le sport préféré du hibou ? Le hibou-kyo ! 🥋🦉",
     "Qu'est-ce qu'un hibou dit quand il est content ? SUPER-CHOUETTE ! 🎉",
     "Je connais une blague sur un hibou… mais elle est un peu chouette ! 😆",
@@ -5572,8 +5578,8 @@ async function generateChallenge(subjectKey){
 }
 
 function fallbackChallenge(subjectKey){
-  const subjects = ['maths','multiplication','francais','sciences','monde','anglais'];
-  const s = subjectKey || subjects[Math.floor(Math.random()*subjects.length)];
+  const subjects = Object.keys(QUESTIONS[state.level]||{}).filter(k=>Array.isArray(QUESTIONS[state.level][k])&&QUESTIONS[state.level][k].length>0);
+  const s = subjectKey || subjects[Math.floor(Math.random()*subjects.length)]||'maths';
   const list = QUESTIONS[state.level][s];
   const q = list[Math.floor(Math.random()*list.length)];
   addChatMessage('owl','text', "Ma connexion fait des siennes, mais voici quand même un défi tout prêt ! 🦉");
@@ -6052,6 +6058,7 @@ function answerDaily(i, q, btnEl){
   else { btnEl.classList.add('wrong'); buttons[q.a].classList.add('correct'); soundWrong(); screenFlash('wrong'); owlComfort(); }
 
   state.lastDailyDate = todayStr();
+  if(isCorrect){ state.dailyStreak = (state.dailyStreak||0) + 1; addCoins(5); }
   addPoints(isCorrect ? 50 : 20);
   state.history.push({date: todayStr(), subject:'daily', score:isCorrect?1:0, total:1, stars:isCorrect?3:0});
   if(state.history.length > 90) state.history = state.history.slice(-90);
@@ -6135,10 +6142,12 @@ async function renderLeaderboard(){
   const active = state.profileId;
   let entries = [];
   for(const p of list){
-    const res = await window.storage.get('profile-'+p.id, false);
-    if(!res||!res.value) continue;
-    const d = JSON.parse(res.value);
-    entries.push({name:p.firstName, avatar:p.avatar, photo:p.photo, points:d.points||0, coins:d.coins||0});
+    try{
+      const res = await window.storage.get('profile-'+p.id, false);
+      if(!res||!res.value) continue;
+      const d = JSON.parse(res.value);
+      entries.push({name:p.firstName, avatar:p.avatar, photo:p.photo, points:d.points||0, coins:d.coins||0});
+    }catch(e){}
   }
   entries.sort((a,b)=>b.points - a.points);
   lb.innerHTML = entries.map((e,i)=>{
