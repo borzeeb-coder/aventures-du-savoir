@@ -1438,6 +1438,14 @@
       <h3>📚 Progression par matière</h3>
       <div id="subjectProgress"></div>
     </div>
+
+    <div class="chart-wrap" style="background:#FFE0E6; border-color:#FF6F59;">
+      <h3>🎤 Voix ChatGPT (OpenAI)</h3>
+      <p style="font-size:0.85rem; margin:0 0 8px; opacity:0.8;">Colle ta clé API OpenAI ici pour utiliser la voix ChatGPT naturelle (sinon la voix du téléphone sera utilisée).</p>
+      <input type="password" id="openaiKeyInput" placeholder="sk-..." style="width:100%; padding:10px 12px; border:2px solid var(--plum); border-radius:12px; font-size:14px; box-sizing:border-box; font-family:'Quicksand',sans-serif; margin-bottom:8px;">
+      <button class="next-btn" onclick="saveOpenAIKey()" style="font-size:0.85rem; padding:8px 16px;">💾 Enregistrer la clé</button>
+      <span id="openaiKeyStatus" style="font-size:0.8rem; font-weight:700; margin-left:8px;"></span>
+    </div>
   </div>
 
   <div class="parent-link" onclick="openParentGate()">👪 Espace Parents — suivi &amp; statistiques</div>
@@ -2273,20 +2281,55 @@ function initVoices(){
     window.speechSynthesis.onvoiceschanged = check;
   }
 }
+let openAIKey = '';
+function loadOpenAIKey(){
+  try{
+    const k = localStorage.getItem('openai_key');
+    if(k) openAIKey = k;
+    const inp = document.getElementById('openaiKeyInput');
+    if(inp && openAIKey) inp.value = openAIKey;
+  }catch(e){}
+}
+function saveOpenAIKey(){
+  const inp = document.getElementById('openaiKeyInput');
+  const key = inp ? inp.value.trim() : '';
+  openAIKey = key;
+  try{ localStorage.setItem('openai_key', key); }catch(e){}
+  const st = document.getElementById('openaiKeyStatus');
+  if(st) st.textContent = key ? '✅ Clé enregistrée !' : '⚠️ Aucune clé';
+  setTimeout(()=>{ if(st) st.textContent = ''; }, 2500);
+}
 let speakTimer = 0;
 function speak(text){
-  if(!voiceEnabled || !('speechSynthesis' in window)) return;
+  if(!voiceEnabled) return;
   clearTimeout(speakTimer);
-  speakTimer = setTimeout(() => {
+  speakTimer = setTimeout(async () => {
     try{
-      const currentSubject = state.current ? state.current.subject : null;
-      const lang = detectLanguage(text, currentSubject);
       const cleanText = stripForSpeech(text);
+      if(!cleanText) return;
+      const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
+      if(openAIKey && openAIKey.startsWith('sk-') && 'fetch' in window){
+        const resp = await fetch('https://api.openai.com/v1/audio/speech', {
+          method:'POST',
+          headers:{ 'Authorization':'Bearer '+openAIKey, 'Content-Type':'application/json' },
+          body: JSON.stringify({ model:'tts-1-hd', voice:'nova', input:cleanText, response_format:'mp3' })
+        });
+        if(resp.ok){
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.onended = () => URL.revokeObjectURL(url);
+          window.speechSynthesis.cancel();
+          await audio.play();
+          return;
+        }
+      }
+      if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = isIOS ? 0.92 : 0.72;
+      utter.rate = isIOS ? 0.95 : 0.72;
       utter.pitch = isIOS ? 1.0 : 1.35;
       utter.volume = 1;
       if(voice) utter.voice = voice;
@@ -3892,6 +3935,7 @@ function last7Dates(){
 function renderParentScreen(){
   const dates = last7Dates();
   const values = dates.map(d=>state.usage[d] || 0);
+  loadOpenAIKey();
   const weekTotal = values.reduce((a,b)=>a+b,0);
   document.getElementById('statPoints').textContent = state.points;
   document.getElementById('statStreak').textContent = state.streak + ' 🔥';
