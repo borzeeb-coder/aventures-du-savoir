@@ -2028,10 +2028,10 @@ function genFrancais(level,count){
         const pronI=['je','tu','il','nous','vous','ils'].indexOf(pron);
         const correct=conj[v][pronI];
         const allConj=Object.values(conj).flat();
-        let wrongs=[correct];while(wrongs.length<4){let w=pick(allConj);if(!wrongs.includes(w)&&w!==v)wrongs.push(w);}
-        const opts=shuffle(wrongs.slice(0,4));
+        const wrongs=new Set([correct]);while(wrongs.size<4){let w=pick(allConj);if(w!==correct)wrongs.add(w);}
+        const opts=shuffle([...wrongs].slice(0,4));
         qs.push({q:`Conjugue : ${pron} (${v})`,opts,a:opts.indexOf(correct)});
-      }else{i--;}
+      }
     }
   }
   return qs;
@@ -5400,7 +5400,7 @@ function startDictationVoice(){
   rec.onresult = function(e){
     const spoken = e.results[0][0].transcript.toLowerCase().trim();
     document.getElementById('dictationVoiceStatus').textContent = '✅ Entendu : ' + spoken;
-    const input = document.getElementById('taAnswer');
+    const input = document.getElementById('dictationInput');
     if(input) input.value = spoken;
     soundClick();
   };
