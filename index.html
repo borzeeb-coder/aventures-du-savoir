@@ -1370,7 +1370,7 @@
       <span class="icon">🏅</span>
       <div>
         <h3>Mes Badges</h3>
-        <div class="sub-txt" id="badgesCardText">0/8 débloqués</div>
+        <div class="sub-txt" id="badgesCardText">0/33 débloqués</div>
       </div>
     </div>
 
@@ -1679,7 +1679,7 @@
     </div>
     <div class="wardrobe-grid" id="wardrobeGrid"></div>
     <div class="wardrobe-preview" id="wardrobePreview"></div>
-    <div class="wardrobe-stars">⭐ <span id="wardrobeStars">0</span> étoiles disponibles</div>
+    <div class="wardrobe-stars">🪙 <span id="wardrobeStars">0</span> pièces disponibles</div>
   </div>
 
   <div id="timeAttackScreen" class="card-screen hidden">
@@ -1772,6 +1772,10 @@
     <div class="chart-wrap" style="background:#FFF3E0; border-color:#FFC800;">
       <h3>👪 Comparaison des profils</h3>
       <div id="profileComparison"></div>
+    </div>
+    <div class="chart-wrap" style="background:#E8F5E9; border-color:#58CC02;">
+      <h3>📈 Score quotidien (7 derniers jours)</h3>
+      <div id="scoreChart"></div>
     </div>
     <div class="chart-wrap" style="background:#E3F2FD; border-color:#1CB0F6;">
       <h3>🏆 Classement des enfants</h3>
@@ -3522,6 +3526,15 @@ const BADGE_LIST = [
   {id:'story3', icon:'📚', name:'Grand Lecteur', check:()=>Object.keys(state.stories).length>=3},
   {id:'wardrobe1', icon:'🎩', name:'Stiliste', check:()=>state.owlWardrobe.length>=1},
   {id:'wardrobe3', icon:'👔', name:'Créateur de mode', check:()=>state.owlWardrobe.length>=3},
+  {id:'coins50', icon:'🪙', name:'Petit épargnant', check:()=>(state.coins||0)>=50},
+  {id:'coins200', icon:'💸', name:'Banquier', check:()=>(state.coins||0)>=200},
+  {id:'hangman5', icon:'💀', name:'Pendeur', check:()=>state.stars.hangman>=1},
+  {id:'hangman15', icon:'🎯', name:'Maître du Pendu', check:()=>state.stars.hangman>=2},
+  {id:'streak7', icon:'🔥', name:'Fidèle (7 jours)', check:()=>state.streak>=7},
+  {id:'streak30', icon:'💪', name:'Inarrêtable (30 j)', check:()=>state.streak>=30},
+  {id:'daily5', icon:'🎯', name:'Défi du Jour x5', check:()=>(state.dailyStreak||0)>=5},
+  {id:'all3stars', icon:'🌟', name:'Tout en 3 étoiles', check:()=>Object.values(state.stars).filter(s=>s>=3).length>=6},
+  {id:'dictation', icon:'🎤', name:'Dictaphone', check:()=>state.stars.dictation>=1},
 ];
 
 const ACHIEVEMENTS = [
@@ -5941,6 +5954,14 @@ function renderDailyCard(){
 
 function openDaily(){
   stopAutoEncourage();
+  if(isDailyDoneToday()){owlSay('Défi du jour déjà complété ! Reviens demain.');return;}
+  // Alterner entre 4 types de défi
+  const types = ['quiz','hangman','timeattack','memory'];
+  const type = types[new Date().getDate() % types.length];
+  if(type === 'hangman'){ show('hangmanScreen'); pickHangmanWord(); return; }
+  if(type === 'timeattack'){ openTimeAttack(); return; }
+  if(type === 'memory'){ openMemory(); return; }
+  // Quiz classique
   const subjects = ['maths','multiplication','francais','sciences','monde','anglais'];
   const s = subjects[Math.floor(Math.random()*subjects.length)];
   const list = QUESTIONS[state.level][s];
@@ -6030,7 +6051,27 @@ function renderParentScreen(){
   renderSubjectProgress();
   updateParentScreenFeatures();
   loadParentDarkMode();
+  renderScoreChart();
   renderLeaderboard();
+}
+
+function renderScoreChart(){
+  const chart = document.getElementById('scoreChart');
+  if(!chart) return;
+  const days = last7Dates();
+  const scores = days.map(d=>{
+    const sessions = (state.history||[]).filter(h=>h.date===d);
+    return sessions.reduce((s,h)=>s+(h.score||0),0);
+  });
+  const max = Math.max(1,...scores);
+  chart.innerHTML = days.map((d,i)=>{
+    const h = Math.max(4,(scores[i]/max)*100);
+    return `<div style="display:inline-block;width:13%;text-align:center;vertical-align:bottom;">
+      <div style="font-size:0.7rem;font-weight:700;">${scores[i]}</div>
+      <div style="background:linear-gradient(180deg,#58CC02,#8CDF4B);width:100%;height:${h}px;border-radius:4px 4px 0 0;min-height:4px;"></div>
+      <div style="font-size:0.65rem;opacity:0.7;">${d.slice(5)}</div>
+    </div>`;
+  }).join('');
 }
 
 async function renderLeaderboard(){
@@ -6184,21 +6225,19 @@ function openWardrobe(){
 function renderWardrobe(){
   const grid = document.getElementById('wardrobeGrid');
   grid.innerHTML = '';
-  const total = totalStars();
-  const spent = state.owlWardrobe.reduce((sum,id)=>sum+(OWL_ACCESSORIES.find(a=>a.id===id)?.cost||0),0);
-  const available = total - spent;
-  document.getElementById('wardrobeStars').textContent = available;
+  document.getElementById('wardrobeStars').textContent = state.coins||0;
   document.getElementById('wardrobePreview').textContent = state.owlEquipped ? OWL_ACCESSORIES.find(a=>a.id===state.owlEquipped)?.icon+' ' : '🦉';
   OWL_ACCESSORIES.forEach(a=>{
     const owned = state.owlWardrobe.includes(a.id);
     const equipped = state.owlEquipped === a.id;
     const item = document.createElement('div');
     item.className = 'wardrobe-item' + (owned ? ' owned' : '') + (equipped ? ' equipped' : '');
-    item.innerHTML = `<div class="item-icon">${a.icon}</div><div class="item-name">${a.name}</div><div class="item-cost">${owned ? (equipped ? '✅ Équipé' : 'Possédé') : '⭐'+a.cost}</div>`;
+    item.innerHTML = `<div class="item-icon">${a.icon}</div><div class="item-name">${a.name}</div><div class="item-cost">${owned ? (equipped ? '✅ Équipé' : 'Possédé') : '🪙'+a.cost}</div>`;
     item.onclick = ()=>{
       if(equipped){ state.owlEquipped = null; renderWardrobe(); scheduleSave(); return; }
       if(owned){ state.owlEquipped = a.id; renderWardrobe(); scheduleSave(); return; }
-      if(available >= a.cost){
+      if((state.coins||0) >= a.cost){
+        state.coins -= a.cost;
         state.owlWardrobe.push(a.id);
         state.owlEquipped = a.id;
         renderWardrobe();
@@ -6207,7 +6246,7 @@ function renderWardrobe(){
         owlSay('Super achat ! Hibou est trop stylé ! 🎉');
       } else {
         soundWrong();
-        owlSay("Pas assez d'étoiles ! Gagne encore des étoiles pour débloquer cet accessoire ! ⭐");
+        owlSay("Pas assez de pièces ! Gagne des pièces en jouant ! 🪙");
       }
     };
     grid.appendChild(item);
@@ -6504,7 +6543,11 @@ function printDiploma(){
   const name = state.firstName || 'Mon enfant';
   const stars = totalStars();
   const points = state.points;
+  const coins = state.coins||0;
   const streak = state.streak;
+  const photoHtml = state.photo && state.photo.startsWith('data:image') 
+    ? `<img src="${state.photo}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #1CB0F6;margin-bottom:12px;">` 
+    : `<div style="font-size:4rem;margin-bottom:8px;">🦉</div>`;
   const win = window.open('', '_blank');
   win.document.write(`
     <html><head><meta charset="utf-8"><title>Diplôme - Les Aventures du Savoir</title>
@@ -6514,7 +6557,7 @@ function printDiploma(){
       h1{font-size:2rem;color:#1CB0F6;margin:0 0 6px}
       .sub{font-size:1rem;color:#888;margin-bottom:20px}
       .name{font-size:2.4rem;color:#3C3C3C;font-weight:800;margin:16px 0}
-      .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+      .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}
       .stat{background:#F0F4FF;padding:12px;border-radius:12px}
       .stat .val{font-size:1.6rem;font-weight:800;color:#1CB0F6}
       .stat .lab{font-size:0.8rem;color:#888}
@@ -6523,11 +6566,13 @@ function printDiploma(){
     <div class="diploma">
       <h1>🎓 Diplôme du Savoir</h1>
       <div class="sub">Les Aventures du Savoir — Félicitations !</div>
+      ${photoHtml}
       <div class="name">${name}</div>
       <p style="color:#666;font-size:1rem;">A brillamment participé aux aventures éducatives</p>
       <div class="stats">
         <div class="stat"><div class="val">${stars} ⭐</div><div class="lab">Étoiles</div></div>
         <div class="stat"><div class="val">${points} 🏅</div><div class="lab">Points</div></div>
+        <div class="stat"><div class="val">${coins} 🪙</div><div class="lab">Pièces</div></div>
         <div class="stat"><div class="val">${streak} 🔥</div><div class="lab">Série (jours)</div></div>
       </div>
       <div class="footer">Délivré le ${new Date().toLocaleDateString('fr-FR')} — Continue d'apprendre en t'amusant !</div>
