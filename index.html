@@ -3312,6 +3312,25 @@ function stripForSpeech(str){
   return str.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').trim();
 }
 
+function fixMathSpeech(text){
+  return text
+    .replace(/\s*−\s*/g, ' moins ')
+    .replace(/(\d)\s*-\s*/g, '$1 moins ')
+    .replace(/\s*\+\s*/g, ' plus ')
+    .replace(/\s*×\s*/g, ' fois ')
+    .replace(/\s*÷\s*/g, ' divisé par ')
+    .replace(/\s*=\s*/g, ' égale ')
+    .replace(/\s*≠\s*/g, ' pas égal à ')
+    .replace(/\s*<\s*/g, ' plus petit que ')
+    .replace(/\s*>\s*/g, ' plus grand que ')
+    .replace(/\s*≤\s*/g, ' inférieur ou égal à ')
+    .replace(/\s*≥\s*/g, ' supérieur ou égal à ')
+    .replace(/\s*%\s*/g, ' pourcent ')
+    .replace(/\s*\.\s*(\d+)/g, ' virgule $1')
+    .replace(/(\d)\s*\.\s*(\d)/g, '$1 virgule $2')
+    .replace(/\s*,\s*/g, ', ');
+}
+
 function fixFrenchNasals(text){
   return text
     .replace(/\bmoins\b/gi, 'mouin')
@@ -3393,7 +3412,7 @@ function speak(text){
   clearTimeout(speakTimer);
   speakTimer = setTimeout(async () => {
     try{
-      const cleanText = fixFrenchNasals(stripForSpeech(text));
+      const cleanText = fixFrenchNasals(fixMathSpeech(stripForSpeech(text)));
       if(!cleanText) return;
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
       if(openAIKey && openAIKey.startsWith('sk-') && 'fetch' in window){
