@@ -3874,59 +3874,129 @@ function prepareTextForSpeech(text){
 }
 
 let speakTimer = 0;
-let speakQueue = [];
-let isPlaying = false;
+let synthInitialized = false;
+
+function initSynth(){
+  if(synthInitialized) return;
+  synthInitialized = true;
+  if(!('speechSynthesis' in window)) return;
+  // Forcer le chargement des voix
+  window.speechSynthesis.getVoices();
+  // Résumer le contexte (obligatoire Android Chrome)
+  if(window.speechSynthesis.resume) window.speechSynthesis.resume();
+  // Silencieux pour initialiser
+  try{
+    const s = new SpeechSynthesisUtterance('');
+    s.volume = 0;
+    window.speechSynthesis.speak(s);
+  }catch(e){}
+  // Rafraichir les voix
+  if(window.speechSynthesis.onvoiceschanged !== undefined){
+    const orig = window.speechSynthesis.onvoiceschanged;
+    window.speechSynthesis.onvoiceschanged = function(){
+      window.speechSynthesis.getVoices();
+      if(orig) orig.apply(this, arguments);
+    };
+  }
+}
 
 function speak(text){
   if(!voiceEnabled) return;
+  const cleanText = prepareTextForSpeech(text);
+  if(!cleanText) return;
+
+  // Si une cle API est configuree, faire le TTS via le reseau (async)
+  if(!IS_ANDROID || (voiceApiKey && voiceApiKey.length > 5 && voiceModel !== 'native')){
+    clearTimeout(speakTimer);
+    speakTimer = setTimeout(async () => {
+      try{
+        const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
+        const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
+
+        if(audioCache.has(cacheKey)){
+          window.speechSynthesis.cancel();
+          const url = audioCache.get(cacheKey);
+          await safeAudioPlay(url);
+          return;
+        }
+
+        let played = false;
+        if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
+          played = await speakViaProxy(cleanText, lang, cacheKey);
+        }
+        if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+          played = await speakElevenLabs(cleanText, lang, cacheKey);
+        }
+        if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
+          played = await speakOpenAI(cleanText, lang, cacheKey);
+        }
+        if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
+          played = await speakOpenAI(cleanText, lang, cacheKey);
+        }
+        if(!played) speakNative(cleanText);
+      }catch(e){ speakNative(cleanText); }
+    }, IS_ANDROID ? 5 : 20);
+    return;
+  }
+
+  // Android sans cle API → synthese native synchrone (pas de setTimeout)
+  // car sinon le contexte du geste utilisateur est perdu
   clearTimeout(speakTimer);
-  speakTimer = setTimeout(async () => {
+  if(IS_ANDROID){
+    // Direct, sans delai (dans le meme event loop)
+    speakNative(cleanText);
+  } else {
+    speakTimer = setTimeout(() => speakNative(cleanText), 20);
+  }
+}
+
+function speakNative(text){
+  if(!('speechSynthesis' in window) || !text) return;
+  initSynth();
+  const lang = detectLanguage(text, state.current ? state.current.subject : null);
+  if(window.speechSynthesis.resume) window.speechSynthesis.resume();
+
+  // Sur Android, reessayer si ca echoue
+  let attempts = 0;
+  function trySpeak(){
     try{
-      const cleanText = prepareTextForSpeech(text);
-      if(!cleanText) return;
-      const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
-      const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
-
-      if(audioCache.has(cacheKey)){
-        window.speechSynthesis.cancel();
-        const url = audioCache.get(cacheKey);
-        await safeAudioPlay(url);
-        return;
-      }
-
-      let played = false;
-      // 1) Proxy serveur (zero config utilisateur si deploye)
-      if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
-        played = await speakViaProxy(cleanText, lang, cacheKey);
-      }
-      // 2) ElevenLabs direct (cle API dans localStorage)
-      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
-        played = await speakElevenLabs(cleanText, lang, cacheKey);
-      }
-      // 3) OpenAI direct
-      if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
-        played = await speakOpenAI(cleanText, lang, cacheKey);
-      }
-      // 4) Fallback automatique ElevenLabs vers OpenAI
-      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
-        played = await speakOpenAI(cleanText, lang, cacheKey);
-      }
-      if(played) return;
-
-      // 5) Dernier recours : synthese native du navigateur
-      if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-      const utter = new SpeechSynthesisUtterance(cleanText);
+      const utter = new SpeechSynthesisUtterance(text);
       utter.lang = lang;
-      utter.rate = isIOS ? 0.95 : 0.7;
-      utter.pitch = isIOS ? 1.0 : 1.2;
+      utter.rate = IS_ANDROID ? 0.85 : 0.7;
+      utter.pitch = IS_ANDROID ? 1.1 : 1.2;
       utter.volume = 1;
       if(voice) utter.voice = voice;
+
+      utter.onerror = function(e){
+        if(attempts < 2 && IS_ANDROID){
+          attempts++;
+          if(window.speechSynthesis.resume) window.speechSynthesis.resume();
+          setTimeout(trySpeak, 100);
+        }
+      };
+
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utter);
+
+      // Android workaround : speechSynthesis peut se mettre en pause toute seule
+      if(IS_ANDROID){
+        setTimeout(()=>{
+          if(window.speechSynthesis.resume) window.speechSynthesis.resume();
+          if(window.speechSynthesis.paused || window.speechSynthesis.speaking === false){
+            if(window.speechSynthesis.resume) window.speechSynthesis.resume();
+            // Relancer si muette
+            if(attempts < 1){
+              attempts++;
+              window.speechSynthesis.speak(utter);
+            }
+          }
+        }, 150);
+      }
     }catch(e){}
-  }, 20);
+  }
+
+  trySpeak();
 }
 
 async function speakViaProxy(text, lang, cacheKey){
@@ -4206,8 +4276,8 @@ function unlockAudio(){
   } else {
     audioUnlocked = true;
   }
-  // Jouer un silence pour valider le déblocage
   playTone(0, 0.001, 'sine', 0, 0);
+  initSynth();
 }
 
 // Détection Android
