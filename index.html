@@ -1383,6 +1383,7 @@
     <div class="big-stars" id="resultStars"></div>
     <div class="result-actions">
       <button class="next-btn" id="retryBtn" onclick="retrySameQuiz()">🔁 Recommencer</button>
+      <button class="next-btn hidden" id="nextExerciseBtn" onclick="nextExercise()">🔄 Essai suivant</button>
       <button class="btn-secondary hidden" id="reviewBtn" onclick="openReview()">📝 Revoir mes erreurs</button>
       <button class="btn-secondary" onclick="goHome()">🗺️ Retour à la carte</button>
     </div>
@@ -4111,11 +4112,14 @@ function renderQuestion(){
   const optsBox = document.getElementById('optionsBox');
   optsBox.innerHTML = '';
   document.getElementById('feedbackBox').innerHTML = '';
-  q.opts.forEach((opt, i)=>{
+  const indices = q.opts.map((_,i)=>i);
+  for(let i=indices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [indices[i],indices[j]]=[indices[j],indices[i]]; }
+  indices.forEach((origIdx)=>{
     const btn = document.createElement('button');
     btn.className = 'opt-btn pop-in';
-    btn.textContent = opt;
-    btn.onclick = ()=>answerQuiz(i, q, btn);
+    btn.textContent = q.opts[origIdx];
+    btn.dataset.origIdx = origIdx;
+    btn.onclick = ()=>answerQuiz(origIdx, q, btn);
     optsBox.appendChild(btn);
   });
   startQuestionTimer(quizTimeout, 'quizTimerFill', 'quizTimerText', '#quizScreen .timer-row');
@@ -4267,6 +4271,23 @@ function finishQuiz(){
     reviewBtn.classList.add('hidden');
   }
 
+  const nextBtn = document.getElementById('nextExerciseBtn');
+  if(!state.current.isReview && subject){
+    const subjects = Object.keys(QUESTIONS[state.level]);
+    const others = subjects.filter(s => s !== subject && QUESTIONS[state.level][s] && QUESTIONS[state.level][s].length > 0);
+    if(others.length > 0){
+      nextBtn.classList.remove('hidden');
+      const pick = others[Math.floor(Math.random() * others.length)];
+      const nextSubj = SUBJECT_META[pick]?.title || pick;
+      nextBtn.textContent = `🔄 ${nextSubj}`;
+      nextBtn.setAttribute('onclick', `openQuiz('${pick}')`);
+    } else {
+      nextBtn.classList.add('hidden');
+    }
+  } else {
+    nextBtn.classList.add('hidden');
+  }
+
   renderStars();
   if(stars === 3){ launchConfetti(); bannerSparkles(12); }
   if(leveledUp) setTimeout(()=>showLevelUpBanner(state.subjectLevel[subject]), 500);
@@ -4289,6 +4310,13 @@ function openReview(){
 }
 
 function retrySameQuiz(){ openQuiz(state.current.subject); }
+function nextExercise(){
+  const subjects = Object.keys(QUESTIONS[state.level]);
+  const current = state.current.subject;
+  const others = subjects.filter(s => s !== current && QUESTIONS[state.level][s] && QUESTIONS[state.level][s].length > 0);
+  if(others.length === 0){ openQuiz(current); return; }
+  openQuiz(others[Math.floor(Math.random() * others.length)]);
+}
 
 /* ---------------- MEMORY GAME ---------------- */
 const MEM_SETS = {
@@ -5336,6 +5364,7 @@ function finishTA(){
   document.getElementById('resultText').textContent = taScore + ' points' + (isRecord ? ' — NOUVEAU RECORD ! 🏆' : ' — Record : '+state.timeAttackScore);
   document.getElementById('resultStars').innerHTML = '';
   document.getElementById('reviewBtn').classList.add('hidden');
+  document.getElementById('nextExerciseBtn').classList.add('hidden');
   addPoints(Math.floor(taScore/10));
   soundLevelUp();
   launchConfetti();
