@@ -1340,6 +1340,20 @@
       <p class="onboard-sub">Il t'accompagnera dans toutes tes aventures.</p>
       <div class="avatar-grid" id="onboardAvatarGrid"></div>
     </div>
+
+    <div class="onboard-step hidden" id="onboardStepPhoto">
+      <div class="onboard-owl"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#8B6FD9"/><circle cx="23" cy="28" r="8" fill="#3D2C56"/><circle cx="41" cy="28" r="8" fill="#3D2C56"/><circle cx="23" cy="27" r="2.8" fill="#fff"/><circle cx="41" cy="27" r="2.8" fill="#fff"/><polygon points="32,35 26,44 38,44" fill="#FFC800"/></svg></div>
+      <h2>Ta photo 🖼️</h2>
+      <p class="onboard-sub">Prends une photo ou choisis-en une pour ton profil.</p>
+      <div style="width:110px;height:110px;border-radius:50%;border:3px dashed var(--plum);margin:10px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);cursor:pointer;position:relative;" id="onboardPhotoPreview" onclick="document.getElementById('onboardPhotoInput').click()">
+        <span style="font-size:2.5rem;opacity:0.5;">📷</span>
+      </div>
+      <input type="file" id="onboardPhotoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
+        <button class="btn-secondary" onclick="finishOnboarding()">Passer</button>
+        <button class="next-btn" onclick="finishOnboarding()">Continuer ✅</button>
+      </div>
+    </div>
   </div>
 
   <div id="homeScreen" class="hidden">
@@ -1609,6 +1623,10 @@
       <div style="width:90px;"></div>
     </div>
     <div class="avatar-grid" id="avatarChangeGrid"></div>
+    <div style="text-align:center;margin:10px 0;">
+      <input type="file" id="profilePhotoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
+      <button class="btn-secondary" onclick="document.getElementById('profilePhotoInput').click()" style="font-size:0.85rem;">📷 Prendre une photo de profil</button>
+    </div>
   </div>
 
   <div id="profileScreen" class="card-screen hidden">
@@ -3377,6 +3395,7 @@ let state = {
   avatar: 'fox',
   firstName: '',
   age: null,
+  photo: null,
   stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 },
   subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 },
   current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false, lazyOffset:0 },
@@ -3533,7 +3552,56 @@ function openBadgesScreen(){
 }
 
 function renderAvatars(){
-  document.getElementById('headerAvatar').innerHTML = AVATAR_SVGS[state.avatar];
+  const el = document.getElementById('headerAvatar');
+  if(state.photo && state.photo.startsWith('data:image')){
+    el.innerHTML = `<img src="${state.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="Photo de profil">`;
+  } else {
+    el.innerHTML = AVATAR_SVGS[state.avatar];
+  }
+}
+
+function handlePhotoUpload(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 2 * 1024 * 1024){ alert("La photo est trop grande (max 2 Mo) !"); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    // Compresser si > 800px
+    const img = new Image();
+    img.onload = function(){
+      const maxSize = 400;
+      let w = img.width, h = img.height;
+      const ratio = Math.min(maxSize / w, maxSize / h, 1);
+      w = Math.round(w * ratio); h = Math.round(h * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.85);
+      state.photo = compressed;
+      // Afficher dans le preview
+      const preview = document.getElementById('onboardPhotoPreview');
+      if(preview) preview.innerHTML = `<img src="${compressed}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="Preview">`;
+      // Sauver dans la liste de profils
+      savePhotoToList();
+      scheduleSave();
+      renderAvatars();
+      soundClick();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function savePhotoToList(){
+  if(!state.profileId) return;
+  try{
+    const list = await loadProfilesList();
+    const entry = list.find(p=>p.id === state.profileId);
+    if(entry){ entry.photo = state.photo; await saveProfilesList(list); }
+  }catch(e){}
 }
 
 function renderAvatarGrid(containerId, onSelect){
@@ -3822,9 +3890,7 @@ function speak(text){
       if(audioCache.has(cacheKey)){
         window.speechSynthesis.cancel();
         const url = audioCache.get(cacheKey);
-        const audio = new Audio(url);
-        audio.onended = () => {};
-        await audio.play();
+        await safeAudioPlay(url);
         return;
       }
 
@@ -3882,10 +3948,7 @@ async function speakViaProxy(text, lang, cacheKey){
       audioCache.delete(first);
     }
     window.speechSynthesis.cancel();
-    const audio = new Audio(url);
-    audio.onended = () => {};
-    await audio.play();
-    return true;
+    return await safeAudioPlay(url);
   }catch(e){ return false; }
 }
 
@@ -3930,9 +3993,8 @@ async function speakElevenLabs(text, lang, cacheKey){
       audioCache.delete(first);
     }
     window.speechSynthesis.cancel();
-    const audio = new Audio(url);
-    audio.onended = () => {};
-    await audio.play();
+    const played = await safeAudioPlay(url);
+    if(!played) return false;
     testSilent = false;
     return true;
   }catch(e){ return false; }
@@ -3963,10 +4025,7 @@ async function speakOpenAI(text, lang, cacheKey){
       audioCache.delete(first);
     }
     window.speechSynthesis.cancel();
-    const audio = new Audio(url);
-    audio.onended = () => {};
-    await audio.play();
-    return true;
+    return await safeAudioPlay(url);
   }catch(e){ return false; }
 }
 
@@ -4134,17 +4193,62 @@ function owlHappy(){
   setTimeout(()=>svg.classList.remove('happy'), 1800);
 }
 
-/* ---------------- SONS (Web Audio, sans fichier externe) ---------------- */
+/* ---------------- SONS (Web Audio, compatible Android) ---------------- */
 let audioCtx = null;
+let audioUnlocked = false;
+
+// Android bloque le son avant le premier geste utilisateur → débloque au premier clic
+function unlockAudio(){
+  if(audioUnlocked) return;
+  const ctx = getAudioCtx();
+  if(ctx && ctx.state === 'suspended'){
+    ctx.resume().then(()=>{ audioUnlocked = true; });
+  } else {
+    audioUnlocked = true;
+  }
+  // Jouer un silence pour valider le déblocage
+  playTone(0, 0.001, 'sine', 0, 0);
+}
+
+// Détection Android
+const IS_ANDROID = /android/i.test(navigator.userAgent);
+
+// Débloque l'audio au premier geste utilisateur (Android)
+if(IS_ANDROID){
+  document.addEventListener('touchstart', unlockAudio, {once:true});
+  document.addEventListener('click', unlockAudio, {once:true});
+}
+
 function getAudioCtx(){
   if(!audioCtx){
-    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+    try{
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(IS_ANDROID && audioCtx.state === 'suspended'){
+        audioCtx.resume().catch(()=>{});
+      }
+    }catch(e){ audioCtx = null; }
+  } else if(IS_ANDROID && audioCtx.state === 'suspended'){
+    audioCtx.resume().catch(()=>{});
   }
   return audioCtx;
 }
+
+// Lecture audio sécurisée (gère le blocage autoplay Android)
+function safeAudioPlay(url){
+  return new Promise((resolve) => {
+    const a = new Audio(url);
+    a.onended = () => { resolve(true); };
+    a.onerror = () => { resolve(false); };
+    a.play().then(()=>{}).catch(()=>{ resolve(false); });
+  });
+}
+
 function playTone(freq, duration, type, delay, gainVal){
   const ctx = getAudioCtx();
   if(!ctx) return;
+  if(IS_ANDROID && ctx.state === 'suspended'){
+    ctx.resume().catch(()=>{});
+  }
   try{
     const t0 = ctx.currentTime + (delay||0);
     const osc = ctx.createOscillator();
@@ -5512,6 +5616,7 @@ async function saveAppData(){
       points: state.points, streak: state.streak, lastActiveDate: state.lastActiveDate, lastDailyDate: state.lastDailyDate, usage: state.usage,
       badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect,
       stories: state.stories, owlWardrobe: state.owlWardrobe, owlEquipped: state.owlEquipped, timeAttackScore: state.timeAttackScore,
+      photo: state.photo,
       soundEnabled: state.soundEnabled, timerEnabled: state.timerEnabled, timerDuration: state.timerDuration,
       history: state.history,
       mastery: state.mastery, achievements: state.achievements,
@@ -5528,6 +5633,7 @@ async function loadAppData(profileId){
       if(d.level) state.level = d.level;
       if(d.firstName) state.firstName = d.firstName.charAt(0).toUpperCase() + d.firstName.slice(1);
       if(d.age) state.age = d.age;
+      if(d.photo) state.photo = d.photo;
       if(d.stars) Object.assign(state.stars, d.stars);
       if(d.subjectLevel) Object.assign(state.subjectLevel, d.subjectLevel);
       state.aiScore = d.aiScore || 0;
@@ -5578,6 +5684,7 @@ function resetStateDefaults(){
   state.firstName = '';
   state.age = null;
   state.avatar = 'fox';
+  state.photo = null;
   state.level = 'A';
   state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 };
   state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 };
@@ -5610,8 +5717,11 @@ async function openProfileSwitcher(){
   list.forEach(p=>{
     const card = document.createElement('div');
     card.className = 'profile-card' + (p.id === state.profileId ? ' active' : '');
-    const svg = AVATAR_SVGS[p.avatar] || AVATAR_SVGS.fox;
-    card.innerHTML = `<div class="profile-avatar">${svg}</div><div class="profile-name">${p.firstName}</div>`;
+    const hasPhoto = p.photo && p.photo.startsWith('data:image');
+    const avatarContent = hasPhoto
+      ? `<img src="${p.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="${p.firstName}">`
+      : (AVATAR_SVGS[p.avatar] || AVATAR_SVGS.fox);
+    card.innerHTML = `<div class="profile-avatar">${avatarContent}</div><div class="profile-name">${p.firstName}</div>`;
     card.onclick = ()=>switchProfile(p.id);
     box.appendChild(card);
   });
@@ -5695,7 +5805,9 @@ function selectAge(age, btnEl){
     document.getElementById('onboardStepAvatar').classList.remove('hidden');
     renderAvatarGrid('onboardAvatarGrid', (id)=>{
       state.avatar = id;
-      finishOnboarding();
+      document.getElementById('onboardStepAvatar').classList.add('hidden');
+      document.getElementById('onboardStepPhoto').classList.remove('hidden');
+      soundClick();
     });
     owlSay("Bien reçu ! Maintenant, choisis ton personnage.");
   }, 350);
@@ -5711,7 +5823,7 @@ async function finishOnboarding(){
   if(!state.profileId){
     state.profileId = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     const list = await loadProfilesList();
-    list.push({ id: state.profileId, firstName: state.firstName, avatar: state.avatar });
+    list.push({ id: state.profileId, firstName: state.firstName, avatar: state.avatar, photo: state.photo });
     await saveProfilesList(list);
   }
   await setActiveProfileId(state.profileId);
