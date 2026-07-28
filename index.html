@@ -1751,20 +1751,23 @@
       <div style="font-weight:600;font-size:0.95rem;padding:4px 0;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <span>🎤 Voix IA</span>
-          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">OpenAI tts-1-hd</span>
+          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">ElevenLabs Multilingual v2</span>
         </div>
         <select id="voiceModelSelect" onchange="changeVoiceModel(this.value)" style="width:100%;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:6px;background:var(--cream);color:var(--plum);">
-          <option value="openai-alloy">OpenAI Alloy (recommandé)</option>
+          <option value="elevenlabs">ElevenLabs Multilingual v2 (recommandé)</option>
+          <option value="openai-alloy">OpenAI Alloy</option>
+          <option value="openai-nova">OpenAI Nova</option>
           <option value="openai-echo">OpenAI Echo</option>
           <option value="openai-fable">OpenAI Fable</option>
-          <option value="openai-nova">OpenAI Nova</option>
           <option value="openai-shimmer">OpenAI Shimmer</option>
           <option value="openai-coral">OpenAI Coral</option>
-          <option value="elevenlabs">ElevenLabs Multilingual v2</option>
           <option value="native">Voix du téléphone (native)</option>
         </select>
+        <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;">
+          1. Crée un compte sur <strong>elevenlabs.io</strong> · 2. Copie ta clé API (onglet "API Keys") · 3. Colle-la ci-dessous
+        </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <input type="password" id="settingsApiKey" placeholder="Clé API OpenAI ou ElevenLabs..." style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+          <input type="password" id="settingsApiKey" placeholder="Clé API ElevenLabs (ex: sk_...)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
           <button onclick="saveApiKey()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
           <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Test</button>
         </div>
@@ -1780,6 +1783,10 @@
           <input type="range" id="settingsTimerSlider" min="5" max="30" value="15" oninput="updateTimerDuration(this.value)" style="width:100px;">
           <span id="settingsTimerValue">15s</span>
         </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;padding:4px 0;">
+        <span>🖥️ Serveur proxy TTS</span>
+        <input type="url" id="proxyUrlInput" placeholder="https://ton-serveur.com" value="" onchange="saveProxyUrl(this.value)" style="width:160px;padding:5px 8px;border:2px solid var(--plum);border-radius:10px;font-size:12px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
         <span>🌙 Mode sombre</span>
@@ -3686,38 +3693,55 @@ function initVoices(){
     window.speechSynthesis.onvoiceschanged = check;
   }
 }
-/* ---------------- VOIX IA AMÉLIORÉE (OpenAI TTS + ElevenLabs) ---------------- */
+/* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
 let voiceApiKey = '';
-let voiceModel = 'openai-alloy';
+let voiceModel = 'elevenlabs';
+let proxyUrl = '';
 const audioCache = new Map();
+let isSpeaking = false;
+
+function detectProxy(){
+  // Auto-détection du serveur proxy : même origine ou config localStorage
+  const saved = localStorage.getItem('tts_proxy_url');
+  if(saved){ proxyUrl = saved; return; }
+  // Essayer le proxy Render par défaut si déployé
+  proxyUrl = '';
+}
 
 function loadVoiceSettings(){
   try{
     voiceApiKey = localStorage.getItem('voice_api_key') || '';
-    voiceModel = localStorage.getItem('voice_model') || 'openai-alloy';
+    voiceModel = localStorage.getItem('voice_model') || 'elevenlabs';
+    detectProxy();
     const inp = document.getElementById('settingsApiKey');
     if(inp && voiceApiKey) inp.value = voiceApiKey;
     const sel = document.getElementById('voiceModelSelect');
     if(sel) sel.value = voiceModel;
-    document.getElementById('voiceStatusLabel').textContent = getVoiceLabel(voiceModel);
+    const proxyInp = document.getElementById('proxyUrlInput');
+    if(proxyInp && proxyUrl) proxyInp.value = proxyUrl;
+    const label = document.getElementById('voiceStatusLabel');
+    if(label) label.textContent = getVoiceLabel(voiceModel);
   }catch(e){}
 }
 
 function getVoiceLabel(m){
-  const labels = { 'openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','elevenlabs':'ElevenLabs v2','native':'Voix native' };
-  return labels[m] || 'OpenAI tts-1-hd';
+  const labels = { 'elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
+  return labels[m] || 'ElevenLabs v2';
 }
 
 function changeVoiceModel(val){
   voiceModel = val;
   try{ localStorage.setItem('voice_model', val); }catch(e){}
-  document.getElementById('voiceStatusLabel').textContent = getVoiceLabel(val);
-  if(val === 'elevenlabs'){
-    document.getElementById('settingsApiKey').placeholder = 'Clé API ElevenLabs...';
-  } else if(val === 'native'){
-    document.getElementById('settingsApiKey').placeholder = 'Non nécessaire';
+  const label = document.getElementById('voiceStatusLabel');
+  if(label) label.textContent = getVoiceLabel(val);
+  const inp = document.getElementById('settingsApiKey');
+  if(!inp) return;
+  if(val === 'native'){
+    inp.placeholder = 'Non nécessaire en mode natif';
+    inp.disabled = true;
   } else {
-    document.getElementById('settingsApiKey').placeholder = 'Clé API OpenAI sk-...';
+    inp.placeholder = val === 'elevenlabs' ? 'Clé API ElevenLabs (sk_...)' : 'Clé API OpenAI (sk-...)';
+    inp.disabled = false;
   }
 }
 
@@ -3727,61 +3751,191 @@ function saveApiKey(){
   voiceApiKey = key;
   try{ localStorage.setItem('voice_api_key', key); }catch(e){}
   const st = document.getElementById('voiceKeyStatus');
+  if(!st) return;
   if(key){
-    st.textContent = '✅ Clé enregistrée !';
+    st.textContent = '✅ Clé enregistrée — la voix IA est active !';
     st.style.color = 'var(--grass)';
+    // Test auto silencieux
+    testVoice(true);
   } else {
-    st.textContent = '⚠️ Aucune clé — voix native utilisée';
+    st.textContent = '⚠️ Colle ta clé API pour activer la voix naturelle';
     st.style.color = 'var(--coral)';
   }
-  setTimeout(()=>{ st.textContent = ''; }, 3000);
+  setTimeout(()=>{ if(st) st.textContent = ''; }, 4000);
 }
 
-function testVoice(){
-  const phrases = ["Bonjour ! Je suis ta chouette préférée. Comment vas-tu aujourd'hui ?", "Le français est une belle langue, n'est-ce pas ?"];
+let testSilent = false;
+function testVoice(silent){
+  testSilent = !!silent;
+  const phrases = [
+    "Bonjour ! Je suis ta chouette préférée. Comment vas-tu aujourd'hui ?",
+    "Le français est une belle langue, n'est-ce pas ? Écoute comme elle résonne !",
+    "Bravo ! Tu as terminé l'exercice. Continuons ensemble !"
+  ];
   speak(phrases[Math.floor(Math.random()*phrases.length)]);
 }
 
+/* Préparation du texte pour une voix naturelle :
+   - Ponctuation naturelle avec pauses
+   - Mots mathématiques développés
+   - Emojis retirés
+   - Acronymes épelés correctement */
+function prepareTextForSpeech(text){
+  let t = text
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '')
+    .replace(/\s*−\s*/g, ' moins ')
+    .replace(/(\d)\s*-\s*/g, '$1 moins ')
+    .replace(/\s*\+\s*/g, ' plus ')
+    .replace(/\s*×\s*/g, ' fois ')
+    .replace(/\s*÷\s*/g, ' divisé par ')
+    .replace(/\s*=\s*/g, ' égale ')
+    .replace(/\s*≠\s*/g, ' pas égal à ')
+    .replace(/\s*<\s*/g, ' plus petit que ')
+    .replace(/\s*>\s*/g, ' plus grand que ')
+    .replace(/\s*≤\s*/g, ' inférieur ou égal à ')
+    .replace(/\s*≥\s*/g, ' supérieur ou égal à ')
+    .replace(/\s*%\s*/g, ' pourcent ')
+    .replace(/\s*\.\s*(\d+)/g, ' virgule $1')
+    .replace(/(\d)\s*\.\s*(\d)/g, '$1 virgule $2')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // Ajouter une courte pause après les signes de ponctuation forts (pour ElevenLabs)
+  t = t.replace(/[.!?]/g, '$& ');
+  return t;
+}
+
 let speakTimer = 0;
+let speakQueue = [];
+let isPlaying = false;
+
 function speak(text){
   if(!voiceEnabled) return;
   clearTimeout(speakTimer);
   speakTimer = setTimeout(async () => {
     try{
-      const cleanText = fixMathSpeech(stripForSpeech(text));
+      const cleanText = prepareTextForSpeech(text);
       if(!cleanText) return;
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
       const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
+
       if(audioCache.has(cacheKey)){
-        const cached = audioCache.get(cacheKey);
         window.speechSynthesis.cancel();
-        const ac = new Audio(cached);
-        ac.onended = () => URL.revokeObjectURL(cached);
-        await ac.play();
+        const url = audioCache.get(cacheKey);
+        const audio = new Audio(url);
+        audio.onended = () => {};
+        await audio.play();
         return;
       }
-      if(voiceModel !== 'native' && voiceApiKey && 'fetch' in window){
-        let played = false;
-        if(voiceModel === 'elevenlabs' && voiceApiKey.length > 10){
-          played = await speakElevenLabs(cleanText, lang, cacheKey);
-        } else if(voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
-          played = await speakOpenAI(cleanText, lang, cacheKey);
-        }
-        if(played) return;
+
+      let played = false;
+      // 1) Proxy serveur (zero config utilisateur si deploye)
+      if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
+        played = await speakViaProxy(cleanText, lang, cacheKey);
       }
+      // 2) ElevenLabs direct (cle API dans localStorage)
+      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+        played = await speakElevenLabs(cleanText, lang, cacheKey);
+      }
+      // 3) OpenAI direct
+      if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
+        played = await speakOpenAI(cleanText, lang, cacheKey);
+      }
+      // 4) Fallback automatique ElevenLabs vers OpenAI
+      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
+        played = await speakOpenAI(cleanText, lang, cacheKey);
+      }
+      if(played) return;
+
+      // 5) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = isIOS ? 0.95 : 0.72;
-      utter.pitch = isIOS ? 1.0 : 1.35;
+      utter.rate = isIOS ? 0.95 : 0.7;
+      utter.pitch = isIOS ? 1.0 : 1.2;
       utter.volume = 1;
       if(voice) utter.voice = voice;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utter);
     }catch(e){}
-  }, 30);
+  }, 20);
+}
+
+async function speakViaProxy(text, lang, cacheKey){
+  try{
+    const endpoint = proxyUrl + '/tts/elevenlabs';
+    const resp = await fetch(endpoint, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ text, lang: lang || 'fr-FR' })
+    });
+    if(!resp.ok) return false;
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    const audio = new Audio(url);
+    audio.onended = () => {};
+    await audio.play();
+    return true;
+  }catch(e){ return false; }
+}
+
+async function speakElevenLabs(text, lang, cacheKey){
+  try{
+    // Voix ElevenLabs natives françaises pour un rendu ultra-naturel
+    const voiceMap = {
+      'fr': 'ThT5KcBeYPX3keUQqHPh',  // Thomas — voix française expressive
+      'en': '21m00Tcm4TlvDq8ikWAM'   // Rachel — voix anglaise naturelle
+    };
+    const voiceId = voiceMap[lang.split('-')[0]] || 'ThT5KcBeYPX3keUQqHPh';
+    
+    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId, {
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+voiceApiKey,
+        'Content-Type':'application/json',
+        'xi-audio-format':'mp3_44100_128'
+      },
+      body: JSON.stringify({
+        text,
+        model_id:'eleven_multilingual_v2',
+        voice_settings: {
+          stability: 0.15,        // Très bas → intonations expressives
+          similarity_boost: 0.85, // Fidélité à la voix originale
+          style: 0.35,           // Légère stylisation
+          use_speaker_boost: true
+        }
+      })
+    });
+    if(!resp.ok){
+      const errText = await resp.text();
+      return false;
+    }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    const audio = new Audio(url);
+    audio.onended = () => {};
+    await audio.play();
+    testSilent = false;
+    return true;
+  }catch(e){ return false; }
 }
 
 async function speakOpenAI(text, lang, cacheKey){
@@ -3790,13 +3944,19 @@ async function speakOpenAI(text, lang, cacheKey){
     const resp = await fetch('https://api.openai.com/v1/audio/speech', {
       method:'POST',
       headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json' },
-      body: JSON.stringify({ model:'tts-1-hd', voice, input:text, response_format:'mp3' })
+      body: JSON.stringify({
+        model:'tts-1-hd',
+        voice,
+        input:text,
+        response_format:'mp3',
+        speed: 1.0
+      })
     });
     if(!resp.ok) return false;
     const blob = await resp.blob();
     const url = URL.createObjectURL(blob);
     audioCache.set(cacheKey, url);
-    if(audioCache.size > 100){
+    if(audioCache.size > 80){
       const first = audioCache.keys().next().value;
       const old = audioCache.get(first);
       if(old) URL.revokeObjectURL(old);
@@ -3804,36 +3964,37 @@ async function speakOpenAI(text, lang, cacheKey){
     }
     window.speechSynthesis.cancel();
     const audio = new Audio(url);
-    audio.onended = () => URL.revokeObjectURL(url);
+    audio.onended = () => {};
     await audio.play();
     return true;
   }catch(e){ return false; }
 }
 
-async function speakElevenLabs(text, lang, cacheKey){
-  try{
-    const voiceId = lang.startsWith('fr') ? '21m00Tcm4TlvDq8ikWAM' : 'EXAVITQu4vrRVn1zY1eS';
-    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voiceId, {
-      method:'POST',
-      headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json','xi-audio-format':'mp3_44100_128' },
-      body: JSON.stringify({ text, model_id:'eleven_multilingual_v2', voice_settings:{ stability:0.3, similarity_boost:0.7, style:0.2, use_speaker_boost:true } })
-    });
-    if(!resp.ok) return false;
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-    audioCache.set(cacheKey, url);
-    if(audioCache.size > 100){
-      const first = audioCache.keys().next().value;
-      const old = audioCache.get(first);
-      if(old) URL.revokeObjectURL(old);
-      audioCache.delete(first);
-    }
-    window.speechSynthesis.cancel();
-    const audio = new Audio(url);
-    audio.onended = () => URL.revokeObjectURL(url);
-    await audio.play();
-    return true;
-  }catch(e){ return false; }
+function preloadVoice(text){
+  const cleanText = prepareTextForSpeech(text);
+  if(!cleanText || !voiceApiKey) return;
+  const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
+  const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
+  if(audioCache.has(cacheKey)) return;
+  // Préchargement silencieux sans lecture
+  const doPreload = async () => {
+    try{
+      if(voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+        const voiceId = lang.startsWith('fr') ? 'ThT5KcBeYPX3keUQqHPh' : '21m00Tcm4TlvDq8ikWAM';
+        const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voiceId, {
+          method:'POST',
+          headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json','xi-audio-format':'mp3_44100_128' },
+          body: JSON.stringify({ text:cleanText, model_id:'eleven_multilingual_v2', voice_settings:{ stability:0.15, similarity_boost:0.85, style:0.35, use_speaker_boost:true } })
+        });
+        if(resp.ok){
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          audioCache.set(cacheKey, url);
+        }
+      }
+    }catch(e){}
+  };
+  doPreload();
 }
 
 function toggleVoice(){
@@ -3848,6 +4009,11 @@ function toggleVoice(){
 }
 
 function readAloud(text){ speak(text); }
+
+function saveProxyUrl(url){
+  proxyUrl = url.trim();
+  try{ localStorage.setItem('tts_proxy_url', proxyUrl); }catch(e){}
+}
 
 /* ---------------- OWL ---------------- */
 function owlSay(text, duration, skipSpeak){
