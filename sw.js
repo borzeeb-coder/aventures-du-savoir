@@ -1,4 +1,4 @@
-const CACHE = 'avent-du-savoir-v32';
+const CACHE = 'avent-du-savoir-v33';
 const STATIC = [
   './',
   './index.html',
