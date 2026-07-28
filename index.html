@@ -1784,6 +1784,10 @@
           <span id="settingsTimerValue">15s</span>
         </div>
       </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;padding:4px 0;">
+        <span>🖥️ Serveur proxy TTS</span>
+        <input type="url" id="proxyUrlInput" placeholder="https://ton-serveur.com" value="" onchange="saveProxyUrl(this.value)" style="width:160px;padding:5px 8px;border:2px solid var(--plum);border-radius:10px;font-size:12px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+      </div>
       <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
         <span>🌙 Mode sombre</span>
         <label class="toggle"><input type="checkbox" id="settingsDarkToggle" onchange="toggleDarkMode()"><span class="slider"></span></label>
@@ -3692,18 +3696,30 @@ function initVoices(){
 /* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
 let voiceApiKey = '';
 let voiceModel = 'elevenlabs';
+let proxyUrl = '';
 const audioCache = new Map();
 let isSpeaking = false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function detectProxy(){
+  // Auto-détection du serveur proxy : même origine ou config localStorage
+  const saved = localStorage.getItem('tts_proxy_url');
+  if(saved){ proxyUrl = saved; return; }
+  // Essayer le proxy Render par défaut si déployé
+  proxyUrl = '';
+}
 
 function loadVoiceSettings(){
   try{
     voiceApiKey = localStorage.getItem('voice_api_key') || '';
     voiceModel = localStorage.getItem('voice_model') || 'elevenlabs';
+    detectProxy();
     const inp = document.getElementById('settingsApiKey');
     if(inp && voiceApiKey) inp.value = voiceApiKey;
     const sel = document.getElementById('voiceModelSelect');
     if(sel) sel.value = voiceModel;
+    const proxyInp = document.getElementById('proxyUrlInput');
+    if(proxyInp && proxyUrl) proxyInp.value = proxyUrl;
     const label = document.getElementById('voiceStatusLabel');
     if(label) label.textContent = getVoiceLabel(voiceModel);
   }catch(e){}
@@ -3804,7 +3820,6 @@ function speak(text){
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
       const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
 
-      // Cache hit
       if(audioCache.has(cacheKey)){
         window.speechSynthesis.cancel();
         const url = audioCache.get(cacheKey);
@@ -3814,24 +3829,26 @@ function speak(text){
         return;
       }
 
-      if(voiceModel !== 'native' && voiceApiKey && 'fetch' in window){
-        let played = false;
-        // ElevenLabs d'abord (voix la plus naturelle)
-        if(voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
-          played = await speakElevenLabs(cleanText, lang, cacheKey);
-        }
-        // Fallback OpenAI
-        if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
-          played = await speakOpenAI(cleanText, lang, cacheKey);
-        }
-        // Si ElevenLabs est sélectionné mais a échoué, tenter OpenAI en secours
-        if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
-          played = await speakOpenAI(cleanText, lang, cacheKey);
-        }
-        if(played) return;
+      let played = false;
+      // 1) Proxy serveur (zero config utilisateur si deploye)
+      if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
+        played = await speakViaProxy(cleanText, lang, cacheKey);
       }
+      // 2) ElevenLabs direct (cle API dans localStorage)
+      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+        played = await speakElevenLabs(cleanText, lang, cacheKey);
+      }
+      // 3) OpenAI direct
+      if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
+        played = await speakOpenAI(cleanText, lang, cacheKey);
+      }
+      // 4) Fallback automatique ElevenLabs vers OpenAI
+      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
+        played = await speakOpenAI(cleanText, lang, cacheKey);
+      }
+      if(played) return;
 
-      // Dernier recours : synthèse native du navigateur
+      // 5) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -3845,6 +3862,32 @@ function speak(text){
       window.speechSynthesis.speak(utter);
     }catch(e){}
   }, 20);
+}
+
+async function speakViaProxy(text, lang, cacheKey){
+  try{
+    const endpoint = proxyUrl + '/tts/elevenlabs';
+    const resp = await fetch(endpoint, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ text, lang: lang || 'fr-FR' })
+    });
+    if(!resp.ok) return false;
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    const audio = new Audio(url);
+    audio.onended = () => {};
+    await audio.play();
+    return true;
+  }catch(e){ return false; }
 }
 
 async function speakElevenLabs(text, lang, cacheKey){
@@ -3967,6 +4010,11 @@ function toggleVoice(){
 }
 
 function readAloud(text){ speak(text); }
+
+function saveProxyUrl(url){
+  proxyUrl = url.trim();
+  try{ localStorage.setItem('tts_proxy_url', proxyUrl); }catch(e){}
+}
 
 /* ---------------- OWL ---------------- */
 function owlSay(text, duration, skipSpeak){
