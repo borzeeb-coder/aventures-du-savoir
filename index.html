@@ -1308,6 +1308,7 @@
       <div class="points-trophy">🏅 <span id="pointsBadge">0</span></div>
       <div class="streak-trophy" id="streakTrophy">🔥 <span id="streakBadge">0</span> jour(s)</div>
       <div class="trophy">⭐ <span id="totalStars">0</span></div>
+      <div class="trophy" id="coinsDisplay" style="background:#FFC800;color:#fff;">🪙 0</div>
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
       <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou">🔊</div>
       <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil">👪</div>
@@ -1471,6 +1472,11 @@
         <h3 style="color:#fff">Globe Explorer</h3>
         <span class="level-badge" id="level-globe" style="color:#3FA9F5;background:rgba(255,255,255,0.9)">Niveau 1</span>
         <span class="stars" id="stars-globe">☆ ☆ ☆</span>
+      </div>
+      <div class="island" style="background:#FF6B6B;" onclick="openHangman()">
+        <span class="icon">💀</span>
+        <h3 style="color:#fff">Pendu</h3>
+        <span class="stars" id="stars-hangman">☆ ☆ ☆</span>
       </div>
       <div class="island game" onclick="openMemory()">
         <div>
@@ -1699,6 +1705,21 @@
     <div class="feedback" id="taFeedbackBox"></div>
   </div>
 
+  <div id="hangmanScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
+      <div class="subject-title">💀 Pendu</div>
+      <div id="hangmanScore">Score : 0</div>
+    </div>
+    <div style="text-align:center;">
+      <div id="hangmanDrawing" style="font-size:5rem;min-height:120px;"></div>
+      <div id="hangmanWord" style="font-size:2.4rem;letter-spacing:8px;font-family:'Baloo 2';font-weight:800;margin:14px 0;"></div>
+      <div id="hangmanKeyboard" style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:420px;margin:10px auto;"></div>
+      <div id="hangmanFeedback" style="min-height:30px;font-weight:700;font-size:1.1rem;margin-top:8px;"></div>
+      <button class="next-btn hidden" id="hangmanNextBtn" onclick="nextHangmanWord()">Mot suivant ➡</button>
+    </div>
+  </div>
+
   <div id="parentGateScreen" class="card-screen hidden">
     <div class="screen-head">
       <button class="back-btn" onclick="goHome()">⬅ Retour</button>
@@ -1751,6 +1772,10 @@
     <div class="chart-wrap" style="background:#FFF3E0; border-color:#FFC800;">
       <h3>👪 Comparaison des profils</h3>
       <div id="profileComparison"></div>
+    </div>
+    <div class="chart-wrap" style="background:#E3F2FD; border-color:#1CB0F6;">
+      <h3>🏆 Classement des enfants</h3>
+      <div id="leaderboardList"></div>
     </div>
   </div>
 
@@ -3264,8 +3289,9 @@ const SUBJECT_META = {
   memory:{icon:"🧩", title:"Jeu de Mémoire"},
   daily:{icon:"🌟", title:"Défi du Jour"},
   timeattack:{icon:"⚡", title:"Time Attack"},
-  dictation:{icon:"🎤", title:"Dictée"},
-};
+    dictation:{icon:"🎤", title:"Dictée"},
+    hangman:{icon:"💀", title:"Pendu"},
+  };
 
 const STORIES = [
   {id:'s1', icon:'🌊', title:'Le Voyage du Hibou', starsReq:10,
@@ -3396,13 +3422,14 @@ let state = {
   firstName: '',
   age: null,
   photo: null,
-  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 },
-  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 },
+  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 },
+  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 },
   current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false, lazyOffset:0 },
   lettersSession: [], lettersIndex: 0, lettersScore: 0,
   wordsSession: [], wordsIndex: 0, wordsScore: 0,
   aiScore: 0,
   points: 0,
+  coins: 0,
   streak: 0,
   lastActiveDate: null,
   lastDailyDate: null,
@@ -3441,6 +3468,7 @@ function animateNumber(el, from, to){
 
 function renderStars(){
   document.getElementById('totalStars').textContent = totalStars();
+  renderCoins();
   Object.keys(state.stars).forEach(s=>{
     const n = state.stars[s];
     const el = document.getElementById('stars-'+s);
@@ -3673,7 +3701,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','settingsScreen','statsScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -4831,6 +4859,11 @@ function renderQuestion(){
     input.addEventListener('keydown', e=>{ if(e.key==='Enter') answerDictation(input, q); });
     inputWrap.appendChild(input);
     inputWrap.appendChild(submitBtn);
+    const micBtn = document.createElement('button');
+    micBtn.className = 'listen-btn pop-in';micBtn.innerHTML='🎙️ Parler';micBtn.onclick=startDictationVoice;
+    const voiceStatus = document.createElement('span');voiceStatus.id='dictationVoiceStatus';voiceStatus.style.cssText='font-size:0.85rem;min-height:20px;';
+    inputWrap.appendChild(micBtn);
+    inputWrap.appendChild(voiceStatus);
     optsBox.appendChild(inputWrap);
     if(q.hint){
       document.getElementById('hintBtn').style.display = 'inline-block';
@@ -5042,7 +5075,9 @@ function finishQuiz(){
 
   if(!state.current.isReview){
     if(stars > state.stars[subject]){
-      if(stars === 3) addPoints(30);
+      if(stars === 3){ addPoints(30); addCoins(15); }
+      else if(stars === 2) addCoins(8);
+      else addCoins(3);
       state.stars[subject] = stars;
     }
     if(pct >= 0.7){
@@ -5625,6 +5660,7 @@ async function saveAppData(){
     await window.storage.set('profile-'+state.profileId, JSON.stringify({
       avatar: state.avatar, level: state.level, firstName: state.firstName, age: state.age,
       stars: state.stars, subjectLevel: state.subjectLevel, aiScore: state.aiScore,
+      coins: state.coins,
       points: state.points, streak: state.streak, lastActiveDate: state.lastActiveDate, lastDailyDate: state.lastDailyDate, usage: state.usage,
       badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect,
       stories: state.stories, owlWardrobe: state.owlWardrobe, owlEquipped: state.owlEquipped, timeAttackScore: state.timeAttackScore,
@@ -5650,6 +5686,7 @@ async function loadAppData(profileId){
       if(d.subjectLevel) Object.assign(state.subjectLevel, d.subjectLevel);
       state.aiScore = d.aiScore || 0;
       state.points = d.points || 0;
+      state.coins = d.coins || 0;
       state.streak = d.streak || 0;
       state.lastActiveDate = d.lastActiveDate || null;
       state.lastDailyDate = d.lastDailyDate || null;
@@ -5698,10 +5735,11 @@ function resetStateDefaults(){
   state.avatar = 'fox';
   state.photo = null;
   state.level = 'A';
-  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 };
-  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 };
+  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 };
+  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 };
   state.aiScore = 0;
   state.points = 0;
+  state.coins = 0;
   state.streak = 0;
   state.lastActiveDate = null;
   state.lastDailyDate = null;
@@ -5860,6 +5898,15 @@ function addPoints(n){
   renderStars();
   scheduleSave();
 }
+function addCoins(n){
+  state.coins = (state.coins||0) + n;
+  renderCoins();
+  scheduleSave();
+}
+function renderCoins(){
+  const el = document.getElementById('coinsDisplay');
+  if(el) el.textContent = '🪙 ' + (state.coins||0);
+}
 
 /* ---------------- SUIVI DU TEMPS ---------------- */
 function startUsageTracking(){
@@ -5983,6 +6030,31 @@ function renderParentScreen(){
   renderSubjectProgress();
   updateParentScreenFeatures();
   loadParentDarkMode();
+  renderLeaderboard();
+}
+
+async function renderLeaderboard(){
+  const list = await loadProfilesList();
+  const lb = document.getElementById('leaderboardList');
+  if(!lb) return;
+  const active = state.profileId;
+  let entries = [];
+  for(const p of list){
+    const res = await window.storage.get('profile-'+p.id, false);
+    if(!res||!res.value) continue;
+    const d = JSON.parse(res.value);
+    entries.push({name:p.firstName, avatar:p.avatar, photo:p.photo, points:d.points||0, coins:d.coins||0});
+  }
+  entries.sort((a,b)=>b.points - a.points);
+  lb.innerHTML = entries.map((e,i)=>{
+    const bg = e.points>0&&e.points===entries[0].points?'background:rgba(255,200,0,0.2);font-weight:700;':'';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #e8e8e8;${bg}">
+      <b>#${i+1}</b>
+      ${e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">':''}
+      <span style="flex:1;">${e.name}</span>
+      <span>🏅${e.points}</span><span>🪙${e.coins}</span>
+    </div>`;
+  }).join('');
 }
 
 function renderUsageChart(dates, values){
@@ -6145,6 +6217,102 @@ function renderWardrobe(){
 /* ---------------- TIME ATTACK ---------------- */
 let taTimer = null;
 let taTimeLeft = 15;
+/* ==================== PENDU ==================== */
+const HANGMAN_WORDS = {
+  A:['CHAT','CHIEN','MAISON','SOLEIL','LUNE','FLEUR','ARBRE','POMME','LIVRE','TABLE','PORTE','STYLO','BALLON','NUAGE','POISSON','GATEAU','ECOLE','VOITURE','LAPIN','JARDIN','FROMAGE'],
+  B:['MONTAGNE','CHATEAU','BATEAU','FENETRE','CUISINE','CHOCLAT','PAPILLON','ELEPHANT','DINOSAURE','BIBLIOTHEQUE','HELICOPTERE','AVENTURE','PIRATE','PLANETE','TORTUE','CHAMPIGNON','CROCODILE','MYSTERE'],
+  C:['CONSTELLATION','HIPPOPOTAME','KALEIDOSCOPE','BIBLIOTHEQUE','ARITHMETIQUE','GEOGRAPHIE','ENCYCLOPEDIE','CHRYSALIDE','ASTRONOMIE','HIEROGLYPHE','CARTOGRAPHIE','VOLCANOLOGIE','STETHOSCOPE','PHOSPHORESCENT','HORTICULTURE'],
+  D:['PALEONTOLOGIE','ORCHESTRATION','REVOLUTIONNAIRE','ELECTROMAGNETIQUE','BIOTECHNOLOGIE','PSYCHOLOGIQUE','MATHEMATIQUEMENT','EXTRAORDINAIRE','TRANSFORMATION','CRISTALLISATION','SPECTACULAIRE','COMPREHENSIBLE'],
+  E:['OTORHINOLARYNGOLOGISTE','ELECTROENCEPHALOGRAPHIQUE','INTERGOUVERNEMENTALISATION','CIRCUMNAVIGATION','PSYCHOPHARMACOLOGIE','TRANSSUBSTANTIATION','CARACTERISTIQUEMENT','PNEUMOULTRAMICROSCOPIQUE']
+};
+let hState = { word:'', guessed:[], wrong:0, score:0, total:0 };
+
+function openHangman(){
+  stopAutoEncourage();
+  hState = { word:'', guessed:[], wrong:0, score:0, total:0 };
+  show('hangmanScreen');
+  pickHangmanWord();
+}
+function pickHangmanWord(){
+  const pool = HANGMAN_WORDS[state.level] || HANGMAN_WORDS.A;
+  hState.word = pool[Math.floor(Math.random() * pool.length)];
+  hState.guessed = [];
+  hState.wrong = 0;
+  document.getElementById('hangmanFeedback').textContent = '';
+  document.getElementById('hangmanNextBtn').classList.add('hidden');
+  renderHangman();
+  renderHangmanKeyboard();
+}
+function renderHangman(){
+  const s = ['😊','😐','😕','😟','😰','😨','💀'];
+  document.getElementById('hangmanDrawing').textContent = s[Math.min(hState.wrong,6)];
+  document.getElementById('hangmanScore').textContent = 'Score : ' + hState.score + '/' + hState.total;
+  document.getElementById('hangmanWord').textContent = hState.word.split('').map(l=>hState.guessed.includes(l)||l==='-'||l==='\''?l:'_').join(' ');
+}
+function renderHangmanKeyboard(){
+  const kb = document.getElementById('hangmanKeyboard');
+  kb.innerHTML = '';
+  const rows = ['AZERTYUIOP','QSDFGHJKL','WXCVBN'];
+  rows.forEach(r=>{
+    const d = document.createElement('div');
+    d.style.cssText = 'display:flex;gap:4px;justify-content:center;flex-wrap:wrap;';
+    r.split('').forEach(l=>{
+      const b = document.createElement('button');
+      b.textContent = l;
+      b.style.cssText = 'width:34px;height:34px;border-radius:8px;border:2px solid var(--plum);font-weight:700;font-size:0.85rem;cursor:pointer;background:var(--cream);color:var(--plum);';
+      if(hState.guessed.includes(l)){
+        b.style.opacity='0.35';b.disabled=true;
+        b.style.background = hState.word.includes(l)?'var(--grass)':'var(--coral)';b.style.color='#fff';
+      }
+      b.onclick = ()=>{guessHangman(l,b);};
+      d.appendChild(b);
+    });
+    kb.appendChild(d);
+  });
+}
+function guessHangman(letter, btn){
+  if(hState.wrong>=6)return;
+  hState.guessed.push(letter);
+  soundClick();
+  if(hState.word.includes(letter)){
+    btn.style.background='var(--grass)';btn.style.color='#fff';soundCorrect();
+  }else{
+    hState.wrong++;btn.style.background='var(--coral)';btn.style.color='#fff';soundWrong();
+  }
+  btn.disabled=true;btn.style.opacity='0.55';
+  renderHangman();renderHangmanKeyboard();
+  if(hState.wrong>=6){
+    document.getElementById('hangmanFeedback').innerHTML='Perdu ! Le mot était : <b>'+hState.word+'</b>';
+    document.getElementById('hangmanNextBtn').classList.remove('hidden');
+    hState.total++;addPoints(1);addCoins(1);
+  }else if(hState.word.split('').every(l=>hState.guessed.includes(l)||l==='-'||l==='\'')){
+    document.getElementById('hangmanFeedback').textContent='Bravo ! 🎉';
+    document.getElementById('hangmanNextBtn').classList.remove('hidden');
+    hState.score++;hState.total++;addPoints(5);addCoins(3);soundLevelUp();
+    if(hState.score>=5&&state.stars.hangman<1)state.stars.hangman=1;
+    if(hState.score>=15&&state.stars.hangman<2)state.stars.hangman=2;
+    if(hState.score>=25&&state.stars.hangman<3)state.stars.hangman=3;
+    scheduleSave();renderStars();launchConfetti();
+  }
+}
+function nextHangmanWord(){ pickHangmanWord(); }
+
+/* ==================== RECONNAISSANCE VOCALE ==================== */
+function startDictationVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){alert('Micro non supporté. Utilise Chrome.');return;}
+  const rec = new SR();rec.lang='fr-FR';rec.interimResults=false;rec.maxAlternatives=1;
+  document.getElementById('dictationVoiceStatus').textContent='🎙️ Écoute...';
+  rec.start();
+  rec.onresult = function(e){
+    const spoken = e.results[0][0].transcript.toLowerCase().trim();
+    document.getElementById('dictationVoiceStatus').textContent='✅ Entendu : '+spoken;
+    const input = document.getElementById('dictationInput');
+    if(input) input.value = spoken;
+    soundClick();
+  };
+  rec.onerror = function(){document.getElementById('dictationVoiceStatus').textContent='❌ Réessaie';};
+}
 let taScore = 0;
 let taQuestions = [];
 let taIndex = 0;
