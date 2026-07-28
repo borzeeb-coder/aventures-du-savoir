@@ -3760,27 +3760,42 @@ function pickVoice(lang){
   const voices = allVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith(prefix));
   if(voices.length === 0) return null;
 
-  const frFemale = ['amelie','audrey','charlotte','julie','marie','celeste','claire','aurelie','lea','nathalie','virginie','siri'];
-  const enFemale = ['samantha','siri','zira','kate','ava','emma','susan','marta','helena','alexa','veena','tessa','moira','fiona'];
-  const femaleNames = prefix === 'fr' ? frFemale : enFemale;
-  const maleNames = prefix === 'fr' ? ['thomas','henri','jerome','pierre','nicolas','yannick','matthieu'] : ['daniel','david','alex','fred','richard','james','lee'];
+  // Priorité MAX : Google Premium (Android), Siri Enhanced (iOS), Microsoft Natural (Windows)
+  const isAndroid = /android/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const scored = voices.map(v=>{
     const name = v.name.toLowerCase();
     let score = 0;
-    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 20;
-    if(name.includes('enhanced') || name.includes('siri')) score += 10;
-    if(name.includes('microsoft')) score += 15;
-    if(name.includes('google')) score += 6;
-    if(name.includes('apple')) score += 8;
-    femaleNames.forEach(f=>{ if(name.includes(f)) score += 18; });
-    maleNames.forEach(m=>{ if(name.includes(m)) score -= 10; });
-    if(name.includes('compact') || name.includes('espeak') || name.includes('pcms')) score -= 20;
-    if(v.localService === false) score += 4;
+    // Meilleures voix premium
+    if(name.includes('premium') || name.includes('enhanced')|| name.includes('neural')|| name.includes('natural')|| name.includes('wavenet')) score += 30;
+    if(name.includes('online')||name.includes('cloud')) score += 15;
+    if(name.includes('siri')||name.includes('samantha')) score += 25; // Meilleure voix iOS
+    if(name.includes('google') && name.includes('fr')) score += 28; // Google French voix Android
+    // Pénalités voix robotiques
+    if(name.includes('espeak')||name.includes('pcms')||name.includes('compact')||name.includes('robot')||name.includes('dectalk')) score -= 50;
+    if(name.includes('fiona')||name.includes('veena')||name.includes('zarvox')||name.includes('albert')||name.includes('bad')||name.includes('bells')||name.includes('boing')||name.includes('bubbles')||name.includes('cellos')||name.includes('deranged')||name.includes('hysterical')||name.includes('pipe')||name.includes('trinoids')||name.includes('whisper')||name.includes('junior')||name.includes('kathy')||name.includes('ralph')) score -= 40;
+    // Français natif = priorité absolue
+    if(prefix === 'fr'){
+      if(name.includes('fran')||name.includes('french')||name.includes('celine')||name.includes('chantal')||name.includes('gabrielle')||name.includes('florence')||name.includes('isabelle')||name.includes('louise')||name.includes('amelie')||name.includes('audrey')||name.includes('charlotte')||name.includes('julie')||name.includes('marie')||name.includes('lea')||name.includes('aurore')||name.includes('claire')||name.includes('virginie')||name.includes('nathalie')||name.includes('sylvie')) score += 20;
+      // Google français Android (meilleure voix native FR)
+      if(name.includes('google')&&name.includes('fr')) score += 15;
+    }
+    // Voix anglaises de qualité
+    if(name.includes('samantha')||name.includes('karen')||name.includes('daniel')||name.includes('tom')||name.includes('alex')||name.includes('ava')||name.includes('emma')) score += 10;
+    // Pénalité voix masculines sauf si premium
+    const maleNames = prefix==='fr'?['thomas','henri','jerome','pierre','nicolas','yannick','matthieu','jacques','pascal','roger','paul','raoul','serge','jean','louis','marcel','albert','fred','richard','james','lee','daniel','david']:[];
+    maleNames.forEach(m=>{ if(name.includes(m)&&!name.includes('premium')&&!name.includes('enhanced')&&!name.includes('wavenet')&&!name.includes('neural')) score -= 8; });
+    // Pénalité pour les voix non-locales sauf si premium
+    if(v.localService===false){
+      if(name.includes('premium')||name.includes('enhanced')||name.includes('neural')||name.includes('wavenet')) score += 10;
+      else score -= 5;
+    }
+    if(v.localService===true) score += 3;
     return {voice:v, score};
   });
   scored.sort((a,b)=>b.score - a.score);
-  return scored[0].voice;
+  return scored.length>0 ? scored[0].voice : null;
 }
 
 function detectLanguage(text, subject){
@@ -3960,8 +3975,9 @@ function speak(text){
       const voice = pickVoice(lang);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = IS_ANDROID ? 0.85 : 0.7;
-      utter.pitch = IS_ANDROID ? 1.1 : 1.2;
+      // Taux naturel pour le français : 0.85-0.9 Android, 0.9-1.0 iPhone, 0.8 PC
+      utter.rate = IS_ANDROID ? 0.88 : (navigator.userAgent.includes('iPhone')||navigator.userAgent.includes('iPad')?0.95:0.82);
+      utter.pitch = 1.0; // Pitch neutre — plus naturel
       utter.volume = 1;
       if(voice) utter.voice = voice;
       // Android: delai obligatoire entre cancel() et speak()
@@ -4320,12 +4336,12 @@ function toggleSound(){
   document.getElementById('settingsSoundToggle').textContent = state.soundEnabled ? '🔊' : '🔇';
   if(state.soundEnabled) soundClick();
 }
-function soundClick(){ if(!state.soundEnabled) return; playTone(600, 0.06, 'square', 0, 0.05); }
-function soundCorrect(){ if(!state.soundEnabled) return; playTone(523.25,0.12,'sine',0,0.12); playTone(659.25,0.12,'sine',0.1,0.12); playTone(783.99,0.18,'sine',0.2,0.12); }
-function soundWrong(){ if(!state.soundEnabled) return; playTone(300,0.16,'sine',0,0.08); playTone(220,0.2,'sine',0.12,0.08); }
-function soundLevelUp(){ if(!state.soundEnabled) return; [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,0.16,'triangle',i*0.11,0.13)); }
-function soundHonk(){ if(!state.soundEnabled) return; playTone(220,0.18,'sawtooth',0,0.1); playTone(196,0.24,'sawtooth',0.18,0.1); }
-function soundBlip(){ if(!state.soundEnabled) return; playTone(650+Math.random()*300, 0.045, 'square', 0, 0.035); }
+function soundClick(){ if(!state.soundEnabled) return; playTone(800,0.04,'sine',0,0.08); playTone(1200,0.03,'sine',0.01,0.04); }
+function soundCorrect(){ if(!state.soundEnabled) return; [523.25,659.25,783.99].forEach((f,i)=>playTone(f,0.15,'sine',i*0.09,0.10)); playTone(1046.5,0.3,'triangle',0.27,0.08); }
+function soundWrong(){ if(!state.soundEnabled) return; playTone(400,0.1,'sine',0,0.08); playTone(300,0.12,'sine',0.08,0.08); playTone(250,0.15,'triangle',0.16,0.06); }
+function soundLevelUp(){ if(!state.soundEnabled) return; [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>playTone(f,0.18,'triangle',i*0.1,0.10)); }
+function soundHonk(){ if(!state.soundEnabled) return; playTone(220,0.15,'sawtooth',0,0.08); playTone(196,0.2,'sawtooth',0.14,0.08); playTone(180,0.25,'sawtooth',0.28,0.06); }
+function soundBlip(){ if(!state.soundEnabled) return; playTone(800+Math.random()*400,0.04,'sine',0,0.04); }
 
 function launchCar(){
   const c = document.createElement('div');
