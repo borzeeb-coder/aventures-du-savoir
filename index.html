@@ -1092,6 +1092,90 @@
     border-radius:2px;
     transform:skewX(-6deg);
   }
+
+  /* Dark mode */
+  body.dark-mode{--bg:#1a1a2e;--plum:#e8e8f0;--cream:#2a2a3e;--shadow:rgba(0,0,0,0.4);--sky:#16213e;--sky-deep:#0f3460}
+  body.dark-mode #app{background:var(--bg)}
+  body.dark-mode .topbar{background:#2a2a3e;box-shadow:0 4px 0 #1a1a2e,0 8px 18px rgba(0,0,0,0.3)}
+  body.dark-mode .brand h1{color:#e8e8f0}
+  body.dark-mode .brand .sub{color:#aaaac0}
+  body.dark-mode .level-toggle{background:#2a2a3e;box-shadow:0 4px 0 #1a1a2e,0 8px 16px rgba(0,0,0,0.3)}
+  body.dark-mode .level-toggle button{color:#8888a0}
+  body.dark-mode .card-screen{background:#2a2a3e;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+  body.dark-mode .question-box{background:#333350}
+  body.dark-mode .opt-btn{background:#3e3e5e;color:#e8e8f0;box-shadow:0 3px 0 #2a2a3e}
+  body.dark-mode .opt-btn:hover{background:#4e4e6e}
+  body.dark-mode .stat-card{background:#333350;color:#e8e8f0}
+  body.dark-mode .chart-wrap{background:#333350;border-color:#4e4e6e}
+  body.dark-mode .chart-wrap h3{color:#e8e8f0}
+  body.dark-mode .screen-head{background:#2a2a3e}
+  body.dark-mode .subject-title{color:#e8e8f0}
+  body.dark-mode .back-btn{background:#3e3e5e;color:#e8e8f0}
+  body.dark-mode .result-actions .btn-secondary{background:#3e3e5e;color:#e8e8f0}
+  body.dark-mode .daily-card{background:#333350}
+  body.dark-mode .daily-card h3{color:#e8e8f0}
+  body.dark-mode .daily-card .sub-txt{color:#aaaac0}
+  body.dark-mode .badges-card{background:#333350}
+  body.dark-mode .badges-card h3{color:#e8e8f0}
+  body.dark-mode .trophy{background:#3e3e5e;color:#e8e8f0}
+  body.dark-mode .badges-row .voice-toggle{background:#3e3e5e;color:#e8e8f0}
+  body.dark-mode .parent-link{color:#aaaac0}
+  body.dark-mode .note{color:#666680}
+  body.dark-mode #owlBubble{background:#fff;color:#3C3C3C}
+  body.dark-mode .gate-box{background:#333350;color:#e8e8f0}
+  body.dark-mode .gate-box p{color:#cccce0}
+  body.dark-mode .gate-box input{background:#3e3e5e;color:#e8e8f0;border-color:#5e5e7e}
+  body.dark-mode .progress-row .progress-label{color:#e8e8f0}
+  body.dark-mode .profile-card{background:#333350;color:#e8e8f0}
+  body.dark-mode .profile-card.add-profile{background:#2a2a3e}
+  body.dark-mode .profile-name{color:#e8e8f0}
+  body.dark-mode .feature-card{color:#fff}
+  body.dark-mode .stories-grid .story-card{background:#333350;color:#e8e8f0}
+  body.dark-mode .story-reader{background:#333350;color:#e8e8f0}
+  body.dark-mode .wardrobe-grid .wardrobe-item{background:#333350}
+  body.dark-mode .wardrobe-grid .wardrobe-item .item-name{color:#e8e8f0}
+  body.dark-mode .wardrobe-stars{color:#cccce0}
+
+  /* Feature cards */
+  .feature-row{display:flex;gap:12px;margin:14px 0 10px;flex-wrap:wrap}
+  .feature-card{flex:1;min-width:100px;border-radius:18px;padding:14px 12px;text-align:center;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.15),0 6px 16px rgba(0,0,0,0.12);transition:transform .12s ease;color:#fff}
+  .feature-card:hover{transform:translateY(-2px)}
+  .feature-card .icon{font-size:1.6rem;display:block;margin-bottom:4px}
+  .feature-card h3{font-family:'Baloo 2',sans-serif;font-size:0.95rem;margin:0}
+  .feature-card .sub-txt{font-size:0.7rem;opacity:0.85;font-weight:600}
+
+  /* Stories */
+  .stories-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:12px 0}
+  .story-card{background:#fff;border-radius:18px;padding:16px;cursor:pointer;box-shadow:0 3px 0 #E5E7EB,0 6px 14px rgba(0,0,0,0.08);text-align:center;transition:transform .12s ease}
+  .story-card:hover{transform:translateY(-2px)}
+  .story-card.locked{opacity:0.45;filter:grayscale(0.6)}
+  .story-card .icon{font-size:2.2rem;margin-bottom:6px}
+  .story-card h3{font-family:'Baloo 2',sans-serif;font-size:0.9rem;margin:0;color:var(--plum)}
+  .story-card .sub-txt{font-size:0.75rem;color:#888;margin-top:4px}
+  .story-reader{padding:16px 0;background:#fff;border-radius:18px;box-shadow:0 3px 0 #E5E7EB}
+  .story-reader .story-title{font-family:'Baloo 2',sans-serif;font-size:1.4rem;text-align:center;color:var(--plum);margin-bottom:12px}
+  .story-reader .story-text{font-size:1rem;line-height:1.6;padding:0 16px;color:var(--plum);white-space:pre-wrap}
+  .story-reader .story-footer{text-align:center;margin-top:18px}
+
+  /* Wardrobe */
+  .wardrobe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:12px 0}
+  .wardrobe-item{background:#fff;border-radius:18px;padding:14px;text-align:center;cursor:pointer;box-shadow:0 3px 0 #E5E7EB,0 6px 14px rgba(0,0,0,0.08);transition:transform .12s ease;border:3px solid transparent}
+  .wardrobe-item:hover{transform:translateY(-2px)}
+  .wardrobe-item.owned{border-color:var(--grass)}
+  .wardrobe-item.equipped{border-color:var(--sun);background:#FFF8E1}
+  .wardrobe-item .item-icon{font-size:2rem;margin-bottom:4px}
+  .wardrobe-item .item-name{font-family:'Baloo 2',sans-serif;font-size:0.85rem;color:var(--plum)}
+  .wardrobe-item .item-cost{font-size:0.75rem;color:#888;margin-top:4px}
+  .wardrobe-preview{text-align:center;font-size:3.5rem;padding:10px 0 4px}
+  .wardrobe-stars{text-align:center;font-family:'Baloo 2',sans-serif;font-size:1rem;color:var(--plum);margin-bottom:10px}
+
+  /* Toggle switch */
+  .toggle{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0}
+  .toggle input{opacity:0;width:0;height:0}
+  .toggle .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;transition:.3s;border-radius:24px}
+  .toggle .slider::before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%}
+  .toggle input:checked + .slider{background:#1CB0F6}
+  .toggle input:checked + .slider::before{transform:translateX(18px)}
 </style>
 </head>
 <body>
@@ -1155,6 +1239,24 @@
       <div>
         <h3>Mes Badges</h3>
         <div class="sub-txt" id="badgesCardText">0/8 débloqués</div>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-card" onclick="openTimeAttack()" style="background:linear-gradient(135deg,#FF4B4B,#FF6F59)">
+        <span class="icon">⚡</span>
+        <h3>Time Attack</h3>
+        <div class="sub-txt">10 questions chrono !</div>
+      </div>
+      <div class="feature-card" onclick="openStories()" style="background:linear-gradient(135deg,#8B6FD9,#CE82FF)">
+        <span class="icon">📖</span>
+        <h3>Mes Histoires</h3>
+        <div class="sub-txt" id="storiesCardText">0 débloquée(s)</div>
+      </div>
+      <div class="feature-card" onclick="openWardrobe()" style="background:linear-gradient(135deg,#FFC800,#FF9600)">
+        <span class="icon">🦉</span>
+        <h3>Habiller Hibou</h3>
+        <div class="sub-txt">Déguise ton prof !</div>
       </div>
     </div>
 
@@ -1399,6 +1501,58 @@
     <div class="badges-grid" id="badgesGrid"></div>
   </div>
 
+  <div id="storiesScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
+      <div class="subject-title">📖 Mes Histoires</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="stories-grid" id="storiesGrid"></div>
+  </div>
+
+  <div id="storyReaderScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="openStories()">⬅ Retour</button>
+      <div class="subject-title" id="storyReaderTitle">Histoire</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="story-reader" id="storyReaderContent"></div>
+  </div>
+
+  <div id="wardrobeScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
+      <div class="subject-title">🦉 Habiller Hibou</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="wardrobe-grid" id="wardrobeGrid"></div>
+    <div class="wardrobe-preview" id="wardrobePreview"></div>
+    <div class="wardrobe-stars">⭐ <span id="wardrobeStars">0</span> étoiles disponibles</div>
+  </div>
+
+  <div id="timeAttackScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
+      <div class="subject-title">⚡ Time Attack</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="quiz-progress">
+      <div class="quiz-progress-label" id="taProgressLabel">Question 1/10</div>
+      <div class="quiz-progress-track"><div class="quiz-progress-fill" id="taProgressFill" style="width:0%"></div></div>
+    </div>
+    <div class="timer-row urgent" id="taTimerRow">
+      <span class="timer-icon">⏱️</span>
+      <div class="timer-track"><div class="timer-fill" id="taTimerFill" style="background:var(--coral);"></div></div>
+      <span class="timer-text" id="taTimerText">15s</span>
+    </div>
+    <div class="question-box">
+      <p id="taQuestionText"></p>
+      <button class="listen-btn" onclick="readAloud(document.getElementById('taQuestionText').textContent)">🔊 Écouter</button>
+    </div>
+    <div class="options" id="taOptionsBox"></div>
+    <div class="feedback" id="taFeedbackBox"></div>
+  </div>
+
   <div id="parentGateScreen" class="card-screen hidden">
     <div class="screen-head">
       <button class="back-btn" onclick="goHome()">⬅ Retour</button>
@@ -1445,6 +1599,20 @@
       <input type="password" id="openaiKeyInput" placeholder="sk-..." style="width:100%; padding:10px 12px; border:2px solid var(--plum); border-radius:12px; font-size:14px; box-sizing:border-box; font-family:'Quicksand',sans-serif; margin-bottom:8px;">
       <button class="next-btn" onclick="saveOpenAIKey()" style="font-size:0.85rem; padding:8px 16px;">💾 Enregistrer la clé</button>
       <span id="openaiKeyStatus" style="font-size:0.8rem; font-weight:700; margin-left:8px;"></span>
+    </div>
+
+    <div class="chart-wrap" style="background:#E8F5E9; border-color:#58CC02;">
+      <h3>🌙 Réglages</h3>
+      <div id="parentGateDarkMode" style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="next-btn" onclick="printDiploma()" style="font-size:0.8rem;padding:8px 14px;flex:1">🎓 Diplôme PDF</button>
+        <button class="next-btn" onclick="requestPushNotifications()" style="font-size:0.8rem;padding:8px 14px;flex:1;background:var(--sky)">🔔 Rappel quotidien</button>
+      </div>
+    </div>
+
+    <div class="chart-wrap" style="background:#FFF3E0; border-color:#FFC800;">
+      <h3>👪 Comparaison des profils</h3>
+      <div id="profileComparison"></div>
     </div>
   </div>
 
@@ -1945,6 +2113,28 @@ const SUBJECT_META = {
   globe:{icon:"🌐", title:"Globe Explorer"},
 };
 
+const STORIES = [
+  {id:'s1', icon:'🌊', title:'Le Voyage du Hibou', starsReq:10,
+   content:"Il était une fois un petit hibou qui rêvait de voyager. Chaque nuit, il regardait les étoiles en se demandant ce qu'il y avait au-delà de sa forêt. Un soir, une étoile filante lui dit : \"Si tu veux voyager, il te suffit de fermer les yeux et d'imaginer.\" Alors le hibou ferma les yeux... et se retrouva au sommet d'une montagne, où la vue était si belle qu'il en oublia de cligner des yeux !"},
+  {id:'s2', icon:'✨', title:'La Forêt des Réponses', starsReq:25,
+   content:"Dans la Forêt des Réponses, chaque arbre portait une question. Les enfants venaient de loin pour cueillir les réponses. Mais un jour, un vent malicieux mélangea toutes les feuilles. Heureusement, un petit hibou malin aida les enfants à retrouver chaque réponse en lisant les questions à voix haute. Et devine quoi ? En aidant les autres, il devint le plus savant de tous les hiboux !"},
+  {id:'s3', icon:'🚀', title:'La Fusée des Maths', starsReq:50,
+   content:"Léo avait peur des maths, jusqu'au jour où il construisit une fusée en carton. Pour la faire décoller, il devait résoudre des calculs : 3+2 pour allumer les moteurs, 10-4 pour ouvrir les hublots. À chaque bonne réponse, la fusée montait un peu plus haut. Bientôt, Léo flottait dans l'espace, entouré d'étoiles chiffrées. Depuis ce jour, les maths sont devenues son jeu préféré !"},
+  {id:'s4', icon:'🐉', title:'Le Dragon des Lettres', starsReq:100,
+   content:"Au cœur de la Vallée Enchantée vivait un dragon qui adorait les lettres. Chaque matin, il crachait des mots enflammés dans le ciel. Les habitants devaient les attraper et les remettre dans l'ordre pour former des phrases magiques. Une petite fille prénommée Lily releva le défi : elle attrapa toutes les lettres, forma \"JE SUIS COURAGEUSE\", et le dragon, ému, lui offrit une plume dorée."},
+  {id:'s5', icon:'🏆', title:'Le Grand Tournoi', starsReq:200,
+   content:"Tous les ans, les animaux de la forêt organisaient le Grand Tournoi du Savoir. Cette année, le hibou était le juge. Le lapin connaissait toutes les tables de multiplication, l'écureuil épelait les mots les plus difficiles, et le renard résolvait des énigmes en anglais. Mais c'est la petite tortue qui gagna, car elle avait appris un peu chaque jour sans jamais abandonner. La leçon : la persévérance bat toujours le talent !"},
+];
+
+const OWL_ACCESSORIES = [
+  {id:'hat', icon:'🎩', name:'Chapeau', cost:10},
+  {id:'glasses', icon:'👓', name:'Lunettes', cost:15},
+  {id:'cape', icon:'🧣', name:'Cape', cost:25},
+  {id:'crown', icon:'👑', name:'Couronne', cost:40},
+  {id:'bowtie', icon:'🎀', name:'Nœud Pap', cost:20},
+  {id:'scarf', icon:'🧣', name:'Écharpe', cost:30},
+];
+
 const AVATARS = [
   {id:'fox', icon:'🦊'}, {id:'panda', icon:'🐼'}, {id:'lion', icon:'🦁'},
   {id:'penguin', icon:'🐧'}, {id:'turtle', icon:'🐢'}, {id:'butterfly', icon:'🦋'}
@@ -2064,6 +2254,10 @@ let state = {
   badges: {},
   bestCombo: 0,
   totalCorrect: 0,
+  stories: {},
+  owlWardrobe: [],
+  owlEquipped: null,
+  timeAttackScore: 0,
 };
 let owlTimeout = null;
 
@@ -2106,6 +2300,9 @@ function renderStars(){
   if(badge2) badge2.textContent = state.aiScore;
   renderDailyCard();
   renderBadges();
+  const unlockedStories = Object.keys(state.stories).length;
+  const storiesCard = document.getElementById('storiesCardText');
+  if(storiesCard) storiesCard.textContent = unlockedStories + ' débloquée(s)';
 }
 
 const BADGE_LIST = [
@@ -2127,6 +2324,12 @@ const BADGE_LIST = [
   {id:'allsubj', icon:'🎯', name:'Toujours Terre', check:()=>Object.values(state.stars).every(s=>s>=2)},
   {id:'points100', icon:'💰', name:'Riche', check:()=>state.points>=100},
   {id:'points1000', icon:'👑', name:'Millionnaire', check:()=>state.points>=1000},
+  {id:'timeattack50', icon:'⚡', name:'Time Attacker', check:()=>state.timeAttackScore>=50},
+  {id:'timeattack150', icon:'🏆', name:'Time Attack Master', check:()=>state.timeAttackScore>=150},
+  {id:'story1', icon:'📖', name:'Lecteur', check:()=>Object.keys(state.stories).length>=1},
+  {id:'story3', icon:'📚', name:'Grand Lecteur', check:()=>Object.keys(state.stories).length>=3},
+  {id:'wardrobe1', icon:'🎩', name:'Stiliste', check:()=>state.owlWardrobe.length>=1},
+  {id:'wardrobe3', icon:'👔', name:'Créateur de mode', check:()=>state.owlWardrobe.length>=3},
 ];
 
 function renderBadges(){
@@ -2220,7 +2423,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -3631,7 +3834,8 @@ async function saveAppData(){
       avatar: state.avatar, level: state.level, firstName: state.firstName, age: state.age,
       stars: state.stars, subjectLevel: state.subjectLevel, aiScore: state.aiScore,
       points: state.points, streak: state.streak, lastDailyDate: state.lastDailyDate, usage: state.usage,
-      badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect
+      badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect,
+      stories: state.stories, owlWardrobe: state.owlWardrobe, owlEquipped: state.owlEquipped, timeAttackScore: state.timeAttackScore
     }), false);
   }catch(e){ /* sauvegarde impossible pour le moment, pas grave */ }
 }
@@ -3654,6 +3858,10 @@ async function loadAppData(profileId){
       state.badges = d.badges || {};
       state.bestCombo = d.bestCombo || 0;
       state.totalCorrect = d.totalCorrect || 0;
+      state.stories = d.stories || {};
+      state.owlWardrobe = d.owlWardrobe || [];
+      state.owlEquipped = d.owlEquipped || null;
+      state.timeAttackScore = d.timeAttackScore || 0;
     }
   }catch(e){ /* profil vide ou première visite */ }
 }
@@ -3693,6 +3901,10 @@ function resetStateDefaults(){
   state.badges = {};
   state.bestCombo = 0;
   state.totalCorrect = 0;
+  state.stories = {};
+  state.owlWardrobe = [];
+  state.owlEquipped = null;
+  state.timeAttackScore = 0;
 }
 
 async function openProfileSwitcher(){
@@ -3942,6 +4154,8 @@ function renderParentScreen(){
   document.getElementById('statWeekTime').textContent = weekTotal + ' min';
   renderUsageChart(dates, values);
   renderSubjectProgress();
+  updateParentScreenFeatures();
+  loadParentDarkMode();
 }
 
 function renderUsageChart(dates, values){
@@ -4034,6 +4248,298 @@ function addDecor(){
   }
 }
 
+/* ---------------- HISTOIRES ---------------- */
+function openStories(){
+  stopAutoEncourage();
+  const grid = document.getElementById('storiesGrid');
+  grid.innerHTML = '';
+  const total = totalStars();
+  let unlocked = 0;
+  STORIES.forEach(s=>{
+    const isUnlocked = total >= s.starsReq || state.stories[s.id];
+    if(isUnlocked && !state.stories[s.id]) state.stories[s.id] = true;
+    if(state.stories[s.id]) unlocked++;
+    const card = document.createElement('div');
+    card.className = 'story-card' + (isUnlocked ? '' : ' locked');
+    card.innerHTML = `<div class="icon">${isUnlocked ? s.icon : '🔒'}</div><h3>${s.title}</h3><div class="sub-txt">${isUnlocked ? '✨ À lire !' : s.starsReq+' ⭐ requis'}</div>`;
+    if(isUnlocked) card.onclick = ()=>openStory(s);
+    grid.appendChild(card);
+  });
+  document.getElementById('storiesCardText').textContent = unlocked + ' débloquée(s)';
+  scheduleSave();
+  show('storiesScreen');
+}
+function openStory(s){
+  document.getElementById('storyReaderTitle').textContent = s.icon + ' ' + s.title;
+  document.getElementById('storyReaderContent').innerHTML = `<div class="story-title">${s.icon} ${s.title}</div><div class="story-text">${s.content}</div><div class="story-footer"><button class="next-btn" onclick="openStories()">Retour aux histoires 🏠</button></div>`;
+  speak(s.content);
+  show('storyReaderScreen');
+}
+
+/* ---------------- HABILLER HIBOU (WARDROBE) ---------------- */
+function openWardrobe(){
+  stopAutoEncourage();
+  renderWardrobe();
+  show('wardrobeScreen');
+}
+function renderWardrobe(){
+  const grid = document.getElementById('wardrobeGrid');
+  grid.innerHTML = '';
+  const total = totalStars();
+  const spent = state.owlWardrobe.reduce((sum,id)=>sum+(OWL_ACCESSORIES.find(a=>a.id===id)?.cost||0),0);
+  const available = total - spent;
+  document.getElementById('wardrobeStars').textContent = available;
+  document.getElementById('wardrobePreview').textContent = state.owlEquipped ? OWL_ACCESSORIES.find(a=>a.id===state.owlEquipped)?.icon+' ' : '🦉';
+  OWL_ACCESSORIES.forEach(a=>{
+    const owned = state.owlWardrobe.includes(a.id);
+    const equipped = state.owlEquipped === a.id;
+    const item = document.createElement('div');
+    item.className = 'wardrobe-item' + (owned ? ' owned' : '') + (equipped ? ' equipped' : '');
+    item.innerHTML = `<div class="item-icon">${a.icon}</div><div class="item-name">${a.name}</div><div class="item-cost">${owned ? (equipped ? '✅ Équipé' : 'Possédé') : '⭐'+a.cost}</div>`;
+    item.onclick = ()=>{
+      if(equipped){ state.owlEquipped = null; renderWardrobe(); scheduleSave(); return; }
+      if(owned){ state.owlEquipped = a.id; renderWardrobe(); scheduleSave(); return; }
+      if(available >= a.cost){
+        state.owlWardrobe.push(a.id);
+        state.owlEquipped = a.id;
+        renderWardrobe();
+        scheduleSave();
+        soundCorrect();
+        owlSay('Super achat ! Hibou est trop stylé ! 🎉');
+      } else {
+        soundWrong();
+        owlSay("Pas assez d'étoiles ! Gagne encore des étoiles pour débloquer cet accessoire ! ⭐");
+      }
+    };
+    grid.appendChild(item);
+  });
+}
+
+/* ---------------- TIME ATTACK ---------------- */
+let taTimer = null;
+let taTimeLeft = 15;
+let taScore = 0;
+let taQuestions = [];
+let taIndex = 0;
+
+function openTimeAttack(){
+  stopAutoEncourage();
+  taScore = 0;
+  taIndex = 0;
+  const allQs = [];
+  Object.values(QUESTIONS[state.level]).forEach(qs=>allQs.push(...qs));
+  taQuestions = shuffleArray(allQs).slice(0,10);
+  show('timeAttackScreen');
+  renderTAQuestion();
+}
+
+function renderTAQuestion(){
+  const q = taQuestions[taIndex];
+  document.getElementById('taProgressLabel').textContent = 'Question '+(taIndex+1)+'/10';
+  document.getElementById('taProgressFill').style.width = Math.round((taIndex/10)*100)+'%';
+  document.getElementById('taQuestionText').textContent = q.q;
+  const box = document.getElementById('taOptionsBox');
+  box.innerHTML = '';
+  document.getElementById('taFeedbackBox').innerHTML = '';
+  q.opts.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn pop-in';
+    btn.textContent = opt;
+    btn.onclick = ()=>answerTA(i,q,btn);
+    box.appendChild(btn);
+  });
+  startTATimer();
+  if(state.level === 'A') setTimeout(()=>speak(q.q), 300);
+}
+
+function startTATimer(){
+  clearInterval(taTimer);
+  taTimeLeft = 15;
+  updateTATimer();
+  taTimer = setInterval(()=>{
+    taTimeLeft--;
+    updateTATimer();
+    if(taTimeLeft <= 0){
+      clearInterval(taTimer);
+      taTimeout();
+    }
+  }, 1000);
+}
+
+function updateTATimer(){
+  const pct = Math.max(0, (taTimeLeft/15)*100);
+  document.getElementById('taTimerFill').style.width = pct+'%';
+  document.getElementById('taTimerFill').style.background = taTimeLeft > 8 ? 'var(--grass)' : taTimeLeft > 4 ? 'var(--sun)' : 'var(--coral)';
+  document.getElementById('taTimerText').textContent = taTimeLeft+'s';
+}
+
+function taTimeout(){
+  const btn = document.querySelectorAll('#taOptionsBox .opt-btn');
+  if(btn.length && !btn[0].disabled){
+    btn.forEach(b=>b.disabled=true);
+    btn[taQuestions[taIndex].a].classList.add('correct');
+    document.getElementById('taFeedbackBox').innerHTML = `<div class="msg pop-in">⏰ Temps écoulé !</div>`;
+    setTimeout(()=>nextTA(), 1200);
+  }
+}
+
+function answerTA(i,q,btnEl){
+  clearInterval(taTimer);
+  const buttons = document.querySelectorAll('#taOptionsBox .opt-btn');
+  buttons.forEach(b=>b.disabled=true);
+  const correct = i === q.a;
+  if(correct){
+    btnEl.classList.add('correct');
+    taScore += 10 + Math.max(0, taTimeLeft);
+    soundCorrect();
+  } else {
+    btnEl.classList.add('wrong');
+    buttons[q.a].classList.add('correct');
+    soundWrong();
+  }
+  document.getElementById('taFeedbackBox').innerHTML = `<div class="msg pop-in">${correct ? 'Bravo ! +'+(10+taTimeLeft)+' pts ⚡' : 'Oups !'}</div>`;
+  setTimeout(()=>nextTA(), 1000);
+}
+
+function nextTA(){
+  taIndex++;
+  if(taIndex >= 10){
+    finishTA();
+  } else {
+    renderTAQuestion();
+  }
+}
+
+function finishTA(){
+  clearInterval(taTimer);
+  const oldBest = state.timeAttackScore;
+  if(taScore > state.timeAttackScore){
+    state.timeAttackScore = taScore;
+    scheduleSave();
+  }
+  const isRecord = taScore > oldBest && oldBest > 0;
+  show('resultScreen');
+  document.getElementById('retryBtn').setAttribute('onclick','openTimeAttack()');
+  document.getElementById('retryBtn').textContent = "⚡ Rejouer";
+  document.getElementById('resultMascot').textContent = taScore >= 150 ? "🏆⚡" : taScore >= 100 ? "⭐⚡" : "🦉⚡";
+  document.getElementById('resultTitle').textContent = taScore >= 150 ? "TIME ATTACK MASTER !" : taScore >= 100 ? "Super temps !" : "Bien joué !";
+  document.getElementById('resultText').textContent = taScore + ' points' + (isRecord ? ' — NOUVEAU RECORD ! 🏆' : ' — Record : '+state.timeAttackScore);
+  document.getElementById('resultStars').innerHTML = '';
+  document.getElementById('reviewBtn').classList.add('hidden');
+  addPoints(Math.floor(taScore/10));
+  soundLevelUp();
+  launchConfetti();
+  owlSay('Time Attack terminé ! '+taScore+' points ! '+(isRecord ? 'NOUVEAU RECORD ! 🏆' : ''));
+}
+
+/* ---------------- MODE SOMBRE ---------------- */
+function toggleDarkMode(){
+  document.body.classList.toggle('dark-mode');
+  const isDark = document.body.classList.contains('dark-mode');
+  try{ localStorage.setItem('darkMode', isDark ? '1' : ''); }catch(e){}
+  document.getElementById('darkModeToggle').textContent = isDark ? '☀️ Mode clair' : '🌙 Mode sombre';
+}
+
+/* ---------------- DIPLÔME PDF ---------------- */
+function printDiploma(){
+  const name = state.firstName || 'Mon enfant';
+  const stars = totalStars();
+  const points = state.points;
+  const streak = state.streak;
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html><head><meta charset="utf-8"><title>Diplôme - Les Aventures du Savoir</title>
+    <style>
+      body{font-family:'Segoe UI',sans-serif;background:#f7f9fc;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:20px}
+      .diploma{background:#fff;border:6px double #1CB0F6;border-radius:24px;padding:40px 30px;max-width:600px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.12)}
+      h1{font-size:2rem;color:#1CB0F6;margin:0 0 6px}
+      .sub{font-size:1rem;color:#888;margin-bottom:20px}
+      .name{font-size:2.4rem;color:#3C3C3C;font-weight:800;margin:16px 0}
+      .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+      .stat{background:#F0F4FF;padding:12px;border-radius:12px}
+      .stat .val{font-size:1.6rem;font-weight:800;color:#1CB0F6}
+      .stat .lab{font-size:0.8rem;color:#888}
+      .footer{margin-top:24px;font-size:0.85rem;color:#aaa;border-top:2px dashed #ddd;padding-top:16px}
+    </style></head><body>
+    <div class="diploma">
+      <h1>🎓 Diplôme du Savoir</h1>
+      <div class="sub">Les Aventures du Savoir — Félicitations !</div>
+      <div class="name">${name}</div>
+      <p style="color:#666;font-size:1rem;">A brillamment participé aux aventures éducatives</p>
+      <div class="stats">
+        <div class="stat"><div class="val">${stars} ⭐</div><div class="lab">Étoiles</div></div>
+        <div class="stat"><div class="val">${points} 🏅</div><div class="lab">Points</div></div>
+        <div class="stat"><div class="val">${streak} 🔥</div><div class="lab">Série (jours)</div></div>
+      </div>
+      <div class="footer">Délivré le ${new Date().toLocaleDateString('fr-FR')} — Continue d'apprendre en t'amusant !</div>
+    </div>
+    <script>window.onload=function(){window.print();}<\/script>
+    </body></html>
+  `);
+  win.document.close();
+}
+
+/* ---------------- PROFIL COMPARISON (Espace Parents) ---------------- */
+async function renderProfileComparison(){
+  const box = document.getElementById('profileComparison');
+  if(!box) return;
+  const list = await loadProfilesList();
+  if(list.length < 2){ box.innerHTML = '<p style="opacity:0.6;text-align:center;font-size:0.85rem;">Ajoute plusieurs profils pour comparer</p>'; return; }
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;"><tr style="border-bottom:2px solid #E5E7EB"><th style="padding:8px;text-align:left">Profil</th><th style="padding:8px;text-align:center">⭐</th><th style="padding:8px;text-align:center">🏅</th><th style="padding:8px;text-align:center">🔥</th></tr>';
+  for(const p of list){
+    try{
+      const res = await window.storage.get('profile-'+p.id, false);
+      if(res && res.value){
+        const d = JSON.parse(res.value);
+        const s = Object.values(d.stars||{}).reduce((a,b)=>a+b,0);
+        html += `<tr${p.id===state.profileId?' style="background:#E8F5E9;font-weight:700"':''}><td style="padding:8px">${d.firstName||p.id}</td><td style="padding:8px;text-align:center">${s}</td><td style="padding:8px;text-align:center">${d.points||0}</td><td style="padding:8px;text-align:center">${d.streak||0}🔥</td></tr>`;
+      }
+    }catch(e){}
+  }
+  html += '</table>';
+  box.innerHTML = html;
+}
+
+/* ---------------- NOTIFICATIONS PUSH ---------------- */
+function requestPushNotifications(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission === 'granted'){ owlSay('Les notifications sont déjà activées ! 🔔'); return; }
+  Notification.requestPermission().then(perm=>{
+    if(perm === 'granted'){
+      owlSay('Super ! Je te rappellerai pour le défi du jour ! 🔔');
+      scheduleDailyReminder();
+    } else {
+      owlSay("Pas de souci, tu viendras quand tu voudras ! 🦉");
+    }
+  });
+}
+
+function scheduleDailyReminder(){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  const now = new Date();
+  const target = new Date(now);
+  target.setHours(9,0,0,0);
+  if(now > target) target.setDate(target.getDate()+1);
+  const ms = target.getTime() - now.getTime();
+  setTimeout(()=>{
+    try{ new Notification('🦉 Les Aventures du Savoir', {body: 'Le défi du jour t\'attend, viens jouer !', icon: 'icons/icon-192.png'}); }catch(e){}
+    scheduleDailyReminder();
+  }, ms);
+}
+
+function updateParentScreenFeatures(){
+  const total = totalStars();
+  document.getElementById('parentGateDarkMode').innerHTML = `<span>🌙 Mode sombre</span><label class="toggle"><input type="checkbox" onchange="toggleDarkMode()" ${document.body.classList.contains('dark-mode')?'checked':''}><span class="slider"></span></label>`;
+  renderProfileComparison();
+}
+function loadParentDarkMode(){
+  try{
+    if(localStorage.getItem('darkMode') === '1'){
+      document.body.classList.add('dark-mode');
+    }
+  }catch(e){}
+}
+
 function staggerIslands(){
   document.querySelectorAll('.island').forEach((el, i)=>{
     el.classList.remove('pop-appear');
@@ -4111,6 +4617,7 @@ async function initApp(){
   addClouds();
   addDecor();
   initVoices();
+  loadParentDarkMode();
   const activeId = await getActiveProfileId();
   if(activeId){
     state.profileId = activeId;
