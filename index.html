@@ -2286,12 +2286,12 @@ function speak(text){
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = 0.72;
-      utter.pitch = isIOS ? 1.05 : 1.35;
+      utter.rate = isIOS ? 0.92 : 0.72;
+      utter.pitch = isIOS ? 1.0 : 1.35;
       utter.volume = 1;
       if(voice) utter.voice = voice;
       window.speechSynthesis.cancel();
-      setTimeout(() => window.speechSynthesis.speak(utter), 40);
+      window.speechSynthesis.speak(utter);
     }catch(e){}
   }, 30);
 }
