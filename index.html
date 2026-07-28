@@ -1308,6 +1308,7 @@
       <div class="points-trophy">🏅 <span id="pointsBadge">0</span></div>
       <div class="streak-trophy" id="streakTrophy">🔥 <span id="streakBadge">0</span> jour(s)</div>
       <div class="trophy">⭐ <span id="totalStars">0</span></div>
+      <div class="trophy" id="coinsDisplay" style="background:#FFC800;color:#fff;">🪙 0</div>
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
       <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou">🔊</div>
       <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil">👪</div>
@@ -1369,7 +1370,7 @@
       <span class="icon">🏅</span>
       <div>
         <h3>Mes Badges</h3>
-        <div class="sub-txt" id="badgesCardText">0/8 débloqués</div>
+        <div class="sub-txt" id="badgesCardText">0/25 débloqués</div>
       </div>
     </div>
 
@@ -1472,6 +1473,7 @@
         <span class="level-badge" id="level-globe" style="color:#3FA9F5;background:rgba(255,255,255,0.9)">Niveau 1</span>
         <span class="stars" id="stars-globe">☆ ☆ ☆</span>
       </div>
+      <div class="island" style="background:#FF6B6B;" onclick="openHangman()"><span class="icon">💀</span><h3 style="color:#fff">Pendu</h3><span class="stars" id="stars-hangman">☆ ☆ ☆</span></div>
       <div class="island game" onclick="openMemory()">
         <div>
           <h3>Île Mystère</h3>
@@ -1699,6 +1701,8 @@
     <div class="feedback" id="taFeedbackBox"></div>
   </div>
 
+  <div id="hangmanScreen" class="card-screen hidden"><div class="screen-head"><button class="back-btn" onclick="goHome()">⬅ Retour</button><div class="subject-title">💀 Pendu</div><div id="hangmanScore">Score : 0</div></div><div style="text-align:center;"><div id="hangmanDrawing" style="font-size:5rem;min-height:120px;"></div><div id="hangmanWord" style="font-size:2.4rem;letter-spacing:8px;font-family:'Baloo 2';font-weight:800;margin:14px 0;"></div><div id="hangmanKeyboard" style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:420px;margin:10px auto;"></div><div id="hangmanFeedback" style="min-height:30px;font-weight:700;font-size:1.1rem;margin-top:8px;"></div><button class="next-btn hidden" id="hangmanNextBtn" onclick="nextHangmanWord()">Mot suivant ➡</button></div></div>
+
   <div id="parentGateScreen" class="card-screen hidden">
     <div class="screen-head">
       <button class="back-btn" onclick="goHome()">⬅ Retour</button>
@@ -1752,6 +1756,7 @@
       <h3>👪 Comparaison des profils</h3>
       <div id="profileComparison"></div>
     </div>
+    <div class="chart-wrap" style="background:#E3F2FD;border-color:#1CB0F6;"><h3>🏆 Classement des enfants</h3><div id="leaderboardList"></div></div>
   </div>
 
   <!-- SETTINGS PANEL -->
@@ -1772,6 +1777,7 @@
           <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">ElevenLabs Multilingual v2</span>
         </div>
         <select id="voiceModelSelect" onchange="changeVoiceModel(this.value)" style="width:100%;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:6px;background:var(--cream);color:var(--plum);">
+          <option value="edge-tts">Edge TTS — Gratuit (recommandé)</option>
           <option value="elevenlabs">ElevenLabs Multilingual v2 (recommandé)</option>
           <option value="openai-alloy">OpenAI Alloy</option>
           <option value="openai-nova">OpenAI Nova</option>
@@ -1819,6 +1825,7 @@
       <button class="next-btn" onclick="openStatsScreen()" style="flex:1;font-size:0.85rem;">📊 Statistiques</button>
       <button class="btn-secondary" onclick="clearHistory()" style="flex:1;font-size:0.85rem;padding:10px;">🗑️ Effacer l'historique</button>
     </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn-secondary" onclick="exportData()" style="flex:1;font-size:0.8rem;padding:8px;">💾 Exporter</button><button class="btn-secondary" onclick="document.getElementById('importFile').click()" style="flex:1;font-size:0.8rem;padding:8px;">📥 Importer</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)"></div><div class="chart-wrap" style="margin-bottom:12px;background:#FFF8E1;border-color:#FFC800;"><h3>🌍 Theme</h3><select id="themeSelect" onchange="changeTheme(this.value)" style="width:100%;padding:8px;border:2px solid var(--plum);border-radius:12px;font-weight:600;font-size:0.85rem;background:var(--cream);color:var(--plum);"><option value="default">Par defaut</option><option value="jungle">🌿 Jungle</option><option value="space">🚀 Espace</option><option value="ocean">🌊 Ocean</option></select></div>
   </div>
 
   <!-- STATS SCREEN -->
@@ -3265,6 +3272,7 @@ const SUBJECT_META = {
   daily:{icon:"🌟", title:"Défi du Jour"},
   timeattack:{icon:"⚡", title:"Time Attack"},
   dictation:{icon:"🎤", title:"Dictée"},
+  hangman:{icon:"💀", title:"Pendu"},
 };
 
 const STORIES = [
@@ -3396,13 +3404,14 @@ let state = {
   firstName: '',
   age: null,
   photo: null,
-  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 },
-  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 },
+  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 },
+  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 },
   current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false, lazyOffset:0 },
   lettersSession: [], lettersIndex: 0, lettersScore: 0,
   wordsSession: [], wordsIndex: 0, wordsScore: 0,
   aiScore: 0,
   points: 0,
+  coins: 0,
   streak: 0,
   lastActiveDate: null,
   lastDailyDate: null,
@@ -3441,6 +3450,7 @@ function animateNumber(el, from, to){
 
 function renderStars(){
   document.getElementById('totalStars').textContent = totalStars();
+  renderCoins();
   Object.keys(state.stars).forEach(s=>{
     const n = state.stars[s];
     const el = document.getElementById('stars-'+s);
@@ -3494,6 +3504,7 @@ const BADGE_LIST = [
   {id:'story3', icon:'📚', name:'Grand Lecteur', check:()=>Object.keys(state.stories).length>=3},
   {id:'wardrobe1', icon:'🎩', name:'Stiliste', check:()=>state.owlWardrobe.length>=1},
   {id:'wardrobe3', icon:'👔', name:'Créateur de mode', check:()=>state.owlWardrobe.length>=3},
+  {id:'coins50',icon:'🪙',name:'Petit epargnant',check:()=>(state.coins||0)>=50},{id:'coins200',icon:'💸',name:'Banquier',check:()=>(state.coins||0)>=200},{id:'hangman5',icon:'💀',name:'Pendeur',check:()=>state.stars.hangman>=1},{id:'streak7',icon:'🔥',name:'Fidele (7j)',check:()=>state.streak>=7},{id:'all3stars',icon:'🌟',name:'Top etoiles',check:()=>Object.values(state.stars).filter(s=>s>=3).length>=5},
 ];
 
 const ACHIEVEMENTS = [
@@ -3673,7 +3684,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','settingsScreen','statsScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -3714,32 +3725,17 @@ function fixFrenchNasals(text){
 
 function pickVoice(lang){
   if(!('speechSynthesis' in window)) return null;
-  const prefix = lang.split('-')[0];
-  const allVoices = window.speechSynthesis.getVoices();
-  const voices = allVoices.filter(v=>v.lang && v.lang.toLowerCase().startsWith(prefix));
-  if(voices.length === 0) return null;
-
-  const frFemale = ['amelie','audrey','charlotte','julie','marie','celeste','claire','aurelie','lea','nathalie','virginie','siri'];
-  const enFemale = ['samantha','siri','zira','kate','ava','emma','susan','marta','helena','alexa','veena','tessa','moira','fiona'];
-  const femaleNames = prefix === 'fr' ? frFemale : enFemale;
-  const maleNames = prefix === 'fr' ? ['thomas','henri','jerome','pierre','nicolas','yannick','matthieu'] : ['daniel','david','alex','fred','richard','james','lee'];
-
-  const scored = voices.map(v=>{
-    const name = v.name.toLowerCase();
-    let score = 0;
-    if(name.includes('natural') || name.includes('premium') || name.includes('neural')) score += 20;
-    if(name.includes('enhanced') || name.includes('siri')) score += 10;
-    if(name.includes('microsoft')) score += 15;
-    if(name.includes('google')) score += 6;
-    if(name.includes('apple')) score += 8;
-    femaleNames.forEach(f=>{ if(name.includes(f)) score += 18; });
-    maleNames.forEach(m=>{ if(name.includes(m)) score -= 10; });
-    if(name.includes('compact') || name.includes('espeak') || name.includes('pcms')) score -= 20;
-    if(v.localService === false) score += 4;
-    return {voice:v, score};
-  });
-  scored.sort((a,b)=>b.score - a.score);
-  return scored[0].voice;
+  const prefix=lang.split('-')[0];const allVoices=window.speechSynthesis.getVoices();
+  const voices=allVoices.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(prefix));
+  if(voices.length===0) return null;
+  const scored=voices.map(v=>{const name=v.name.toLowerCase();let score=0;
+    if(name.includes('premium')||name.includes('enhanced')||name.includes('neural')||name.includes('natural')||name.includes('wavenet')) score+=30;
+    if(name.includes('siri')||name.includes('samantha')) score+=25;
+    if(name.includes('google')&&name.includes('fr')) score+=28;
+    if(name.includes('espeak')||name.includes('pcms')||name.includes('compact')||name.includes('robot')||name.includes('dectalk')) score-=50;
+    if(prefix==='fr'){if(name.includes('fran')||name.includes('french')||name.includes('celine')||name.includes('chantal')||name.includes('amelie')||name.includes('audrey')||name.includes('charlotte')||name.includes('julie')||name.includes('marie')||name.includes('lea')||name.includes('claire')||name.includes('virginie')||name.includes('nathalie'))score+=20;}
+    if(v.localService===true) score+=3;return{voice:v,score};});
+  scored.sort((a,b)=>b.score-a.score);return scored.length>0?scored[0].voice:null;
 }
 
 function detectLanguage(text, subject){
@@ -3763,7 +3759,7 @@ function initVoices(){
 }
 /* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
 let voiceApiKey = '';
-let voiceModel = 'elevenlabs';
+let voiceModel = 'edge-tts';
 let proxyUrl = '';
 const audioCache = new Map();
 let isSpeaking = false;
@@ -3779,7 +3775,7 @@ function detectProxy(){
 function loadVoiceSettings(){
   try{
     voiceApiKey = localStorage.getItem('voice_api_key') || '';
-    voiceModel = localStorage.getItem('voice_model') || 'elevenlabs';
+    voiceModel = localStorage.getItem('voice_model') || 'edge-tts';
     detectProxy();
     const inp = document.getElementById('settingsApiKey');
     if(inp && voiceApiKey) inp.value = voiceApiKey;
@@ -3793,7 +3789,7 @@ function loadVoiceSettings(){
 }
 
 function getVoiceLabel(m){
-  const labels = { 'elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
+  const labels = { 'edge-tts':'Edge TTS (gratuit)','elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
   return labels[m] || 'ElevenLabs v2';
 }
 
@@ -3899,28 +3895,32 @@ function speak(text){
       if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
         played = await speakViaProxy(cleanText, lang, cacheKey);
       }
-      // 2) ElevenLabs direct (cle API dans localStorage)
+      // 2) Edge TTS gratuit
+      if(!played){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
+      // 3) ElevenLabs direct (cle API dans localStorage)
       if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
         played = await speakElevenLabs(cleanText, lang, cacheKey);
       }
-      // 3) OpenAI direct
+      // 4) OpenAI direct
       if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
         played = await speakOpenAI(cleanText, lang, cacheKey);
       }
-      // 4) Fallback automatique ElevenLabs vers OpenAI
+      // 5) Fallback automatique ElevenLabs vers OpenAI
       if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
         played = await speakOpenAI(cleanText, lang, cacheKey);
       }
+      // 6) Edge TTS fallback final
+      if(!played && voiceModel !== 'native'){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
       if(played) return;
 
-      // 5) Dernier recours : synthese native du navigateur
+      // 7) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = isIOS ? 0.95 : 0.7;
-      utter.pitch = isIOS ? 1.0 : 1.2;
+      utter.rate = IS_ANDROID ? 0.88 : (/iPhone|iPad|iPod/i.test(navigator.userAgent)?0.95:0.82);
+      utter.pitch = 1.0;
       utter.volume = 1;
       if(voice) utter.voice = voice;
       window.speechSynthesis.cancel();
@@ -3951,6 +3951,9 @@ async function speakViaProxy(text, lang, cacheKey){
     return await safeAudioPlay(url);
   }catch(e){ return false; }
 }
+
+const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4';
+async function speakEdgeTTS(text,lang,cacheKey){try{const prefix=(lang||'fr-FR').split('-')[0];const voiceName=prefix==='fr'?'fr-FR-DeniseNeural':'en-US-AriaNeural';const ssml='<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="'+(lang||'fr-FR')+'"><voice name="'+voiceName+'"><prosody rate="'+(prefix==='fr'?'-10%':'+0%')+'" pitch="+0%">'+text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</prosody></voice></speak>';const resp=await fetch('https://speech.platform.bing.com/consumer/speech/synthesize/readaloud?trustedclienttoken='+EDGE_TOKEN,{method:'POST',headers:{'Content-Type':'application/ssml+xml','X-Microsoft-OutputFormat':'audio-24khz-96kbitrate-mono-mp3'},body:ssml});if(!resp.ok)return false;const blob=await resp.blob();const url=URL.createObjectURL(blob);audioCache.set(cacheKey,url);if(audioCache.size>80){const first=audioCache.keys().next().value;const old=audioCache.get(first);if(old)URL.revokeObjectURL(old);audioCache.delete(first);}window.speechSynthesis.cancel();return await safeAudioPlay(url);}catch(e){return false;}}
 
 async function speakElevenLabs(text, lang, cacheKey){
   try{
@@ -4267,12 +4270,12 @@ function toggleSound(){
   document.getElementById('settingsSoundToggle').textContent = state.soundEnabled ? '🔊' : '🔇';
   if(state.soundEnabled) soundClick();
 }
-function soundClick(){ if(!state.soundEnabled) return; playTone(600, 0.06, 'square', 0, 0.05); }
-function soundCorrect(){ if(!state.soundEnabled) return; playTone(523.25,0.12,'sine',0,0.12); playTone(659.25,0.12,'sine',0.1,0.12); playTone(783.99,0.18,'sine',0.2,0.12); }
-function soundWrong(){ if(!state.soundEnabled) return; playTone(300,0.16,'sine',0,0.08); playTone(220,0.2,'sine',0.12,0.08); }
-function soundLevelUp(){ if(!state.soundEnabled) return; [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,0.16,'triangle',i*0.11,0.13)); }
+function soundClick(){ if(!state.soundEnabled) return; playTone(800,0.04,'sine',0,0.08); playTone(1200,0.03,'sine',0.01,0.04); }
+function soundCorrect(){ if(!state.soundEnabled) return; [523.25,659.25,783.99].forEach((f,i)=>playTone(f,0.15,'sine',i*0.09,0.10)); playTone(1046.5,0.3,'triangle',0.27,0.08); }
+function soundWrong(){ if(!state.soundEnabled) return; playTone(400,0.1,'sine',0,0.08); playTone(300,0.12,'sine',0.08,0.08); playTone(250,0.15,'triangle',0.16,0.06); }
+function soundLevelUp(){ if(!state.soundEnabled) return; [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>playTone(f,0.18,'triangle',i*0.1,0.10)); }
 function soundHonk(){ if(!state.soundEnabled) return; playTone(220,0.18,'sawtooth',0,0.1); playTone(196,0.24,'sawtooth',0.18,0.1); }
-function soundBlip(){ if(!state.soundEnabled) return; playTone(650+Math.random()*300, 0.045, 'square', 0, 0.035); }
+function soundBlip(){ if(!state.soundEnabled) return; playTone(800+Math.random()*400,0.04,'sine',0,0.04); }
 
 function launchCar(){
   const c = document.createElement('div');
@@ -4819,6 +4822,7 @@ function renderQuestion(){
     input.addEventListener('keydown', e=>{ if(e.key==='Enter') answerDictation(input, q); });
     inputWrap.appendChild(input);
     inputWrap.appendChild(submitBtn);
+    const micBtn=document.createElement('button');micBtn.className='listen-btn pop-in';micBtn.innerHTML='🎙️ Parler';micBtn.onclick=startDictationVoice;const voiceStatus=document.createElement('span');voiceStatus.id='dictationVoiceStatus';voiceStatus.style.cssText='font-size:0.85rem;min-height:20px;';inputWrap.appendChild(micBtn);inputWrap.appendChild(voiceStatus);
     optsBox.appendChild(inputWrap);
     if(q.hint){
       document.getElementById('hintBtn').style.display = 'inline-block';
@@ -5030,7 +5034,7 @@ function finishQuiz(){
 
   if(!state.current.isReview){
     if(stars > state.stars[subject]){
-      if(stars === 3) addPoints(30);
+      if(stars === 3){ addPoints(30); addCoins(15); } else if(stars === 2) addCoins(8); else addCoins(3);
       state.stars[subject] = stars;
     }
     if(pct >= 0.7){
@@ -5613,7 +5617,7 @@ async function saveAppData(){
     await window.storage.set('profile-'+state.profileId, JSON.stringify({
       avatar: state.avatar, level: state.level, firstName: state.firstName, age: state.age,
       stars: state.stars, subjectLevel: state.subjectLevel, aiScore: state.aiScore,
-      points: state.points, streak: state.streak, lastActiveDate: state.lastActiveDate, lastDailyDate: state.lastDailyDate, usage: state.usage,
+      coins: state.coins, points: state.points, streak: state.streak, lastActiveDate: state.lastActiveDate, lastDailyDate: state.lastDailyDate, usage: state.usage,
       badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect,
       stories: state.stories, owlWardrobe: state.owlWardrobe, owlEquipped: state.owlEquipped, timeAttackScore: state.timeAttackScore,
       photo: state.photo,
@@ -5638,6 +5642,7 @@ async function loadAppData(profileId){
       if(d.subjectLevel) Object.assign(state.subjectLevel, d.subjectLevel);
       state.aiScore = d.aiScore || 0;
       state.points = d.points || 0;
+      state.coins = d.coins || 0;
       state.streak = d.streak || 0;
       state.lastActiveDate = d.lastActiveDate || null;
       state.lastDailyDate = d.lastDailyDate || null;
@@ -5686,10 +5691,11 @@ function resetStateDefaults(){
   state.avatar = 'fox';
   state.photo = null;
   state.level = 'A';
-  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 };
-  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 };
+  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 };
+  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 };
   state.aiScore = 0;
   state.points = 0;
+  state.coins = 0;
   state.streak = 0;
   state.lastActiveDate = null;
   state.lastDailyDate = null;
@@ -5848,6 +5854,8 @@ function addPoints(n){
   renderStars();
   scheduleSave();
 }
+function addCoins(n){ state.coins=(state.coins||0)+n; renderCoins(); scheduleSave(); }
+function renderCoins(){ const el=document.getElementById('coinsDisplay'); if(el) el.textContent='🪙 '+(state.coins||0); }
 
 /* ---------------- SUIVI DU TEMPS ---------------- */
 function startUsageTracking(){
@@ -5882,6 +5890,12 @@ function renderDailyCard(){
 
 function openDaily(){
   stopAutoEncourage();
+  if(isDailyDoneToday()){owlSay('Défi du jour déjà complété ! Reviens demain.');return;}
+  const types=['quiz','hangman','timeattack','memory'];
+  const type=types[new Date().getDate()%types.length];
+  if(type==='hangman'){show('hangmanScreen');pickHangmanWord();return;}
+  if(type==='timeattack'){openTimeAttack();return;}
+  if(type==='memory'){openMemory();return;}
   const subjects = ['maths','multiplication','francais','sciences','monde','anglais'];
   const s = subjects[Math.floor(Math.random()*subjects.length)];
   const list = QUESTIONS[state.level][s];
@@ -5970,8 +5984,11 @@ function renderParentScreen(){
   renderUsageChart(dates, values);
   renderSubjectProgress();
   updateParentScreenFeatures();
+  renderLeaderboard();
   loadParentDarkMode();
 }
+
+async function renderLeaderboard(){const list=await loadProfilesList();const lb=document.getElementById('leaderboardList');if(!lb)return;const active=state.profileId;let entries=[];for(const p of list){try{const res=await window.storage.get('profile-'+p.id,false);if(!res||!res.value)continue;const d=JSON.parse(res.value);entries.push({name:p.firstName,photo:p.photo,points:d.points||0,coins:d.coins||0,stars:Object.values(d.stars||{}).reduce((a,b)=>a+b,0)});}catch(e){}}entries.sort((a,b)=>b.points-a.points);lb.innerHTML=entries.map((e,i)=>{const bg=e.points>0&&e.points===entries[0].points?'background:rgba(255,200,0,0.2);font-weight:700;':'';const photo=e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">':'';return'<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #e8e8e8;'+bg+'"><b>#'+(i+1)+'</b>'+photo+'<span style="flex:1;">'+e.name+'</span><span>🏅'+e.points+'</span><span>🪙'+e.coins+'</span><span>⭐'+e.stars+'</span></div>';}).join('')||'<p style="opacity:0.6;text-align:center;">Aucun joueur</p>';}
 
 function renderUsageChart(dates, values){
   const max = Math.max(1, ...values);
@@ -6136,6 +6153,17 @@ let taTimeLeft = 15;
 let taScore = 0;
 let taQuestions = [];
 let taIndex = 0;
+
+const HANGMAN_WORDS={A:['CHAT','CHIEN','MAISON','SOLEIL','LUNE','FLEUR','ARBRE','POMME','LIVRE','TABLE','PORTE','STYLO','BALLON','NUAGE','POISSON','GATEAU','ECOLE','VOITURE','LAPIN','JARDIN','FROMAGE'],B:['MONTAGNE','CHATEAU','BATEAU','FENETRE','CUISINE','CHOCLAT','PAPILLON','ELEPHANT','DINOSAURE','BIBLIOTHEQUE','HELICOPTERE','AVENTURE','PIRATE','PLANETE','TORTUE','CHAMPIGNON','CROCODILE','MYSTERE'],C:['CONSTELLATION','HIPPOPOTAME','KALEIDOSCOPE','ARITHMETIQUE','GEOGRAPHIE','ENCYCLOPEDIE','CHRYSALIDE','ASTRONOMIE','HIEROGLYPHE','CARTOGRAPHIE','VOLCANOLOGIE','STETHOSCOPE'],D:['PALEONTOLOGIE','ORCHESTRATION','REVOLUTIONNAIRE','ELECTROMAGNETIQUE','BIOTECHNOLOGIE','PSYCHOLOGIQUE','MATHEMATIQUEMENT','EXTRAORDINAIRE','TRANSFORMATION','CRISTALLISATION','SPECTACULAIRE'],E:['OTORHINOLARYNGOLOGISTE','ELECTROENCEPHALOGRAPHIQUE','INTERGOUVERNEMENTALISATION','CIRCUMNAVIGATION','PSYCHOPHARMACOLOGIE','CARACTERISTIQUEMENT']};
+let hState={word:'',guessed:[],wrong:0,score:0,total:0};
+function openHangman(){stopAutoEncourage();hState={word:'',guessed:[],wrong:0,score:0,total:0};show('hangmanScreen');pickHangmanWord();}
+function pickHangmanWord(){const pool=HANGMAN_WORDS[state.level]||HANGMAN_WORDS.A;hState.word=pool[Math.floor(Math.random()*pool.length)];hState.guessed=[];hState.wrong=0;document.getElementById('hangmanFeedback').textContent='';document.getElementById('hangmanNextBtn').classList.add('hidden');renderHangman();renderHangmanKeyboard();}
+function renderHangman(){const s=['😊','😐','😕','😟','😰','😨','💀'];document.getElementById('hangmanDrawing').textContent=s[Math.min(hState.wrong,6)];document.getElementById('hangmanScore').textContent='Score : '+hState.score+'/'+hState.total;document.getElementById('hangmanWord').textContent=hState.word.split('').map(l=>hState.guessed.includes(l)||l==='-'||l==='\''?l:'_').join(' ');}
+function renderHangmanKeyboard(){const kb=document.getElementById('hangmanKeyboard');kb.innerHTML='';['AZERTYUIOP','QSDFGHJKL','WXCVBN'].forEach(r=>{const d=document.createElement('div');d.style.cssText='display:flex;gap:4px;justify-content:center;flex-wrap:wrap;';r.split('').forEach(l=>{const b=document.createElement('button');b.textContent=l;b.style.cssText='width:34px;height:34px;border-radius:8px;border:2px solid var(--plum);font-weight:700;font-size:0.85rem;cursor:pointer;background:var(--cream);color:var(--plum);';if(hState.guessed.includes(l)){b.style.opacity='0.35';b.disabled=true;b.style.background=hState.word.includes(l)?'var(--grass)':'var(--coral)';b.style.color='#fff';}b.onclick=()=>{guessHangman(l,b);};d.appendChild(b);});kb.appendChild(d);});}
+function guessHangman(letter,btn){if(hState.wrong>=6)return;hState.guessed.push(letter);soundClick();if(hState.word.includes(letter)){btn.style.background='var(--grass)';btn.style.color='#fff';soundCorrect();}else{hState.wrong++;btn.style.background='var(--coral)';btn.style.color='#fff';soundWrong();}btn.disabled=true;btn.style.opacity='0.55';renderHangman();renderHangmanKeyboard();if(hState.wrong>=6){document.getElementById('hangmanFeedback').innerHTML='Perdu ! Le mot etait : <b>'+hState.word+'</b>';document.getElementById('hangmanNextBtn').classList.remove('hidden');hState.total++;addPoints(1);addCoins(1);}else if(hState.word.split('').every(l=>hState.guessed.includes(l)||l==='-'||l==='\'')){document.getElementById('hangmanFeedback').textContent='Bravo !';document.getElementById('hangmanNextBtn').classList.remove('hidden');hState.score++;hState.total++;addPoints(5);addCoins(3);soundLevelUp();if(hState.score>=5&&state.stars.hangman<1)state.stars.hangman=1;if(hState.score>=15&&state.stars.hangman<2)state.stars.hangman=2;if(hState.score>=25&&state.stars.hangman<3)state.stars.hangman=3;scheduleSave();renderStars();launchConfetti();}}
+function nextHangmanWord(){pickHangmanWord();}
+
+function startDictationVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('Micro non supporte. Utilise Chrome.');return;}const rec=new SR();rec.lang='fr-FR';rec.interimResults=false;rec.maxAlternatives=1;document.getElementById('dictationVoiceStatus').textContent='🎙️ Ecoute...';rec.start();rec.onresult=function(e){const spoken=e.results[0][0].transcript.toLowerCase().trim();document.getElementById('dictationVoiceStatus').textContent='✅ Entendu : '+spoken;const input=document.getElementById('dictationInput');if(input)input.value=spoken;soundClick();};rec.onerror=function(){document.getElementById('dictationVoiceStatus').textContent='❌ Reessaie';};}
 
 function openTimeAttack(){
   stopAutoEncourage();
@@ -6647,6 +6675,12 @@ function renderRecentActivity(){
     return `<div class="stats-recent-item"><span>${date}</span><span>${subj}</span><span>${h.score}/${h.total} ⭐${h.stars}</span></div>`;
   }).join('');
 }
+function exportData(){const d={profileId:state.profileId,firstName:state.firstName,age:state.age,avatar:state.avatar,photo:state.photo,level:state.level,stars:state.stars,subjectLevel:state.subjectLevel,points:state.points,coins:state.coins,streak:state.streak,history:state.history,owlWardrobe:state.owlWardrobe,owlEquipped:state.owlEquipped,timeAttackScore:state.timeAttackScore};const blob=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='aventures-'+state.firstName+'.json';a.click();}
+function importData(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=function(e){try{const d=JSON.parse(e.target.result);Object.keys(d).forEach(k=>{state[k]=d[k];});scheduleSave();renderStars();renderAvatars();goHome();}catch(err){alert('Fichier invalide');}};reader.readAsText(file);}
+const THEME_COLORS={default:{sky:'#1CB0F6',bg:'#F7F9FC',grass:'#58CC02',coral:'#FF4B4B',ocean:'#2EC4B6',sun:'#FFC800',magenta:'#FF86D0',purple:'#CE82FF'},jungle:{sky:'#2E8B57',bg:'#E8F5E9',grass:'#388E3C',coral:'#E65100',ocean:'#26A69A',sun:'#FDD835',magenta:'#E91E63',purple:'#7B1FA2'},space:{sky:'#1A237E',bg:'#E8EAF6',grass:'#303F9F',coral:'#C62828',ocean:'#0277BD',sun:'#FFA726',magenta:'#AD1457',purple:'#6A1B9A'},ocean:{sky:'#0277BD',bg:'#E3F2FD',grass:'#00838F',coral:'#FF7043',ocean:'#0097A7',sun:'#FFB300',magenta:'#EC407A',purple:'#5C6BC0'}};
+function changeTheme(v){const c=THEME_COLORS[v]||THEME_COLORS.default;const r=document.documentElement;r.style.setProperty('--sky',c.sky);r.style.setProperty('--bg',c.bg);r.style.setProperty('--grass',c.grass);r.style.setProperty('--coral',c.coral);r.style.setProperty('--ocean',c.ocean);r.style.setProperty('--sun',c.sun);r.style.setProperty('--magenta',c.magenta);r.style.setProperty('--purple',c.purple);try{localStorage.setItem('av_theme',v);}catch(e){}}
+function loadTheme(){try{const t=localStorage.getItem('av_theme');if(t)changeTheme(t);}catch(e){}}
+
 function clearHistory(){
   if(!confirm('Effacer tout l\'historique des sessions ?')) return;
   state.history = [];
@@ -6674,6 +6708,7 @@ async function initApp(){
   loadSettings();
   loadParentDarkMode();
   loadHighContrast();
+  loadTheme();
   renderStreak();
   const activeId = await getActiveProfileId();
   if(activeId){
