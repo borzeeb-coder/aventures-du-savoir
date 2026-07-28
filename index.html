@@ -1798,10 +1798,11 @@
       <div style="font-weight:600;font-size:0.95rem;padding:4px 0;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <span>🎤 Voix IA</span>
-          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">ElevenLabs Multilingual v2</span>
+          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">Edge TTS (gratuit)</span>
         </div>
         <select id="voiceModelSelect" onchange="changeVoiceModel(this.value)" style="width:100%;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:6px;background:var(--cream);color:var(--plum);">
-          <option value="elevenlabs">ElevenLabs Multilingual v2 (recommandé)</option>
+          <option value="edge-tts">Edge TTS — Gratuit, qualité studio (recommandé)</option>
+          <option value="elevenlabs">ElevenLabs Multilingual v2 (premium)</option>
           <option value="openai-alloy">OpenAI Alloy</option>
           <option value="openai-nova">OpenAI Nova</option>
           <option value="openai-echo">OpenAI Echo</option>
@@ -1811,7 +1812,7 @@
           <option value="native">Voix du téléphone (native)</option>
         </select>
         <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;">
-          1. Crée un compte sur <strong>elevenlabs.io</strong> · 2. Copie ta clé API (onglet "API Keys") · 3. Colle-la ci-dessous
+          Edge TTS = <strong>gratuit</strong>, voix neuronale Microsoft. ElevenLabs = <strong>premium</strong> (clé API requise).
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
           <input type="password" id="settingsApiKey" placeholder="Clé API ElevenLabs (ex: sk_...)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
@@ -3819,7 +3820,7 @@ function initVoices(){
 }
 /* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
 let voiceApiKey = '';
-let voiceModel = 'elevenlabs';
+let voiceModel = 'edge-tts';
 let proxyUrl = '';
 const audioCache = new Map();
 let isSpeaking = false;
@@ -3835,7 +3836,7 @@ function detectProxy(){
 function loadVoiceSettings(){
   try{
     voiceApiKey = localStorage.getItem('voice_api_key') || '';
-    voiceModel = localStorage.getItem('voice_model') || 'elevenlabs';
+    voiceModel = localStorage.getItem('voice_model') || 'edge-tts';
     detectProxy();
     const inp = document.getElementById('settingsApiKey');
     if(inp && voiceApiKey) inp.value = voiceApiKey;
@@ -3849,8 +3850,8 @@ function loadVoiceSettings(){
 }
 
 function getVoiceLabel(m){
-  const labels = { 'elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
-  return labels[m] || 'ElevenLabs v2';
+  const labels = { 'edge-tts':'Edge TTS (gratuit)','elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
+  return labels[m] || 'Edge TTS';
 }
 
 function changeVoiceModel(val){
@@ -3860,8 +3861,8 @@ function changeVoiceModel(val){
   if(label) label.textContent = getVoiceLabel(val);
   const inp = document.getElementById('settingsApiKey');
   if(!inp) return;
-  if(val === 'native'){
-    inp.placeholder = 'Non nécessaire en mode natif';
+  if(val === 'native' || val === 'edge-tts'){
+    inp.placeholder = val === 'edge-tts' ? 'Gratuit — pas de clé nécessaire' : 'Non nécessaire en mode natif';
     inp.disabled = true;
   } else {
     inp.placeholder = val === 'elevenlabs' ? 'Clé API ElevenLabs (sk_...)' : 'Clé API OpenAI (sk-...)';
@@ -3955,21 +3956,29 @@ function speak(text){
       if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
         played = await speakViaProxy(cleanText, lang, cacheKey);
       }
-      // 2) ElevenLabs direct (cle API dans localStorage)
+      // 2) Edge TTS (Microsoft gratuit — zero cle API)
+      if(!played && voiceModel === 'edge-tts'){
+        played = await speakEdgeTTS(cleanText, lang, cacheKey);
+      }
+      // 3) ElevenLabs direct (cle API dans localStorage)
       if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
         played = await speakElevenLabs(cleanText, lang, cacheKey);
       }
-      // 3) OpenAI direct
+      // 4) OpenAI direct
       if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
         played = await speakOpenAI(cleanText, lang, cacheKey);
       }
-      // 4) Fallback automatique ElevenLabs vers OpenAI
+      // 5) Fallback ElevenLabs vers OpenAI
       if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
         played = await speakOpenAI(cleanText, lang, cacheKey);
       }
+      // 6) Fallback gratuit Edge TTS (si aucune cle API dispo)
+      if(!played && voiceModel !== 'native' && (!voiceApiKey || voiceApiKey.length < 5)){
+        played = await speakEdgeTTS(cleanText, lang, cacheKey);
+      }
       if(played) return;
 
-      // 5) Dernier recours : synthese native du navigateur
+      // 7) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       if(window.speechSynthesis.resume) window.speechSynthesis.resume();
       const voice = pickVoice(lang);
@@ -4013,6 +4022,35 @@ async function speakViaProxy(text, lang, cacheKey){
     return await safeAudioPlay(url);
   }catch(e){ return false; }
 }
+
+/* ==================== EDGE TTS (Microsoft — gratuit, zero cle API) ==================== */
+const EDGE_TOKEN = '6A5AA1D4EAFF4E9FB37E23D68491D6F4';
+async function speakEdgeTTS(text, lang, cacheKey){
+  try{
+    const prefix = (lang||'fr-FR').split('-')[0];
+    const voiceName = prefix==='fr'?'fr-FR-DeniseNeural':'en-US-AriaNeural';
+    const rate = prefix==='fr'?'-10%':'+0%';
+    const ssml = `<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="${lang||'fr-FR'}"><voice name="${voiceName}"><prosody rate="${rate}" pitch="+0%">${escapeXml(text)}</prosody></voice></speak>`;
+    const resp = await fetch(`https://speech.platform.bing.com/consumer/speech/synthesize/readaloud?trustedclienttoken=${EDGE_TOKEN}`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/ssml+xml','X-Microsoft-OutputFormat':'audio-24khz-96kbitrate-mono-mp3' },
+      body: ssml
+    });
+    if(!resp.ok) return false;
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    return await safeAudioPlay(url);
+  }catch(e){ return false; }
+}
+function escapeXml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 async function speakElevenLabs(text, lang, cacheKey){
   try{
