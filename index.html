@@ -1312,7 +1312,6 @@
       <div class="trophy" id="coinsDisplay" style="background:#FFC800;color:#fff;">🪙 0</div>
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
       <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou">🔊</div>
-      <div class="voice-toggle" onclick="openLeaderboardScreen()" title="Classement">🏆</div>
       <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil">👪</div>
       <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre">🌙</div>
       <div class="voice-toggle" onclick="openSettings()" title="Paramètres">⚙️</div>
@@ -1901,19 +1900,6 @@
     <div style="text-align:center;margin-top:12px;">
       <button class="btn-secondary" onclick="shareStats()">📤 Partager mes progrès</button>
     </div>
-  </div>
-
-  <div id="leaderboardScreen" class="card-screen hidden">
-    <div class="screen-head">
-      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
-      <div class="subject-title">🏆 Classement</div>
-      <div style="display:flex;gap:4px;">
-        <button class="back-btn" id="lbTabGlobal" onclick="renderLeaderboardFull('global')" style="font-size:0.7rem;padding:4px 8px;">🌍 General</button>
-        <button class="back-btn" id="lbTabHangman" onclick="renderLeaderboardFull('hangman')" style="font-size:0.7rem;padding:4px 8px;">💀 Pendu</button>
-        <button class="back-btn" id="lbTabTA" onclick="renderLeaderboardFull('timeattack')" style="font-size:0.7rem;padding:4px 8px;">⚡ TA</button>
-      </div>
-    </div>
-    <div id="leaderboardFullContent"></div>
   </div>
 
   <div class="parent-link" onclick="openParentGate()">👪 Espace Parents — suivi &amp; statistiques</div>
@@ -2510,7 +2496,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen','leaderboardScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -4928,41 +4914,7 @@ function renderScoreChart(){
   }).join('');
 }
 
-async function openLeaderboardScreen(){
-  show('leaderboardScreen');
-  renderLeaderboardFull('global');
-}
-async function renderLeaderboardFull(tab){
-  document.getElementById('lbTabGlobal').style.background = tab==='global'?'var(--sun)':'';
-  document.getElementById('lbTabHangman').style.background = tab==='hangman'?'var(--sun)':'';
-  document.getElementById('lbTabTA').style.background = tab==='timeattack'?'var(--sun)':'';
-  const lb = document.getElementById('leaderboardFullContent');
-  const list = await loadProfilesList();
-  let entries = [];
-  for(const p of list){
-    try{
-      const res = await window.storage.get('profile-'+p.id, false);
-      if(!res||!res.value) continue;
-      const d = JSON.parse(res.value);
-      const totalStars = Object.values(d.stars||{}).reduce((a,b)=>a+b,0);
-      entries.push({name:p.firstName, photo:p.photo, avatar:p.avatar, points:d.points||0, coins:d.coins||0, stars:totalStars, streak:d.streak||0, hangman:(d.stars||{}).hangman||0, ta:d.timeAttackScore||0});
-    }catch(e){}
-  }
-  let key = 'points'; let icon = '🏅';
-  if(tab==='hangman'){ key='hangman'; icon='💀'; }
-  if(tab==='timeattack'){ key='ta'; icon='⚡'; }
-  entries.sort((a,b)=>b[key]-a[key]);
-  const medals = ['🥇','🥈','🥉'];
-  lb.innerHTML = entries.map((e,i)=>{
-    const bg = i<3?'background:linear-gradient(160deg,#FFF8E1,#FFE082);border:2px solid #FFC800;border-radius:14px;padding:10px;margin-bottom:8px;':'padding:8px 10px;border-bottom:1px solid #e8e8e8;';
-    const rank = i<3?medals[i]:`#${i+1}`;
-    const val = tab==='global'?`${e.points}pts | ⭐${e.stars}`:tab==='hangman'?`${e.hangman}⭐`:tab==='timeattack'?`${e.ta}pts`:'';
-    const photo = e.photo&&e.photo.startsWith('data:image')?`<img src="${e.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">`:`<span style="font-size:1.5rem;">${e.avatar?{fox:'🦊',panda:'🐼',lion:'🦁',penguin:'🐧',turtle:'🐢',butterfly:'🦋'}[e.avatar]:''}</span>`;
-    return `<div style="display:flex;align-items:center;gap:10px;${bg}"><span style="font-size:1.5rem;width:32px;text-align:center;">${rank}</span>${photo}<span style="flex:1;font-weight:700;">${e.name}</span><span style="font-weight:600;">${val}</span></div>`;
-  }).join('')||'<p style="text-align:center;opacity:0.6;">Aucun joueur pour le moment.</p>';
-}
-
-function renderLeaderboard(){
+async function renderLeaderboard(){
   const list = await loadProfilesList();
   const lb = document.getElementById('leaderboardList');
   if(!lb) return;
