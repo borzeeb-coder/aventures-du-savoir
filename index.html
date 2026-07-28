@@ -3312,6 +3312,14 @@ function stripForSpeech(str){
   return str.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').trim();
 }
 
+function fixFrenchNasals(text){
+  return text
+    .replace(/\bmoins\b/gi, 'mouin')
+    .replace(/\bcoing\b/gi, 'kwain')
+    .replace(/\bloin\b/gi, 'louin')
+    .replace(/\bsoin\b/gi, 'souin');
+}
+
 function pickVoice(lang){
   if(!('speechSynthesis' in window)) return null;
   const prefix = lang.split('-')[0];
@@ -3385,7 +3393,7 @@ function speak(text){
   clearTimeout(speakTimer);
   speakTimer = setTimeout(async () => {
     try{
-      const cleanText = stripForSpeech(text);
+      const cleanText = fixFrenchNasals(stripForSpeech(text));
       if(!cleanText) return;
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
       if(openAIKey && openAIKey.startsWith('sk-') && 'fetch' in window){
