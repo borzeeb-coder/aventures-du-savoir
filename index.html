@@ -1988,7 +1988,7 @@ const VERBES_FR = {A:['manger','jouer','chanter','parler','danser','regarder','Ã
 
 function genFrancais(level,count){
   const qs=[];const vt=VERBES_FR[level];
-  const templates=VOCAB_FR;if(level==='A')templates.splice(3);
+  const templates=level==='A'?VOCAB_FR.slice(0,3):[...VOCAB_FR];
   for(let i=0;i<count;i++){
     if(i<count*.5){
       const t=pick(templates);const[p,s]=pick(t.words);
@@ -2005,7 +2005,7 @@ function genFrancais(level,count){
         let wrongs=[correct];while(wrongs.length<4){let w=pick(allConj);if(!wrongs.includes(w)&&w!==v)wrongs.push(w);}
         const opts=shuffle(wrongs.slice(0,4));
         qs.push({q:`Conjugue : ${pron} (${v})`,opts,a:opts.indexOf(correct)});
-      }else{i--;}
+      }
     }
   }
   return qs;
