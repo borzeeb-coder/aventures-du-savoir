@@ -198,10 +198,10 @@
   .profile-card.add-profile{background:var(--bg); border-style:dashed; border-color:#C7CCDA;}
 
   /* LEVEL TOGGLE */
-  .level-toggle{display:flex; gap:10px; background:#fff; border:none; border-radius:24px; padding:6px; margin:14px 0 20px; max-width:420px; box-shadow:0 4px 0 #E5E7EB, 0 8px 16px rgba(30,30,40,0.08);}
+  .level-toggle{display:flex; gap:6px; background:#fff; border:none; border-radius:24px; padding:6px; margin:14px 0 20px; max-width:520px; box-shadow:0 4px 0 #E5E7EB, 0 8px 16px rgba(30,30,40,0.08);}
   .level-toggle button{
-    flex:1; border:none; background:transparent; font-family:'Baloo 2'; font-weight:700; font-size:0.95rem;
-    padding:10px 8px; border-radius:18px; cursor:pointer; color:#9CA3AF; transition:all .15s ease;
+    flex:1; border:none; background:transparent; font-family:'Baloo 2'; font-weight:700; font-size:0.85rem;
+    padding:8px 4px; border-radius:18px; cursor:pointer; color:#9CA3AF; transition:all .15s ease;
   }
   .level-toggle button.active{background:var(--sun); color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.15); box-shadow:0 3px 0 #E5A600; transform:translateY(-1px);}
   .level-toggle button:hover{transform:translateY(-1px);}
@@ -241,6 +241,8 @@
   .island.monde{background:var(--sun);}
   .island.anglais{background:var(--magenta); color:white;}
   .island.anglais h3{color:white;}
+  .island.dictation{background:#6B4FC0;}
+  .island.dictation h3{color:#fff;}
   .island.lettres{background:#FF9600;}
   .island.mots{background:#2EC4B6;}
   .island.geographie{background:#3FA9F5;}
@@ -1093,48 +1095,115 @@
     transform:skewX(-6deg);
   }
 
-  /* Dark mode */
-  body.dark-mode{--bg:#1a1a2e;--plum:#e8e8f0;--cream:#2a2a3e;--shadow:rgba(0,0,0,0.4);--sky:#16213e;--sky-deep:#0f3460}
-  body.dark-mode #app{background:var(--bg)}
-  body.dark-mode .topbar{background:#2a2a3e;box-shadow:0 4px 0 #1a1a2e,0 8px 18px rgba(0,0,0,0.3)}
-  body.dark-mode .brand h1{color:#e8e8f0}
-  body.dark-mode .brand .sub{color:#aaaac0}
-  body.dark-mode .level-toggle{background:#2a2a3e;box-shadow:0 4px 0 #1a1a2e,0 8px 16px rgba(0,0,0,0.3)}
-  body.dark-mode .level-toggle button{color:#8888a0}
-  body.dark-mode .card-screen{background:#2a2a3e;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-  body.dark-mode .question-box{background:#333350}
-  body.dark-mode .opt-btn{background:#3e3e5e;color:#e8e8f0;box-shadow:0 3px 0 #2a2a3e}
-  body.dark-mode .opt-btn:hover{background:#4e4e6e}
-  body.dark-mode .stat-card{background:#333350;color:#e8e8f0}
-  body.dark-mode .chart-wrap{background:#333350;border-color:#4e4e6e}
-  body.dark-mode .chart-wrap h3{color:#e8e8f0}
-  body.dark-mode .screen-head{background:#2a2a3e}
-  body.dark-mode .subject-title{color:#e8e8f0}
-  body.dark-mode .back-btn{background:#3e3e5e;color:#e8e8f0}
-  body.dark-mode .result-actions .btn-secondary{background:#3e3e5e;color:#e8e8f0}
-  body.dark-mode .daily-card{background:#333350}
-  body.dark-mode .daily-card h3{color:#e8e8f0}
-  body.dark-mode .daily-card .sub-txt{color:#aaaac0}
-  body.dark-mode .badges-card{background:#333350}
-  body.dark-mode .badges-card h3{color:#e8e8f0}
-  body.dark-mode .trophy{background:#3e3e5e;color:#e8e8f0}
-  body.dark-mode .badges-row .voice-toggle{background:#3e3e5e;color:#e8e8f0}
-  body.dark-mode .parent-link{color:#aaaac0}
-  body.dark-mode .note{color:#666680}
-  body.dark-mode #owlBubble{background:#fff;color:#3C3C3C}
-  body.dark-mode .gate-box{background:#333350;color:#e8e8f0}
-  body.dark-mode .gate-box p{color:#cccce0}
-  body.dark-mode .gate-box input{background:#3e3e5e;color:#e8e8f0;border-color:#5e5e7e}
-  body.dark-mode .progress-row .progress-label{color:#e8e8f0}
-  body.dark-mode .profile-card{background:#333350;color:#e8e8f0}
-  body.dark-mode .profile-card.add-profile{background:#2a2a3e}
-  body.dark-mode .profile-name{color:#e8e8f0}
-  body.dark-mode .feature-card{color:#fff}
-  body.dark-mode .stories-grid .story-card{background:#333350;color:#e8e8f0}
-  body.dark-mode .story-reader{background:#333350;color:#e8e8f0}
-  body.dark-mode .wardrobe-grid .wardrobe-item{background:#333350}
-  body.dark-mode .wardrobe-grid .wardrobe-item .item-name{color:#e8e8f0}
-  body.dark-mode .wardrobe-stars{color:#cccce0}
+  /* Dark mode — variables de base */
+  .dark-mode{
+    --bg:#1a1a2e;
+    --cream:#2d2d44;
+    --plum:#e8e8f0;
+    --shadow:rgba(0,0,0,0.4);
+    --sky:#16213e;
+    --sky-deep:#0f3460;
+    --card-bg:#2d2d44;
+    --card-border:#3d3d55;
+    --surface:#333350;
+    --surface-hover:#3e3e5e;
+    --text-muted:#aaaac0;
+    --text-dim:#8888a8;
+  }
+  .dark-mode #app{background:var(--bg)}
+  .dark-mode .topbar{background:var(--card-bg);border-color:#3d3d55;box-shadow:0 4px 0 #1a1a2e,0 8px 18px rgba(0,0,0,0.3)}
+  .dark-mode .brand h1{color:var(--plum)}
+  .dark-mode .brand .sub{color:var(--text-muted)}
+  .dark-mode .level-toggle{background:var(--card-bg);border-color:#3d3d55;box-shadow:0 4px 0 #1a1a2e,0 8px 16px rgba(0,0,0,0.3)}
+  .dark-mode .level-toggle button{color:#8888a0}
+  .dark-mode .level-toggle button.active{color:#fff}
+  .dark-mode .card-screen{background:var(--card-bg);border-color:var(--card-border);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+  .dark-mode .question-box{background:var(--surface)}
+  .dark-mode .opt-btn{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66;box-shadow:0 3px 0 var(--card-bg)}
+  .dark-mode .opt-btn:hover:not(:disabled){background:#4e4e6e}
+  .dark-mode .opt-btn.correct{background:#2c8f43;color:#fff;border-color:#1a5e2e;box-shadow:0 3px 0 #1a5e2e}
+  .dark-mode .opt-btn.wrong{background:#c2492f;color:#fff;border-color:#8a3320;box-shadow:0 3px 0 #8a3320}
+  .dark-mode .stat-card{background:var(--surface);color:var(--plum);border-color:#4e4e6e}
+  .dark-mode .chart-wrap{background:var(--surface);border-color:#4e4e6e}
+  .dark-mode .chart-wrap h3{color:var(--plum)}
+  .dark-mode .screen-head{background:var(--card-bg)}
+  .dark-mode .subject-title{color:var(--plum)}
+  .dark-mode .back-btn{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66}
+  .dark-mode .result-actions .btn-secondary{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66;box-shadow:3px 3px 0 #2a2a3e}
+  .dark-mode .daily-card{background:var(--surface);border-color:#4d4d66}
+  .dark-mode .daily-card.done{background:#2d6b35;border-color:#1a4a22}
+  .dark-mode .daily-card h3{color:var(--plum)}
+  .dark-mode .daily-card .sub-txt{color:var(--text-muted)}
+  .dark-mode .badges-card{background:var(--surface)}
+  .dark-mode .badges-card h3{color:var(--plum)}
+  .dark-mode .trophy{background:var(--surface-hover);color:var(--plum)}
+  .dark-mode .badges-row .voice-toggle{background:var(--surface-hover);color:var(--plum)}
+  .dark-mode .next-btn{background:#5a4a00;border-color:#3d3d55;box-shadow:0 4px 0 #2a2a3e;color:#fff}
+  .dark-mode .next-btn:hover{box-shadow:0 6px 0 #2a2a3e}
+  .dark-mode .next-btn:active{box-shadow:0 1px 0 #2a2a3e}
+  .dark-mode .parent-link{color:var(--text-muted);background:var(--card-bg);border-color:#4d4d66}
+  .dark-mode .note{color:var(--text-dim)}
+  .dark-mode #owlBubble{background:#fff;color:#3C3C3C}
+  .dark-mode #owlBubble::after{background:#fff}
+  .dark-mode .gate-box{background:var(--surface);color:var(--plum)}
+  .dark-mode .gate-box p{color:var(--text-muted)}
+  .dark-mode .gate-box input{background:var(--surface-hover);color:var(--plum);border-color:#5e5e7e}
+  .dark-mode .progress-row .progress-label{color:var(--plum)}
+  .dark-mode .profile-card{background:var(--surface);color:var(--plum);border-color:#4d4d66}
+  .dark-mode .profile-card.add-profile{background:var(--card-bg)}
+  .dark-mode .profile-name{color:var(--plum)}
+  .dark-mode .feature-card{color:#fff}
+  .dark-mode .stories-grid .story-card{background:var(--surface);color:var(--plum)}
+  .dark-mode .story-reader{background:var(--surface);color:var(--plum)}
+  .dark-mode .wardrobe-grid .wardrobe-item{background:var(--surface)}
+  .dark-mode .wardrobe-grid .wardrobe-item .item-name{color:var(--plum)}
+  .dark-mode .wardrobe-stars{color:var(--text-muted)}
+  .dark-mode .quiz-progress-track{background:#3d3d55}
+  .dark-mode .timer-track{background:#3d3d55}
+  .dark-mode .progress-track{background:#3d3d55}
+  .dark-mode .timer-text{color:var(--plum)}
+  .dark-mode .mem-card.flipped,.dark-mode .mem-card.matched{background:var(--surface)}
+  .dark-mode .mem-card{box-shadow:4px 4px 0 #2a2a3e}
+  .dark-mode .feedback .msg{color:var(--plum)}
+  .dark-mode .chat-messages .msg-bubble{color:var(--plum)}
+  .dark-mode .msg-row.owl .msg-bubble{background:#4a3d6e}
+  .dark-mode .msg-row.child .msg-bubble{background:#5a5030}
+  .dark-mode .chip{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66}
+  .dark-mode .challenge-card{background:var(--surface);color:var(--plum)}
+  .dark-mode .challenge-opt{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66}
+  .dark-mode .chat-input-row input{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66}
+  .dark-mode .chat-input-row input::placeholder{color:var(--text-dim)}
+  .dark-mode .onboard-input{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66}
+  .dark-mode .onboard-input::placeholder{color:var(--text-dim)}
+  .dark-mode .age-btn{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66;box-shadow:3px 3px 0 #2a2a3e}
+  .dark-mode .avatar-choice{background:var(--surface-hover);border-color:#4d4d66;box-shadow:3px 3px 0 #2a2a3e}
+  .dark-mode .avatar-choice.selected{background:var(--surface);border-color:var(--plum)}
+  .dark-mode .points-trophy{background:#5a4a00}
+  .dark-mode .streak-trophy{background:#5a2020}
+  .dark-mode .hint-btn{background:#5a4a00;color:var(--plum);border-color:#4d4d66;box-shadow:3px 3px 0 #2a2a3e}
+  .dark-mode .btn-secondary{background:var(--surface-hover);color:var(--plum);border-color:#4d4d66;box-shadow:3px 3px 0 #2a2a3e}
+  .dark-mode .badge-item.locked{background:var(--surface);border-color:#4d4d66}
+  .dark-mode .badge-item .badge-name{color:var(--text-muted)}
+  .dark-mode .levelup-banner{background:#5a4a00;border-color:#3d3d55}
+  .dark-mode .result h2{color:var(--plum)}
+  .dark-mode .result p{color:var(--text-muted)}
+  .dark-mode .listen-btn{color:#fff}
+  .dark-mode .word-display{color:var(--plum)}
+  .dark-mode .big-letter{text-shadow:3px 3px 0 #4d3d5e}
+  .dark-mode .onboard-sub{color:var(--text-muted)}
+  .dark-mode .onboarding-screen h2{color:var(--plum)}
+  .dark-mode .profile-card.active{border-color:var(--grass)}
+  .dark-mode .parent-link:hover{background:var(--surface)}
+  .dark-mode .open-stats-btn{color:var(--plum)}
+  .dark-mode #statsScreen .stat-card{background:var(--surface);color:var(--plum)}
+  .dark-mode #statsScreen .chart-wrap{background:var(--surface)}
+  .dark-mode #statsScreen .chart-wrap h3{color:var(--plum)}
+  .dark-mode #statsScreen .stats-bar-label{color:var(--plum)}
+  .dark-mode #statsScreen .stats-bar-value{color:var(--plum)}
+  .dark-mode #statsScreen .stats-bar-track{background:#3d3d55;border-color:#4d4d66}
+  .dark-mode #settingsScreen .settings-row span{color:var(--plum)}
+  .dark-mode #statsScreen .stats-recent-item{color:var(--text-muted);border-bottom-color:#3d3d55}
+  .dark-mode #settingsScreen .back-btn{color:var(--plum)}
 
   /* Feature cards */
   .feature-row{display:flex;gap:12px;margin:14px 0 10px;flex-wrap:wrap}
@@ -1176,9 +1245,55 @@
   .toggle .slider::before{content:"";position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%}
   .toggle input:checked + .slider{background:#1CB0F6}
   .toggle input:checked + .slider::before{transform:translateX(18px)}
+
+  /* Settings & Stats */
+  .settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:85;animation:fadeIn .2s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .stats-bar-chart{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .stats-bar-row{display:grid;grid-template-columns:100px 1fr 40px;align-items:center;gap:10px}
+  .stats-bar-label{font-weight:700;font-size:0.85rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .stats-bar-track{background:#efe6d6;border:2px solid var(--plum);border-radius:10px;height:18px;overflow:hidden}
+  .stats-bar-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--grass),var(--ocean));transition:width .6s ease;min-width:0}
+  .stats-bar-value{font-size:0.85rem;font-weight:700;text-align:center}
+  .stats-recent-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:0.82rem;font-weight:600}
+  .dark-mode .stats-recent-item{border-bottom-color:#3d3d55}
+  .dark-mode #settingsScreen .chart-wrap{background:var(--surface)}
+  .dark-mode #settingsScreen .chart-wrap span{color:var(--plum)}
+  .dark-mode #settingsTimerSlider{accent-color:var(--sky)}
+
+  /* High contrast mode */
+  body.high-contrast{--plum:#000 !important;--bg:#fff !important;--card:#fff !important;--surface:#fff !important;--text:#000 !important;--card-bg:#fff !important;--text-muted:#333 !important}
+  body.high-contrast .opt-btn,body.high-contrast .back-btn,body.high-contrast .btn-secondary,body.high-contrast .hint-btn{border:3px solid #000 !important;box-shadow:none !important}
+  body.high-contrast .opt-btn:not(:disabled):focus-visible{outline:4px solid #1CB0F6;outline-offset:2px}
+  body.high-contrast .topbar,body.high-contrast .card-screen,body.high-contrast .level-toggle,body.high-contrast .profile-card{border:2px solid #000 !important;box-shadow:none !important}
+  body.high-contrast .island{box-shadow:0 6px 0 #000 !important;border:2px solid #000}
+  body.high-contrast .next-btn{border:2px solid #000;box-shadow:0 4px 0 #000 !important}
+  body.high-contrast .stats-bar-track{border:2px solid #000}
+  body.high-contrast .badge-banner{background:#000 !important;color:#fff !important;border:2px solid #fff !important;box-shadow:none !important}
+  body.high-contrast .badge-banner .badge-banner-name{color:#fff !important}
+  body.high-contrast .achievement-card.unlocked{border:2px solid #000}
+  body.high-contrast .achievement-card.locked{opacity:0.6}
+
+  /* Achievement cards */
+  .achievement-card{border-radius:16px;padding:10px;text-align:center;transition:transform .15s ease;box-shadow:0 2px 0 #d0d0d0,0 4px 8px rgba(0,0,0,0.08)}
+  .achievement-card.unlocked{background:var(--card,#fff);border:2px solid var(--sun);}
+  .achievement-card.locked{background:var(--surface,#f0f0f0);opacity:0.45;filter:grayscale(0.5)}
+  .achievement-card .achievement-icon{font-size:1.8rem;margin-bottom:4px}
+  .achievement-card .achievement-title{font-weight:700;font-size:0.75rem;color:var(--plum);}
+  .achievement-card .achievement-desc{font-size:0.65rem;color:var(--text-muted,#888);margin-top:2px}
+  .achievement-card:hover{transform:translateY(-2px)}
+
+  /* Mascot evolution */
+  .mascot-evolution{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:120;background:var(--card,#fff);border-radius:24px;padding:30px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:popIn .4s cubic-bezier(.18,.89,.32,1.28);border:4px solid var(--plum);max-width:340px;width:90vw;display:none}
+  .mascot-evolution.show{display:block}
+  .mascot-evolution .evo-icon{font-size:4rem;margin-bottom:8px;animation:bannerShake .6s ease 4}
+  .mascot-evolution .evo-title{font-family:'Baloo 2',sans-serif;font-size:1.5rem;color:var(--plum);}
+  .mascot-evolution .evo-desc{font-size:0.95rem;color:var(--text-muted,#888);margin:6px 0 14px}
 </style>
 </head>
 <body>
+<a href="#mainContent" class="skip-link" style="position:absolute;top:-100px;left:8px;background:var(--plum);color:#fff;padding:8px 16px;border-radius:0 0 8px 8px;z-index:9999;font-weight:700;text-decoration:none;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Aller au contenu principal</a>
+<div id="highContrastToggle" onclick="toggleHighContrast()" style="position:fixed;bottom:8px;right:8px;z-index:999;background:var(--surface);border:2px solid var(--plum);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;opacity:0.7;" title="Activer le contraste élevé" aria-label="Activer/désactiver le contraste élevé">🔲</div>
 
 <div id="app">
   <div class="topbar">
@@ -1191,11 +1306,13 @@
     </div>
     <div class="badges-row">
       <div class="points-trophy">🏅 <span id="pointsBadge">0</span></div>
-      <div class="streak-trophy">🔥 <span id="streakBadge">0</span></div>
+      <div class="streak-trophy" id="streakTrophy">🔥 <span id="streakBadge">0</span> jour(s)</div>
       <div class="trophy">⭐ <span id="totalStars">0</span></div>
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
       <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou">🔊</div>
       <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil">👪</div>
+      <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre">🌙</div>
+      <div class="voice-toggle" onclick="openSettings()" title="Paramètres">⚙️</div>
     </div>
   </div>
 
@@ -1222,6 +1339,20 @@
       <h2>Choisis ton personnage !</h2>
       <p class="onboard-sub">Il t'accompagnera dans toutes tes aventures.</p>
       <div class="avatar-grid" id="onboardAvatarGrid"></div>
+    </div>
+
+    <div class="onboard-step hidden" id="onboardStepPhoto">
+      <div class="onboard-owl"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#8B6FD9"/><circle cx="23" cy="28" r="8" fill="#3D2C56"/><circle cx="41" cy="28" r="8" fill="#3D2C56"/><circle cx="23" cy="27" r="2.8" fill="#fff"/><circle cx="41" cy="27" r="2.8" fill="#fff"/><polygon points="32,35 26,44 38,44" fill="#FFC800"/></svg></div>
+      <h2>Ta photo 🖼️</h2>
+      <p class="onboard-sub">Prends une photo ou choisis-en une pour ton profil.</p>
+      <div style="width:110px;height:110px;border-radius:50%;border:3px dashed var(--plum);margin:10px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);cursor:pointer;position:relative;" id="onboardPhotoPreview" onclick="document.getElementById('onboardPhotoInput').click()">
+        <span style="font-size:2.5rem;opacity:0.5;">📷</span>
+      </div>
+      <input type="file" id="onboardPhotoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
+        <button class="btn-secondary" onclick="finishOnboarding()">Passer</button>
+        <button class="next-btn" onclick="finishOnboarding()">Continuer ✅</button>
+      </div>
     </div>
   </div>
 
@@ -1261,8 +1392,11 @@
     </div>
 
     <div class="level-toggle">
-      <button id="btnLevelA" class="active" onclick="setLevel('A')">🐣 6-8 ans</button>
-      <button id="btnLevelB" onclick="setLevel('B')">🦁 9-12 ans</button>
+      <button id="btnLevelA" class="active" onclick="setLevel('A')">🐣 A</button>
+      <button id="btnLevelB" onclick="setLevel('B')">🦁 B</button>
+      <button id="btnLevelC" onclick="setLevel('C')">🐯 C</button>
+      <button id="btnLevelD" onclick="setLevel('D')">🐉 D</button>
+      <button id="btnLevelE" onclick="setLevel('E')">🏆 E</button>
     </div>
 
     <div class="islands">
@@ -1283,6 +1417,12 @@
         <h3>Île des Mots</h3>
         <span class="level-badge" id="level-francais">Niveau 1</span>
         <span class="stars" id="stars-francais">☆ ☆ ☆</span>
+      </div>
+      <div class="island dictation" onclick="openQuiz('dictation')" style="background:#6B4FC0">
+        <span class="icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#fff"/><path d="M22 26 h20 M22 32 h16 M22 38 h12 M22 44 h8" stroke="#6B4FC0" stroke-width="3.5" stroke-linecap="round" fill="none"/><circle cx="48" cy="20" r="6" fill="#FFC800"/><text x="48" y="24" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">♪</text></svg></span>
+        <h3>Dictée</h3>
+        <span class="level-badge" id="level-dictation">Niveau 1</span>
+        <span class="stars" id="stars-dictation">☆ ☆ ☆</span>
       </div>
       <div class="island sciences" onclick="openQuiz('sciences')">
         <span class="icon"><svg viewBox="0 0 64 64"><rect x="25" y="8" width="14" height="7" rx="2" fill="#fff"/><path d="M27 14 H37 V27 L48 46 C50.5 50.5 47.2 56 42 56 H22 C16.8 56 13.5 50.5 16 46 L27 27 Z" fill="#fff"/><circle cx="29" cy="43" r="3.2" fill="#22B8B0"/><circle cx="38" cy="47" r="2.6" fill="#43C463"/><circle cx="33" cy="49.5" r="2" fill="#FFC93C"/><circle cx="24" cy="49" r="2" fill="#8B6FD9"/></svg></span>
@@ -1379,7 +1519,9 @@
     <div class="big-stars" id="resultStars"></div>
     <div class="result-actions">
       <button class="next-btn" id="retryBtn" onclick="retrySameQuiz()">🔁 Recommencer</button>
+      <button class="next-btn hidden" id="nextExerciseBtn" onclick="nextExercise()">🔄 Essai suivant</button>
       <button class="btn-secondary hidden" id="reviewBtn" onclick="openReview()">📝 Revoir mes erreurs</button>
+      <button class="btn-secondary" onclick="shareResult()">📤 Partager</button>
       <button class="btn-secondary" onclick="goHome()">🗺️ Retour à la carte</button>
     </div>
   </div>
@@ -1481,6 +1623,10 @@
       <div style="width:90px;"></div>
     </div>
     <div class="avatar-grid" id="avatarChangeGrid"></div>
+    <div style="text-align:center;margin:10px 0;">
+      <input type="file" id="profilePhotoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
+      <button class="btn-secondary" onclick="document.getElementById('profilePhotoInput').click()" style="font-size:0.85rem;">📷 Prendre une photo de profil</button>
+    </div>
   </div>
 
   <div id="profileScreen" class="card-screen hidden">
@@ -1593,14 +1739,6 @@
       <div id="subjectProgress"></div>
     </div>
 
-    <div class="chart-wrap" style="background:#FFE0E6; border-color:#FF6F59;">
-      <h3>🎤 Voix ChatGPT (OpenAI)</h3>
-      <p style="font-size:0.85rem; margin:0 0 8px; opacity:0.8;">Colle ta clé API OpenAI ici pour utiliser la voix ChatGPT naturelle (sinon la voix du téléphone sera utilisée).</p>
-      <input type="password" id="openaiKeyInput" placeholder="sk-..." style="width:100%; padding:10px 12px; border:2px solid var(--plum); border-radius:12px; font-size:14px; box-sizing:border-box; font-family:'Quicksand',sans-serif; margin-bottom:8px;">
-      <button class="next-btn" onclick="saveOpenAIKey()" style="font-size:0.85rem; padding:8px 16px;">💾 Enregistrer la clé</button>
-      <span id="openaiKeyStatus" style="font-size:0.8rem; font-weight:700; margin-left:8px;"></span>
-    </div>
-
     <div class="chart-wrap" style="background:#E8F5E9; border-color:#58CC02;">
       <h3>🌙 Réglages</h3>
       <div id="parentGateDarkMode" style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;"></div>
@@ -1613,6 +1751,102 @@
     <div class="chart-wrap" style="background:#FFF3E0; border-color:#FFC800;">
       <h3>👪 Comparaison des profils</h3>
       <div id="profileComparison"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PANEL -->
+  <div id="settingsScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="closeSettings()">⬅ Retour</button>
+      <div class="subject-title">⚙️ Paramètres</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="chart-wrap" style="margin-bottom:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
+        <span>🔊 Son</span>
+        <span id="settingsSoundToggle" onclick="toggleSound()" style="cursor:pointer;font-size:1.4rem;">🔊</span>
+      </div>
+      <div style="font-weight:600;font-size:0.95rem;padding:4px 0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span>🎤 Voix IA</span>
+          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">ElevenLabs Multilingual v2</span>
+        </div>
+        <select id="voiceModelSelect" onchange="changeVoiceModel(this.value)" style="width:100%;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:6px;background:var(--cream);color:var(--plum);">
+          <option value="elevenlabs">ElevenLabs Multilingual v2 (recommandé)</option>
+          <option value="openai-alloy">OpenAI Alloy</option>
+          <option value="openai-nova">OpenAI Nova</option>
+          <option value="openai-echo">OpenAI Echo</option>
+          <option value="openai-fable">OpenAI Fable</option>
+          <option value="openai-shimmer">OpenAI Shimmer</option>
+          <option value="openai-coral">OpenAI Coral</option>
+          <option value="native">Voix du téléphone (native)</option>
+        </select>
+        <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;">
+          1. Crée un compte sur <strong>elevenlabs.io</strong> · 2. Copie ta clé API (onglet "API Keys") · 3. Colle-la ci-dessous
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <input type="password" id="settingsApiKey" placeholder="Clé API ElevenLabs (ex: sk_...)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+          <button onclick="saveApiKey()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
+          <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Test</button>
+        </div>
+        <span id="voiceKeyStatus" style="font-size:0.75rem;font-weight:700;margin-top:4px;display:block;"></span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
+        <span>⏱️ Minuteur</span>
+        <label class="toggle"><input type="checkbox" id="settingsTimerToggle" onchange="toggleTimer()" checked><span class="slider"></span></label>
+      </div>
+      <div id="settingsTimerDurationRow" style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;padding:4px 0;">
+        <span>Durée du minuteur</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="range" id="settingsTimerSlider" min="5" max="30" value="15" oninput="updateTimerDuration(this.value)" style="width:100px;">
+          <span id="settingsTimerValue">15s</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;padding:4px 0;">
+        <span>🖥️ Serveur proxy TTS</span>
+        <input type="url" id="proxyUrlInput" placeholder="https://ton-serveur.com" value="" onchange="saveProxyUrl(this.value)" style="width:160px;padding:5px 8px;border:2px solid var(--plum);border-radius:10px;font-size:12px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
+        <span>🌙 Mode sombre</span>
+        <label class="toggle"><input type="checkbox" id="settingsDarkToggle" onchange="toggleDarkMode()"><span class="slider"></span></label>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
+        <span>⛶ Plein écran</span>
+        <button class="back-btn" onclick="toggleFullscreen()" style="padding:6px 14px;font-size:0.85rem;">⛶ Plein écran</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="next-btn" onclick="openStatsScreen()" style="flex:1;font-size:0.85rem;">📊 Statistiques</button>
+      <button class="btn-secondary" onclick="clearHistory()" style="flex:1;font-size:0.85rem;padding:10px;">🗑️ Effacer l'historique</button>
+    </div>
+  </div>
+
+  <!-- STATS SCREEN -->
+  <div id="statsScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="closeSettings()">⬅ Retour</button>
+      <div class="subject-title">📊 Statistiques &amp; Progrès</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="val" id="statsTotalPoints">0</div><div class="lab">Points totaux</div></div>
+      <div class="stat-card"><div class="val" id="statsTotalQuizzes">0</div><div class="lab">Quiz complétés</div></div>
+      <div class="stat-card"><div class="val" id="statsBestSubject">-</div><div class="lab">Meilleure matière</div></div>
+    </div>
+    <div class="chart-wrap">
+      <h3>⭐ Étoiles par matière</h3>
+      <div id="statsBarChart"></div>
+    </div>
+    <div class="chart-wrap">
+      <h3>🕐 Activité récente (10 dernières sessions)</h3>
+      <div id="statsRecentActivity" style="font-size:0.85rem;"></div>
+    </div>
+    <div class="chart-wrap" id="achievementsSection">
+      <h3>🏆 Succès</h3>
+      <div id="achievementsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;"></div>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <button class="btn-secondary" onclick="shareStats()">📤 Partager mes progrès</button>
     </div>
   </div>
 
@@ -1682,6 +1916,12 @@
     <div class="badge-banner-title">Badge débloqué !</div>
     <div class="badge-banner-name" id="badgeBannerName"></div>
   </div>
+</div>
+
+<div class="mascot-evolution" id="mascotEvo">
+  <div class="evo-icon" id="mascotEvoIcon">🦉</div>
+  <div class="evo-title" id="mascotEvoTitle">Évolution !</div>
+  <div class="evo-desc" id="mascotEvoDesc">Professeur Hibou monte en puissance !</div>
 </div>
 
 <!-- CARTOON DECORATIONS -->
@@ -1770,6 +2010,14 @@ const QUESTIONS = {
       {q:'Quelle est la dernière lettre du mot "maison" ?', opts:["m","a","o","n"], a:3},
       {q:'Quel mot désigne une couleur ?', opts:["bleu","courir","table","vite"], a:0},
       {q:'Complète : "Le chat dort sur le ___."', opts:["tapis","ciel","arbre","nuage"], a:0},
+    ],
+    dictation:[
+      {type:'dictation', q:"Écris le mot que tu entends (l'animal qui miaule) :", accept:["chat"], hint:"un petit animal à quatre pattes"},
+      {type:'dictation', q:"Écris le mot que tu entends (un fruit jaune et courbé) :", accept:["banane"], hint:"le fruit préféré des singes"},
+      {type:'dictation', q:"Écris le mot que tu entends (l'opposé de « petit ») :", accept:["grand","grande"], hint:"quand quelque chose est très haut"},
+      {type:'dictation', q:"Écris le mot que tu entends (la maison du roi) :", accept:["château","chateau"], hint:"un grand palais avec des tours"},
+      {type:'dictation', q:"Écris le mot que tu entends (l'animal qui aboie) :", accept:["chien"], hint:"le meilleur ami de l'homme"},
+      {type:'dictation', q:"Écris le mot que tu entends (on le lit) :", accept:["livre"], hint:"il a des pages et une couverture"},
     ],
     sciences:[
       {q:"Combien de pattes a une araignée ?", opts:["6","8","10","4"], a:1},
@@ -1964,6 +2212,14 @@ const QUESTIONS = {
       {q:'Quel est le synonyme de "triste" ?', opts:["malheureux","joyeux","calme","fatigué"], a:0},
       {q:"Quel signe de ponctuation termine une phrase exclamative ?", opts:[".",",","!","?"], a:2},
     ],
+    dictation:[
+      {type:'dictation', q:"Écris le mot : organe qui bat dans la poitrine", accept:["coeur"], hint:"il pompe le sang"},
+      {type:'dictation', q:"Écris le mot : le roi des animaux", accept:["lion"], hint:"il a une crinière"},
+      {type:'dictation', q:"Écris le mot : synonyme de « content »", accept:["heureux","joyeux","ravi"], hint:"quand on se sent bien"},
+      {type:'dictation', q:"Écris le mot : contraire de « jour »", accept:["nuit"], hint:"quand il fait noir"},
+      {type:'dictation', q:"Écris le mot : instrument pour écrire", accept:["stylo","crayon"], hint:"on l'utilise en classe"},
+      {type:'dictation', q:"Écris le mot : pays où se trouve Paris", accept:["france"], hint:"capitale : Paris"},
+    ],
     sciences:[
       {q:'Quelle planète est surnommée la "planète rouge" ?', opts:["Vénus","Mars","Jupiter","Saturne"], a:1},
       {q:"Combien d'os y a-t-il environ dans le corps humain adulte ?", opts:["106","206","306","506"], a:1},
@@ -2096,7 +2352,901 @@ const QUESTIONS = {
       {q:"Quelle est la capitale de la Nouvelle-Zélande ?", opts:["Wellington","Auckland","Christchurch","Dunedin"], a:0},
       {q:"Quel pays a le plus de frontières terrestres ?", opts:["la Chine","la Russie","le Brésil","l'Inde"], a:0},
     ],
-  }
+  },
+  C: {
+    maths: [
+      {q:"Combien font 12 x 7 ?", opts:["72", "84", "96", "108"], a:1},
+      {q:"Combien font 15 x 6 ?", opts:["80", "85", "90", "95"], a:2},
+      {q:"Quelle est l'aire d'un rectangle de 7 cm sur 3 cm ?", opts:["10 cm2", "20 cm2", "21 cm2", "24 cm2"], a:2},
+      {q:"Quelle fraction est egale a 0,5 ?", opts:["1/3", "1/2", "2/3", "3/4"], a:1},
+      {q:"Combien font 23 x 4 ?", opts:["82", "86", "92", "96"], a:2},
+      {q:"Quel est le perimetre d'un carre de 6 cm de cote ?", opts:["18 cm", "24 cm", "30 cm", "36 cm"], a:1},
+      {q:"Combien font 3/4 + 1/4 ?", opts:["1/2", "1", "4/8", "2/4"], a:1},
+      {q:"Combien font 18 x 5 ?", opts:["80", "85", "90", "95"], a:2},
+      {q:"Quel est le double de 3/4 ?", opts:["6/4", "3/8", "1/2", "4/3"], a:0},
+      {q:"Combien de minutes dans 2 heures et demie ?", opts:["120", "130", "150", "180"], a:2},
+      {q:"Combien font 45 / 9 ?", opts:["4", "5", "6", "7"], a:1},
+      {q:"Combien font 7 x 8 ?", opts:["48", "54", "56", "64"], a:2},
+      {q:"Une pizza coupee en 8 parts, j'en mange 3. Quelle fraction reste ?", opts:["3/8", "5/8", "4/8", "6/8"], a:1},
+      {q:"Combien font 132 + 58 ?", opts:["180", "190", "200", "210"], a:1},
+      {q:"Combien font 9 x 12 ?", opts:["96", "102", "108", "118"], a:2},
+      {q:"Quelle est l'aire d'un triangle de base 8 cm et hauteur 5 cm ?", opts:["13 cm2", "20 cm2", "30 cm2", "40 cm2"], a:1},
+      {q:"Combien font 0,25 + 0,25 ?", opts:["0,25", "0,5", "0,75", "1"], a:1},
+      {q:"Combien font 24 / 6 ?", opts:["3", "4", "6", "8"], a:1},
+      {q:"Quel nombre est plus grand : 3/5 ou 2/5 ?", opts:["2/5", "3/5", "ils sont egaux", "aucun"], a:1},
+      {q:"Combien font 11 x 11 ?", opts:["111", "121", "131", "141"], a:1},
+      {q:"Combien font 250 - 67 ?", opts:["173", "183", "187", "193"], a:1},
+      {q:"Quel est le perimetre d'un rectangle de 9 cm sur 4 cm ?", opts:["13 cm", "18 cm", "26 cm", "36 cm"], a:2},
+      {q:"A quoi est egal 5/10 ?", opts:["0,05", "0,5", "5", "50"], a:1},
+      {q:"Combien font 16 x 4 ?", opts:["54", "60", "64", "68"], a:2},
+      {q:"Combien font 7 + 3 x 2 ?", opts:["20", "13", "10", "16"], a:1},
+      {q:"Quelle est la moitie de 3/4 ?", opts:["1/2", "3/8", "3/2", "1/4"], a:1},
+      {q:"Combien font 200 / 8 ?", opts:["20", "25", "30", "40"], a:1},
+      {q:"Combien font 9 x 7 ?", opts:["56", "61", "63", "72"], a:2},
+      {q:"Quel est le rayon d'un cercle de 10 cm de diametre ?", opts:["10 cm", "5 cm", "20 cm", "15 cm"], a:1},
+      {q:"Combien font 56 / 7 ?", opts:["6", "7", "8", "9"], a:2}
+    ],
+    multiplication: [
+      {q:"Combien font 13 x 6 ?", opts:["72", "78", "84", "88"], a:1},
+      {q:"Combien font 24 x 3 ?", opts:["62", "68", "72", "82"], a:2},
+      {q:"Combien font 17 x 5 ?", opts:["75", "80", "85", "90"], a:2},
+      {q:"Combien font 8 x 12 ?", opts:["86", "92", "96", "106"], a:2},
+      {q:"Combien font 35 x 2 ?", opts:["60", "65", "70", "75"], a:2},
+      {q:"Combien font 19 x 4 ?", opts:["66", "72", "76", "80"], a:2},
+      {q:"Combien font 6 x 15 ?", opts:["80", "85", "90", "95"], a:2},
+      {q:"Combien font 21 x 3 ?", opts:["53", "58", "63", "66"], a:2},
+      {q:"Combien font 14 x 7 ?", opts:["88", "92", "98", "108"], a:2},
+      {q:"Combien font 9 x 11 ?", opts:["90", "95", "99", "109"], a:2},
+      {q:"Combien font 16 x 6 ?", opts:["86", "92", "96", "106"], a:2},
+      {q:"Combien font 28 x 3 ?", opts:["74", "80", "84", "90"], a:2},
+      {q:"Combien font 7 x 14 ?", opts:["88", "94", "98", "102"], a:2},
+      {q:"Combien font 45 x 2 ?", opts:["80", "85", "90", "95"], a:2},
+      {q:"Combien font 12 x 9 ?", opts:["98", "102", "108", "112"], a:2},
+      {q:"Combien font 8 x 15 ?", opts:["100", "110", "120", "130"], a:2},
+      {q:"Combien font 22 x 4 ?", opts:["80", "84", "88", "92"], a:2},
+      {q:"Combien font 5 x 19 ?", opts:["85", "90", "95", "100"], a:2},
+      {q:"Combien font 33 x 3 ?", opts:["89", "93", "99", "103"], a:2},
+      {q:"Combien font 11 x 14 ?", opts:["144", "154", "164", "174"], a:1},
+      {q:"Combien font 6 x 18 ?", opts:["98", "104", "108", "112"], a:2},
+      {q:"Combien font 25 x 5 ?", opts:["100", "115", "125", "135"], a:2},
+      {q:"Combien font 9 x 13 ?", opts:["107", "112", "117", "127"], a:2},
+      {q:"Combien font 7 x 16 ?", opts:["102", "108", "112", "118"], a:2},
+      {q:"Combien font 12 x 12 ?", opts:["124", "134", "144", "154"], a:2},
+      {q:"Combien font 18 x 5 ?", opts:["80", "85", "90", "95"], a:2},
+      {q:"Combien font 4 x 26 ?", opts:["96", "100", "104", "108"], a:2},
+      {q:"Combien font 15 x 7 ?", opts:["95", "100", "105", "110"], a:2},
+      {q:"Combien font 8 x 14 ?", opts:["102", "108", "112", "118"], a:2},
+      {q:"Combien font 10 x 25 ?", opts:["200", "225", "250", "275"], a:2}
+    ],
+    francais: [
+      {q:"Conjugue au passe compose : 'Il ___ (manger) une pomme.'", opts:["a mange", "a manger", "mange", "est mange"], a:0},
+      {q:"Conjugue a l'imparfait : 'Nous ___ (jouer) au ballon.'", opts:["jouons", "jouions", "jouerons", "jouames"], a:1},
+      {q:"Dans 'Je vois le chien', quel est le COD ?", opts:["Je", "vois", "le chien", "aucun"], a:2},
+      {q:"Conjugue au futur simple : 'Je ___ (finir) mes devoirs.'", opts:["finis", "finirai", "finissais", "fini"], a:1},
+      {q:"Conjugue au passe compose : 'Elle ___ (etre) malade hier.'", opts:["a ete", "est ete", "etait", "fut"], a:0},
+      {q:"Conjugue a l'imparfait : 'Quand j'etais petit, je ___ (avoir) un chien.'", opts:["ai", "avais", "aurai", "eus"], a:1},
+      {q:"Dans 'Il parle a sa mere', quel est le COI ?", opts:["Il", "parle", "a sa mere", "sa mere"], a:2},
+      {q:"Conjugue au futur simple : 'Ils ___ (aller) a l'ecole.'", opts:["vont", "allaient", "iront", "allerent"], a:2},
+      {q:"Conjugue au passe compose : 'Tu ___ (prendre) le train.'", opts:["as prendre", "as pris", "a pris", "es pris"], a:1},
+      {q:"Conjugue a l'imparfait : 'Nous ___ (vouloir) un gateau.'", opts:["voulons", "voulions", "voulumes", "voudrons"], a:1},
+      {q:"Dans 'Marie donne un livre a Paul', quel est le COD ?", opts:["Marie", "un livre", "a Paul", "donne"], a:1},
+      {q:"Conjugue a l'imparfait : 'Je ___ (courir) vite quand j'etais jeune.'", opts:["cours", "courais", "courrai", "courus"], a:1},
+      {q:"Conjugue au passe compose : 'Elles ___ (venir) chez nous.'", opts:["ont venu", "sont venues", "ont venues", "sont venus"], a:1},
+      {q:"Conjugue au passe compose : 'Il ___ (faire) beau hier.'", opts:["a fait", "a fais", "est fait", "faisait"], a:0},
+      {q:"Conjugue au futur simple : 'Nous ___ (partir) en vacances.'", opts:["partimes", "partons", "partirions", "partirons"], a:3},
+      {q:"Que signifie COD ?", opts:["Complement d'Objet Direct", "Centre d'Observation Durable", "Complement Oral Direct", "Cahier d'Objectifs Detailes"], a:0},
+      {q:"Conjugue a l'imparfait : 'Vous ___ (savoir) la verite.'", opts:["savez", "saviez", "sutes", "saurez"], a:1},
+      {q:"Conjugue au passe compose : 'J'___ (ecrire) une lettre.'", opts:["ai ecrit", "suis ecrit", "ecrivis", "ai ecrir"], a:0},
+      {q:"Conjugue a l'imparfait : 'Ils ___ (lire) des livres.'", opts:["lisent", "liraient", "lisaient", "lurent"], a:2},
+      {q:"Conjugue a l'imparfait : 'Tu ___ (devoir) faire tes devoirs.'", opts:["dois", "devais", "devras", "dus"], a:1},
+      {q:"Dans 'Elle pense a ses amis', quel est le COI ?", opts:["Elle", "pense", "a ses amis", "ses amis"], a:2},
+      {q:"Que signifie COI ?", opts:["Complement d'Objet Indirect", "Complement Oral Indefini", "Cahier d'Objectifs Intermediaires", "Concept d'Observation Initiale"], a:0},
+      {q:"Conjugue au passe compose : 'Je ___ (mettre) la table.'", opts:["ai mettre", "ai mis", "suis mis", "mettais"], a:1},
+      {q:"Conjugue au futur simple : 'Nous ___ (etre) contents.'", opts:["etions", "serons", "sommes", "fumes"], a:1},
+      {q:"Conjugue au passe compose : 'Ils ___ (voir) un film hier.'", opts:["ont vu", "ont vus", "sont vus", "voyaient"], a:0},
+      {q:"Conjugue a l'imparfait : 'Il ___ (pleuvoir) souvent en automne.'", opts:["pleut", "pleuvait", "pleuvra", "pleutait"], a:1},
+      {q:"Conjugue au passe compose : 'Elle ___ (vouloir) un cadeau.'", opts:["a voulu", "a voulait", "est voulue", "voulait"], a:0},
+      {q:"Conjugue a l'imparfait : 'Tu ___ (avoir) 10 ans l'annee derniere.'", opts:["as", "avais", "auras", "eus"], a:1},
+      {q:"Conjugue au futur simple : 'Nous ___ (faire) du sport.'", opts:["faisons", "fimes", "ferions", "ferons"], a:3},
+      {q:"Conjugue a l'imparfait : 'Je ___ (prendre) mon temps.'", opts:["prenais", "prenait", "prends", "pris"], a:0}
+    ],
+    dictation:[
+      {type:'dictation', q:"Écris le mot : métal liquide à température ambiante", accept:["mercure"], hint:"c'est un métal, utilisé dans les thermomètres"},
+      {type:'dictation', q:"Écris le mot : science qui étudie les êtres vivants", accept:["biologie"], hint:"préfixe « bio » signifie vie"},
+      {type:'dictation', q:"Écris le mot : auteur des Misérables", accept:["victor hugo","hugo"], hint:"son nom de famille est aussi un prénom"},
+      {type:'dictation', q:"Écris le mot : planète la plus proche du Soleil", accept:["mercure"], hint:"c'est la plus petite planète"},
+      {type:'dictation', q:"Écris le mot : angle de 180 degrés", accept:["angle plat","plat"], hint:"c'est une ligne droite"},
+      {type:'dictation', q:"Écris le mot : figure géométrique à 6 côtés", accept:["hexagone"], hint:"un stop a cette forme"},
+    ],
+    sciences: [
+      {q:"Quel gaz compose principalement l'air que nous respirons ?", opts:["l'oxygene", "l'azote", "le dioxyde de carbone", "l'hydrogene"], a:1},
+      {q:"Combien de dents possede un adulte en moyenne ?", opts:["28", "30", "32", "34"], a:2},
+      {q:"Quel est le metal liquide a temperature ambiante ?", opts:["le fer", "le mercure", "l'or", "le cuivre"], a:1},
+      {q:"Que signifie le sigle ADN ?", opts:["Acide Desoxyribonucleique", "Association Des Nerfs", "Atome Directeur Naturel", "Axe Dynamique Nucleaire"], a:0},
+      {q:"Quelle est la fonction principale des racines d'une plante ?", opts:["absorber l'eau", "photosynthese", "reproduction", "respirer"], a:0},
+      {q:"Quel est le point d'ebullition de l'eau en degres Celsius ?", opts:["50 deg C", "100 deg C", "150 deg C", "200 deg C"], a:1},
+      {q:"Combien d'atomes y a-t-il dans une molecule d'eau (H2O) ?", opts:["2", "3", "4", "5"], a:1},
+      {q:"Quel organe du corps humain produit l'insuline ?", opts:["le foie", "le pancreas", "l'estomac", "le rein"], a:1},
+      {q:"Quel type d'energie provient du Soleil ?", opts:["l'energie solaire", "l'energie eolienne", "l'energie hydraulique", "l'energie nucleaire"], a:0},
+      {q:"Quel est le plus grand mammifere marin ?", opts:["la baleine bleue", "l'orque", "le dauphin", "le requin"], a:0},
+      {q:"Quelle est la vitesse approximative de la lumiere ?", opts:["300 000 km/s", "150 000 km/s", "500 000 km/s", "100 000 km/s"], a:0},
+      {q:"Quel acide est present dans l'estomac pour digerer les aliments ?", opts:["l'acide sulfurique", "l'acide chlorhydrique", "l'acide citrique", "l'acide acetique"], a:1},
+      {q:"Quel est l'os le plus long du corps humain ?", opts:["le femur", "le tibia", "l'humerus", "le radius"], a:0},
+      {q:"Quel gaz a effet de serre est produit par la combustion du petrole ?", opts:["l'azote", "le dioxyde de carbone", "l'oxygene", "l'helium"], a:1},
+      {q:"Combien de cellules composent environ le corps humain ?", opts:["37 millions", "37 milliards", "37 000 milliards", "37 billions"], a:2},
+      {q:"Quel est le role des globules blancs ?", opts:["transporter l'oxygene", "combattre les infections", "coaguler le sang", "transporter les nutriments"], a:1},
+      {q:"Quelle planete est surnommee la 'planete bleue' ?", opts:["Mars", "Venus", "la Terre", "Neptune"], a:2},
+      {q:"Quel est le pH de l'eau pure ?", opts:["0", "7", "14", "3"], a:1},
+      {q:"Quel scientifique a decouvert la radioactivite ?", opts:["Marie Curie", "Louis Pasteur", "Albert Einstein", "Isaac Newton"], a:0},
+      {q:"Quel mineral est essentiel pour des os solides ?", opts:["le fer", "le calcium", "le sodium", "le potassium"], a:1},
+      {q:"Quel animal est capable de regenerer ses membres ?", opts:["le lezard", "le chien", "l'oiseau", "le serpent"], a:0},
+      {q:"Quel phenomene provoque les marees ?", opts:["le vent", "la Lune", "les eruptions solaires", "la rotation de la Terre"], a:1},
+      {q:"Quelle est la couche la plus externe de la Terre ?", opts:["le noyau", "le manteau", "la croute", "le magma"], a:2},
+      {q:"Quel fruit contient le plus de vitamine C ?", opts:["la pomme", "la banane", "le kiwi", "l'orange"], a:2},
+      {q:"Quel est le principal composant du gaz naturel ?", opts:["le propane", "le methane", "le butane", "l'ethane"], a:1},
+      {q:"Combien de coeurs possede un poulpe ?", opts:["1", "2", "3", "4"], a:2},
+      {q:"Quel organe est responsable de l'equilibre ?", opts:["l'oreille interne", "les yeux", "le cervelet", "le nez"], a:0},
+      {q:"Quel type de roche se forme par refroidissement du magma ?", opts:["sedimentaire", "metamorphique", "volcanique", "calcaire"], a:2},
+      {q:"Quel animal a le sang le plus froid ?", opts:["le requin", "le serpent", "le pingouin", "la grenouille"], a:1},
+      {q:"Combien de litres de sang un adulte possede-t-il environ ?", opts:["2 a 3 L", "4 a 5 L", "6 a 7 L", "8 a 9 L"], a:1}
+    ],
+    monde: [
+      {q:"Quelle est la capitale du Portugal ?", opts:["Lisbonne", "Porto", "Madrid", "Barcelone"], a:0},
+      {q:"Qui a ecrit 'Les Miserables' ?", opts:["Victor Hugo", "Emile Zola", "Gustave Flaubert", "Moliere"], a:0},
+      {q:"En quelle annee la Tour Eiffel a-t-elle ete inauguree ?", opts:["1889", "1900", "1878", "1910"], a:0},
+      {q:"Quel pays africain a pour capitale Alger ?", opts:["le Maroc", "la Tunisie", "l'Algerie", "la Libye"], a:2},
+      {q:"Combien d'Etats comptent les Etats-Unis d'Amerique ?", opts:["48", "50", "52", "55"], a:1},
+      {q:"Quel pays est le plus petit du monde ?", opts:["Monaco", "le Vatican", "Saint-Marin", "le Liechtenstein"], a:1},
+      {q:"Quelle civilisation a invente l'ecriture cuneiforme ?", opts:["les Egyptiens", "les Mesopotamiens", "les Grecs", "les Romains"], a:1},
+      {q:"Quelle est la capitale de la Suede ?", opts:["Oslo", "Stockholm", "Copenhague", "Helsinki"], a:1},
+      {q:"Quel explorateur a decouvert l'Amerique en 1492 ?", opts:["Vasco de Gama", "Christophe Colomb", "Magellan", "Cartier"], a:1},
+      {q:"Quelle etait la principale activite des Vikings ?", opts:["le commerce", "l'agriculture", "la navigation", "l'artisanat"], a:2},
+      {q:"Quelle est la capitale de l'Inde ?", opts:["Bombay", "New Delhi", "Calcutta", "Bangalore"], a:1},
+      {q:"Qui a ete le premier President de la Republique francaise ?", opts:["Napoleon Bonaparte", "Louis-Napoleon Bonaparte", "Adolphe Thiers", "Charles de Gaulle"], a:2},
+      {q:"Quel traite a mis fin a la Premiere Guerre mondiale ?", opts:["le traite de Versailles", "le traite de Paris", "le traite de Rome", "le traite de Vienne"], a:0},
+      {q:"Quelle est la capitale de la Pologne ?", opts:["Cracovie", "Varsovie", "Gdansk", "Wroclaw"], a:1},
+      {q:"Quel peintre a cree 'La Nuit etoilee' ?", opts:["Picasso", "Van Gogh", "Monet", "Gauguin"], a:1},
+      {q:"Quelle est la capitale du Danemark ?", opts:["Oslo", "Stockholm", "Copenhague", "Helsinki"], a:2},
+      {q:"Quel est le symbole chimique de l'or ?", opts:["Or", "Au", "Ag", "Go"], a:1},
+      {q:"Quelle est la capitale de la Norvege ?", opts:["Oslo", "Bergen", "Stavanger", "Trondheim"], a:0},
+      {q:"Qui a invente l'imprimerie a caracteres mobiles ?", opts:["Gutenberg", "Erasme", "Copernic", "Leonard de Vinci"], a:0},
+      {q:"Quelle est la capitale de l'Autriche ?", opts:["Salzbourg", "Innsbruck", "Vienne", "Graz"], a:2},
+      {q:"Quel evenement a eu lieu le 14 juillet 1789 ?", opts:["la prise de la Bastille", "le sacre de Napoleon", "la mort de Louis XIV", "la decouverte de l'Amerique"], a:0},
+      {q:"Quel pays d'Amerique du Sud a la forme d'un triangle ?", opts:["le Bresil", "l'Argentine", "le Chili", "le Perou"], a:1},
+      {q:"Quelle est la capitale de la Grece ?", opts:["Athenes", "Thessalonique", "Le Piree", "Heraklion"], a:0},
+      {q:"Quel monument indien est un mausolee en marbre blanc ?", opts:["le Taj Mahal", "le Fort Rouge", "le Temple d'Or", "le Qutb Minar"], a:0},
+      {q:"Quelle est la capitale de l'Irlande ?", opts:["Belfast", "Cork", "Dublin", "Galway"], a:2},
+      {q:"Quel pays a construit le canal de Panama ?", opts:["la France", "les Etats-Unis", "l'Espagne", "le Panama"], a:1},
+      {q:"Quelle est la capitale de la Turquie ?", opts:["Istanbul", "Ankara", "Izmir", "Bursa"], a:1},
+      {q:"Quel compositeur autrichien est celebre pour ses symphonies ?", opts:["Bach", "Mozart", "Beethoven", "Chopin"], a:1},
+      {q:"Quelle est la capitale de la Hongrie ?", opts:["Budapest", "Prague", "Varsovie", "Bucarest"], a:0},
+      {q:"Quel peuple ancien a construit le Colisee ?", opts:["les Grecs", "les Egyptiens", "les Romains", "les Perses"], a:2}
+    ],
+    anglais: [
+      {q:"Traduis 'Je suis alle a l'ecole hier' en anglais.", opts:["I go to school", "I went to school yesterday", "I will go to school", "I am going to school"], a:1},
+      {q:"Quel est le comparatif de 'big' ?", opts:["bigger", "more big", "biggest", "bigger than"], a:0},
+      {q:"Complete : 'She ___ (to be) at home yesterday.'", opts:["is", "was", "were", "been"], a:1},
+      {q:"Comment dit-on 'meilleur que' en anglais ?", opts:["gooder than", "better than", "best than", "more good than"], a:1},
+      {q:"Complete : 'I ___ (to have) breakfast at 7 am this morning.'", opts:["have", "had", "has", "having"], a:1},
+      {q:"Quel est le preterit de 'to run' ?", opts:["ran", "runed", "runned", "running"], a:0},
+      {q:"Traduis 'Il est plus grand que son frere' en anglais.", opts:["He is biger than his brother", "He is bigger than his brother", "He is more tall than his brother", "He is tallest than his brother"], a:1},
+      {q:"Complete : 'They ___ (to go) to the park last Sunday.'", opts:["go", "went", "goed", "going"], a:1},
+      {q:"Quel est le superlatif de 'tall' ?", opts:["taller", "more tall", "tallest", "the tallest"], a:3},
+      {q:"Comment dit-on 'deja' en anglais ?", opts:["yet", "already", "still", "never"], a:1},
+      {q:"Complete : 'We ___ (not / to like) the movie yesterday.'", opts:["don't like", "didn't like", "doesn't like", "not liked"], a:1},
+      {q:"Quel est le pluriel de 'foot' en anglais ?", opts:["foots", "feet", "feets", "footes"], a:1},
+      {q:"Traduis 'Je peux nager' en anglais.", opts:["I can swim", "I can to swim", "I can swimming", "I could swim"], a:0},
+      {q:"Complete : 'He is ___ (intelligent) than me.'", opts:["intelligenter", "more intelligent", "most intelligent", "intelligent"], a:1},
+      {q:"Comment dit-on 'jamais' en anglais ?", opts:["always", "sometimes", "never", "often"], a:2},
+      {q:"Complete : 'She ___ (to sing) a song last night.'", opts:["sing", "sang", "sung", "singed"], a:1},
+      {q:"Quel est le contraire de 'cheap' en anglais ?", opts:["expensive", "inexpensive", "cheaper", "costly"], a:0},
+      {q:"Traduis 'Je dois etudier' en anglais.", opts:["I must study", "I need study", "I have study", "I can study"], a:0},
+      {q:"Complete : 'This is the ___ (good) restaurant in town.'", opts:["good", "best", "better", "more good"], a:1},
+      {q:"Comment dit-on 'trop' en anglais ?", opts:["too", "very", "much", "many"], a:0},
+      {q:"Complete : 'They ___ (to see) a beautiful sunset yesterday.'", opts:["seen", "saw", "see", "seeing"], a:1},
+      {q:"Quel est le preterit de 'to eat' ?", opts:["eated", "ate", "aten", "eating"], a:1},
+      {q:"Traduis 'Elle est la plus rapide' en anglais.", opts:["She is the most fast", "She is the fastest", "She is faster", "She is more fast"], a:1},
+      {q:"Complete : 'I ___ (to buy) a new book last week.'", opts:["buyed", "bought", "buy", "buys"], a:1},
+      {q:"Comment dit-on 'quelque chose' en anglais ?", opts:["anything", "something", "nothing", "everything"], a:1},
+      {q:"Complete : 'He ___ (to drink) too much coffee yesterday.'", opts:["drinked", "drank", "drunk", "drinks"], a:1},
+      {q:"Quel est le comparatif de 'far' ?", opts:["farrer", "further", "more far", "farer"], a:1},
+      {q:"Traduis '... n'est-ce pas ?' en anglais.", opts:["isn't it?", "don't you?", "aren't you?", "..., isn't it?"], a:0},
+      {q:"Complete : 'She ___ (to write) a letter to her friend yesterday.'", opts:["writed", "wrote", "written", "writes"], a:1},
+      {q:"Comment dit-on 'tard' en anglais ?", opts:["late", "lately", "later", "latest"], a:0}
+    ],
+    geographie: [
+      {q:"Quel fleuve traverse la ville de Paris ?", opts:["le Rhin", "la Seine", "le Rhone", "la Loire"], a:1},
+      {q:"Quelle est la plus grande ile de la Mediterranee ?", opts:["la Sardaigne", "la Corse", "la Sicile", "la Crete"], a:2},
+      {q:"Quel ocean separe l'Afrique de l'Amerique ?", opts:["le Pacifique", "l'Atlantique", "l'Indien", "l'Arctique"], a:1},
+      {q:"Quel pays d'Asie est le plus peuple ?", opts:["la Chine", "l'Inde", "l'Indonesie", "le Pakistan"], a:1},
+      {q:"Quelle est la capitale de l'Egypte ?", opts:["Alexandrie", "Le Caire", "Louxor", "Gizeh"], a:1},
+      {q:"Quel desert s'etend dans le sud-ouest des Etats-Unis ?", opts:["le Sahara", "le Gobi", "le Sonora", "l'Atacama"], a:2},
+      {q:"Quel pays a pour capitale Dublin ?", opts:["l'Ecosse", "l'Irlande", "le Pays de Galles", "l'Islande"], a:1},
+      {q:"Quelle chaine de montagnes se trouve en Amerique du Nord ?", opts:["les Andes", "les Rocheuses", "les Alpes", "l'Himalaya"], a:1},
+      {q:"Quel est le point culminant de l'Europe ?", opts:["le Mont Blanc", "le Cervin", "le Mont Rose", "le Matterhorn"], a:0},
+      {q:"Quelle mer est fermee et situee entre l'Europe et l'Asie ?", opts:["la mer Noire", "la mer Mediterranee", "la mer Caspienne", "la mer Baltique"], a:2},
+      {q:"Quel pays est connu comme 'le pays des mille lacs' ?", opts:["la Suede", "la Norvege", "la Finlande", "le Canada"], a:2},
+      {q:"Quel detroit separe l'Asie de l'Amerique du Nord ?", opts:["Gibraltar", "Bering", "Malacca", "Bosphore"], a:1},
+      {q:"Quelle est la capitale de la Colombie ?", opts:["Bogota", "Cali", "Medellin", "Cartagena"], a:0},
+      {q:"Quel fleuve traverse Vienne, Budapest et Belgrade ?", opts:["le Rhin", "le Danube", "la Volga", "la Seine"], a:1},
+      {q:"Quel pays a la plus longue cote du monde ?", opts:["le Canada", "l'Australie", "la Russie", "le Chili"], a:0},
+      {q:"Quelle est la capitale du Maroc ?", opts:["Casablanca", "Rabat", "Marrakech", "Fes"], a:1},
+      {q:"Quel est le plus grand lac d'Afrique ?", opts:["le lac Victoria", "le lac Tanganyika", "le lac Malawi", "le lac Turkana"], a:0},
+      {q:"Quel pays d'Asie du Sud-Est est en forme de dragon ?", opts:["le Vietnam", "le Laos", "le Cambodge", "la Thailande"], a:0},
+      {q:"Quelle mer est bordee par Israel, l'Egypte et la Jordanie ?", opts:["la mer Mediterranee", "la mer Rouge", "la mer Morte", "la mer Noire"], a:1},
+      {q:"Quelle est la capitale du Chili ?", opts:["Valparaiso", "Concepcion", "Santiago", "Vina del Mar"], a:2},
+      {q:"Quel pays africain a pour capitale Addis-Abeba ?", opts:["l'Erythree", "l'Ethiopie", "le Soudan", "la Somalie"], a:1},
+      {q:"Quel est le plus long fleuve d'Europe ?", opts:["le Rhin", "la Volga", "le Danube", "l'Oural"], a:1},
+      {q:"Quelle ile francaise est situee dans la mer Mediterranee ?", opts:["la Corse", "la Reunion", "la Martinique", "la Guadeloupe"], a:0},
+      {q:"Quel pays a pour capitale Helsinki ?", opts:["la Suede", "la Lettonie", "la Finlande", "l'Estonie"], a:2},
+      {q:"Quelle chaine de montagnes traverse la France et l'Espagne ?", opts:["les Alpes", "les Pyrenees", "le Jura", "les Vosges"], a:1},
+      {q:"Quel ocean borde l'ouest de l'Afrique ?", opts:["l'Atlantique", "le Pacifique", "l'Indien", "l'Arctique"], a:0},
+      {q:"Quelle est la capitale de la Roumanie ?", opts:["Bucarest", "Sofia", "Belgrade", "Budapest"], a:0},
+      {q:"Quel pays a une frontiere avec la France et l'Espagne ?", opts:["le Portugal", "Andorre", "Monaco", "l'Italie"], a:1},
+      {q:"Quel est le plus grand fjord de Norvege ?", opts:["Sognefjord", "Hardangerfjord", "Geirangerfjord", "Oslo Fjord"], a:0},
+      {q:"Quelle capitale sud-americaine est situee au bord de l'ocean Atlantique ?", opts:["Lima", "Buenos Aires", "Santiago", "Bogota"], a:1}
+    ],
+    formes: [
+      {q:"Quelle est la formule pour calculer le volume d'un cube ?", opts:["c x c", "c2", "c3", "c x 6"], a:2},
+      {q:"Combien de faces a une pyramide a base carree ?", opts:["4", "5", "6", "8"], a:1},
+      {q:"Quelle est la circonference d'un cercle de rayon 5 cm (pi ~ 3,14) ?", opts:["15,7 cm", "31,4 cm", "78,5 cm", "25 cm"], a:1},
+      {q:"Quel solide a 6 faces carrees identiques ?", opts:["pave droit", "cube", "pyramide", "prisme"], a:1},
+      {q:"Deux droites qui forment un angle de 90 deg sont dites...", opts:["paralleles", "perpendiculaires", "secantes", "obliques"], a:1},
+      {q:"Combien d'aretes a un pave droit ?", opts:["6", "8", "12", "16"], a:2},
+      {q:"Quel est le volume d'un cube de 4 cm de cote ?", opts:["16 cm3", "64 cm3", "24 cm3", "8 cm3"], a:1},
+      {q:"Un angle mesurant 150 deg est un angle...", opts:["aigu", "obtus", "droit", "plat"], a:1},
+      {q:"Quelle figure a des diagonales perpendiculaires ?", opts:["rectangle", "losange", "trapeze", "parallelogramme"], a:1},
+      {q:"Combien de degres mesure un angle plat ?", opts:["90 deg", "180 deg", "270 deg", "360 deg"], a:1},
+      {q:"Quelle est l'aire d'un disque de rayon 3 cm (pi ~ 3,14) ?", opts:["18,84 cm2", "28,26 cm2", "9,42 cm2", "37,68 cm2"], a:1},
+      {q:"Un triangle isocele a...", opts:["0 cote egal", "2 cotes egaux", "3 cotes egaux", "1 angle droit"], a:1},
+      {q:"Combien de sommets a une pyramide a base carree ?", opts:["4", "5", "6", "8"], a:1},
+      {q:"Quel est le nom d'un polygone a 9 cotes ?", opts:["octogone", "nonagone", "decagone", "heptagone"], a:1},
+      {q:"Un triangle equilateral a ses trois cotes...", opts:["egaux", "differents", "paralleles", "perpendiculaires"], a:0},
+      {q:"Combien de faces laterales a un prisme a base triangulaire ?", opts:["2", "3", "4", "5"], a:1},
+      {q:"Quel est le volume d'un pave droit de 5 x 3 x 2 cm ?", opts:["15 cm3", "20 cm3", "30 cm3", "10 cm3"], a:2},
+      {q:"Deux angles dont la somme fait 180 deg sont...", opts:["complementaires", "supplementaires", "adjacents", "opposes"], a:1},
+      {q:"Quelle transformation fait tourner une figure autour d'un point ?", opts:["translation", "rotation", "symetrie", "homohetie"], a:1},
+      {q:"Combien d'axes de symetrie a un carre ?", opts:["2", "4", "6", "8"], a:1},
+      {q:"Un cylindre a combien de faces planes ?", opts:["1", "2", "3", "0"], a:1},
+      {q:"Quel est le theoreme qui relie les cotes d'un triangle rectangle ?", opts:["Thales", "Pythagore", "Euclide", "Archimede"], a:1},
+      {q:"Un parallelogramme a ses diagonales...", opts:["perpendiculaires", "egales", "qui se coupent en leur milieu", "paralleles"], a:2},
+      {q:"Combien de cotes a un decagone ?", opts:["8", "9", "10", "11"], a:2},
+      {q:"Quelle figure a tous ses angles droits ?", opts:["losange", "rectangle", "trapeze", "cercle"], a:1},
+      {q:"Quelle est la mesure d'un angle aigu ?", opts:["entre 0 et 90 deg", "entre 90 et 180 deg", "plus de 180 deg", "exactement 90 deg"], a:0},
+      {q:"Quel solide a une base polygonale et des faces triangulaires ?", opts:["prisme", "pyramide", "cone", "cube"], a:1},
+      {q:"Combien de generatrices possede un cone ?", opts:["0", "1", "2", "une infinite"], a:3},
+      {q:"La somme des angles d'un quadrilatere est de...", opts:["180 deg", "270 deg", "360 deg", "450 deg"], a:2},
+      {q:"Un triangle rectangle a un angle de...", opts:["45 deg", "60 deg", "90 deg", "180 deg"], a:2}
+    ],
+    globe: [
+      {q:"Quel pays est surnomme 'le pays du fromage' ?", opts:["l'Italie", "la France", "la Suisse", "les Pays-Bas"], a:1},
+      {q:"Quelle capitale africaine est situee au bord du Nil ?", opts:["Le Caire", "Khartoum", "Nairobi", "Addis-Abeba"], a:0},
+      {q:"Quel pays europeen n'a pas d'acces a la mer ?", opts:["la Hongrie", "la Pologne", "la Croatie", "la Grece"], a:0},
+      {q:"Quel est le plus petit pays d'Europe ?", opts:["Monaco", "le Vatican", "Saint-Marin", "Malte"], a:1},
+      {q:"Quelle ville est appelee 'la Venise du Nord' ?", opts:["Amsterdam", "Stockholm", "Copenhague", "Hambourg"], a:0},
+      {q:"Quel pays produit le plus de cafe au monde ?", opts:["le Bresil", "la Colombie", "l'Indonesie", "le Vietnam"], a:0},
+      {q:"Quelle ile du Pacifique est un territoire francais ?", opts:["Tahiti", "les Fidji", "les Samoa", "Hawai"], a:0},
+      {q:"Quel pays a pour capitale Islamabad ?", opts:["l'Inde", "le Pakistan", "le Bangladesh", "l'Iran"], a:1},
+      {q:"Quel est le plus grand archipel du monde ?", opts:["les Philippines", "l'Indonesie", "le Japon", "les Maldives"], a:1},
+      {q:"Quel pays d'Afrique a le plus de pyramides ?", opts:["l'Egypte", "le Soudan", "le Mali", "le Mexique"], a:0},
+      {q:"Quelle ville est traversee par le canal de Suez ?", opts:["Port-Said", "Alexandrie", "Le Caire", "Ismailia"], a:0},
+      {q:"Quel pays est le plus grand exportateur de petrole ?", opts:["la Russie", "l'Arabie saoudite", "les Etats-Unis", "l'Irak"], a:1},
+      {q:"Quelle capitale est batie sur 7 collines ?", opts:["Rome", "Athenes", "Lisbonne", "Jerusalem"], a:0},
+      {q:"Quel est le point le plus bas de la Terre ?", opts:["la mer Morte", "la vallee de la Mort", "le lac Assal", "le desert de Danakil"], a:0},
+      {q:"Quel pays a la plus grande foret tropicale ?", opts:["le Bresil", "l'Indonesie", "le Congo", "la Colombie"], a:0},
+      {q:"Quel ocean touche les cotes de l'Antarctique ?", opts:["l'Atlantique", "le Pacifique", "l'Indien", "les trois"], a:3},
+      {q:"Quelle est la capitale de la Birmanie (Myanmar) ?", opts:["Rangoon", "Naypyidaw", "Mandalay", "Bangkok"], a:1},
+      {q:"Quel pays est traverse par le tropique du Cancer et le tropique du Capricorne ?", opts:["le Bresil", "l'Inde", "l'Australie", "l'Afrique du Sud"], a:3},
+      {q:"Quelle ville est le centre financier de la Suisse ?", opts:["Geneve", "Zurich", "Berne", "Bale"], a:1},
+      {q:"Quel pays a le plus de volcans actifs ?", opts:["l'Indonesie", "le Japon", "la Russie", "l'Islande"], a:0},
+      {q:"Quelle est la capitale du Kazakhstan ?", opts:["Almaty", "Noursoultan (Astana)", "Tachkent", "Bichkek"], a:1},
+      {q:"Quel detroit relie la mer Egee a la mer de Marmara ?", opts:["le Bosphore", "les Dardanelles", "Gibraltar", "le Bering"], a:1},
+      {q:"Quel pays d'Afrique australe est enclave dans l'Afrique du Sud ?", opts:["le Botswana", "le Lesotho", "le Swaziland", "le Zimbabwe"], a:1},
+      {q:"Quelle ville est surnommee 'la Ville Lumiere' ?", opts:["New York", "Tokyo", "Paris", "Londres"], a:2},
+      {q:"Quel pays a la forme d'une botte ?", opts:["l'Espagne", "l'Italie", "la Grece", "la Croatie"], a:1},
+      {q:"Quel est le plus grand lac d'Amerique du Nord ?", opts:["le lac Superieur", "le lac Michigan", "le lac Huron", "le lac Ontario"], a:0},
+      {q:"Quelle capitale se trouve a 2 650 m d'altitude ?", opts:["La Paz", "Quito", "Bogota", "Lima"], a:1},
+      {q:"Quel pays scandinave a une frontiere avec la Russie ?", opts:["la Norvege", "la Suede", "la Finlande", "le Danemark"], a:2},
+      {q:"Quel fleuve forme la frontiere entre le Texas et le Mexique ?", opts:["le Rio Grande", "le Colorado", "le Mississippi", "le Missouri"], a:0},
+      {q:"Quelle est la capitale du Cambodge ?", opts:["Hanoi", "Vientiane", "Phnom Penh", "Bangkok"], a:2}
+    ],
+  },
+  D: {
+    maths: [
+      {q:"Resous : 3x + 5 = 20, combien vaut x ?", opts:["5", "6", "4", "7"], a:0},
+      {q:"Combien font 15 % de 200 ?", opts:["20", "25", "30", "35"], a:2},
+      {q:"Si 4 kg de pommes coutent 10 euros, quel est le prix au kg ?", opts:["2,00 euros", "2,50 euros", "3,00 euros", "4,00 euros"], a:1},
+      {q:"Combien font 7 x 7 + 3 x 3 ?", opts:["49", "58", "67", "56"], a:1},
+      {q:"Quelle est la proportion de 3/4 en pourcentage ?", opts:["25%", "50%", "75%", "80%"], a:2},
+      {q:"Resous : 2x - 7 = 11, combien vaut x ?", opts:["7", "8", "9", "10"], a:2},
+      {q:"Combien font (-3) + (-8) ?", opts:["-5", "11", "-11", "5"], a:2},
+      {q:"Un article coute 80 euros, il est solde a 25 %. Quel est le montant de la reduction ?", opts:["15 euros", "20 euros", "25 euros", "30 euros"], a:1},
+      {q:"Combien font 12^2 - 5^2 ?", opts:["119", "144", "109", "124"], a:0},
+      {q:"Si une carte est a l'echelle 1/50 000, 1 cm represente combien de km ?", opts:["0,5 km", "5 km", "50 km", "0,05 km"], a:0},
+      {q:"Resous : 5x = 45, combien vaut x ?", opts:["7", "8", "9", "10"], a:2},
+      {q:"Combien font (3/5) x (10/9) ?", opts:["30/45", "1/3", "2/3", "3/5"], a:2},
+      {q:"Quelle est la moyenne de 12, 15, 18 et 11 ?", opts:["13", "14", "15", "16"], a:1},
+      {q:"Combien font 25 x 12 ?", opts:["250", "275", "300", "325"], a:2},
+      {q:"Resous : x/4 = 9, combien vaut x ?", opts:["36", "32", "40", "45"], a:0},
+      {q:"Un prix passe de 50 euros a 60 euros. Quel est le pourcentage d'augmentation ?", opts:["10%", "15%", "20%", "25%"], a:2},
+      {q:"Combien font 3^4 (3 puissance 4) ?", opts:["27", "81", "64", "243"], a:1},
+      {q:"Resous : 4(x + 2) = 28, combien vaut x ?", opts:["4", "5", "6", "7"], a:1},
+      {q:"Combien font 2/5 + 3/10 ?", opts:["5/15", "1/2", "7/10", "5/10"], a:2},
+      {q:"Quelle est la mediane de la serie : 3, 7, 9, 12, 15 ?", opts:["7", "8", "9", "10"], a:2},
+      {q:"Combien font (-12) / (-4) ?", opts:["-3", "3", "-4", "4"], a:1},
+      {q:"Un livre coute 24 euros apres une reduction de 20 %. Quel etait le prix initial ?", opts:["28 euros", "29 euros", "30 euros", "32 euros"], a:2},
+      {q:"Combien font 0,75 x 0,4 ?", opts:["0,25", "0,30", "0,35", "3,00"], a:1},
+      {q:"Resous : 2x + 3 = x + 8, combien vaut x ?", opts:["3", "4", "5", "6"], a:2},
+      {q:"Quel est le PPCM de 6 et 8 ?", opts:["12", "16", "24", "48"], a:2},
+      {q:"Combien de faces a un dodecaedre ?", opts:["6", "8", "10", "12"], a:3},
+      {q:"Un triangle a des cotes de 3, 4 et 5 cm. Est-il rectangle ?", opts:["oui", "non", "on ne sait pas", "seulement si 5 est l'hypotenuse"], a:0},
+      {q:"Combien font 5! (factorielle 5) ?", opts:["60", "120", "25", "20"], a:1},
+      {q:"Resous : x^2 = 144, combien vaut x ?", opts:["10", "11", "12", "13"], a:2},
+      {q:"Quel est le PGCD de 36 et 48 ?", opts:["6", "8", "12", "16"], a:2}
+    ],
+    multiplication: [
+      {q:"Combien font 23 x 12 ?", opts:["256", "266", "276", "286"], a:2},
+      {q:"Combien font 34 x 5 ?", opts:["150", "160", "170", "180"], a:2},
+      {q:"Combien font 18 x 15 ?", opts:["250", "260", "270", "280"], a:2},
+      {q:"Une boite contient 36 oeufs. Combien d'oeufs dans 12 boites ?", opts:["412", "422", "432", "442"], a:2},
+      {q:"Combien font 45 x 11 ?", opts:["455", "465", "475", "495"], a:3},
+      {q:"Combien font 27 x 6 ?", opts:["152", "162", "172", "182"], a:1},
+      {q:"Combien font 56 x 3 ?", opts:["148", "158", "168", "178"], a:2},
+      {q:"Un train parcourt 85 km par heure. Combien parcourt-il en 7 heures ?", opts:["575 km", "585 km", "595 km", "605 km"], a:2},
+      {q:"Combien font 38 x 4 ?", opts:["142", "152", "162", "172"], a:1},
+      {q:"Combien font 72 x 5 ?", opts:["340", "350", "360", "370"], a:2},
+      {q:"Combien font 19 x 17 ?", opts:["313", "323", "333", "343"], a:1},
+      {q:"Une salle de cinema a 24 rangees de 15 sieges. Combien de sieges en tout ?", opts:["340", "350", "360", "370"], a:2},
+      {q:"Combien font 63 x 4 ?", opts:["232", "242", "252", "262"], a:2},
+      {q:"Combien font 125 x 8 ?", opts:["500", "750", "1000", "1250"], a:2},
+      {q:"Combien font 29 x 12 ?", opts:["338", "348", "358", "368"], a:1},
+      {q:"Un magasin vend 17 paquets de 25 cartes chacun. Combien de cartes en tout ?", opts:["405", "415", "425", "435"], a:2},
+      {q:"Combien font 54 x 7 ?", opts:["358", "368", "378", "388"], a:2},
+      {q:"Combien font 91 x 6 ?", opts:["536", "546", "556", "566"], a:1},
+      {q:"Combien font 33 x 14 ?", opts:["452", "462", "472", "482"], a:1},
+      {q:"Une ferme produit 48 litres de lait par jour. Combien en 30 jours ?", opts:["1340 L", "1440 L", "1540 L", "1640 L"], a:1},
+      {q:"Combien font 47 x 9 ?", opts:["403", "413", "423", "433"], a:2},
+      {q:"Combien font 88 x 4 ?", opts:["332", "342", "352", "362"], a:2},
+      {q:"Combien font 26 x 25 ?", opts:["550", "600", "650", "700"], a:2},
+      {q:"Un livre a 215 pages. Combien de pages dans 6 livres identiques ?", opts:["1290", "1300", "1310", "1320"], a:0},
+      {q:"Combien font 73 x 8 ?", opts:["564", "574", "584", "594"], a:2},
+      {q:"Combien font 14 x 35 ?", opts:["450", "470", "490", "510"], a:2},
+      {q:"Combien font 67 x 11 ?", opts:["717", "727", "737", "747"], a:2},
+      {q:"Un theatre a 32 rangees de 22 places. Combien de places en tout ?", opts:["694", "704", "714", "724"], a:1},
+      {q:"Combien font 52 x 6 ?", opts:["302", "312", "322", "332"], a:1},
+      {q:"Combien font 96 x 3 ?", opts:["278", "288", "298", "308"], a:1}
+    ],
+    francais: [
+      {q:"Quel mode grammatical exprime le doute ou l'incertitude ?", opts:["l'indicatif", "le subjonctif", "le conditionnel", "l'imperatif"], a:1},
+      {q:"Conjugue au subjonctif present : 'Il faut que je ___ (faire) mes devoirs.'", opts:["fais", "fasse", "ferais", "faisais"], a:1},
+      {q:"Quel temps exprime une action future dans le passe ?", opts:["le futur simple", "le futur anterieur", "le conditionnel present", "le passe simple"], a:2},
+      {q:"Conjugue au conditionnel present : 'Je ___ (vouloir) un cafe.'", opts:["veux", "voudrais", "voulais", "voudrai"], a:1},
+      {q:"Dans 'C'est le livre dont je t'ai parle', 'dont' est un pronom...", opts:["personnel", "relatif", "demonstratif", "possessif"], a:1},
+      {q:"Quel est le participe passe du verbe 'offrir' ?", opts:["offrit", "offert", "offri", "offrant"], a:1},
+      {q:"Conjugue au subjonctif present : 'Il faut que nous ___ (savoir) la verite.'", opts:["savons", "sachions", "sumes", "saurons"], a:1},
+      {q:"Quel temps est utilise dans une phrase comme 'Si j'avais su, je serais venu' ?", opts:["conditionnel passe", "plus-que-parfait", "futur anterieur", "present du conditionnel"], a:0},
+      {q:"Le verbe 'peindre' appartient a quel groupe ?", opts:["1er groupe", "2e groupe", "3e groupe", "4e groupe"], a:2},
+      {q:"Conjugue au conditionnel present : 'Ils ___ (devoir) arriver plus tot.'", opts:["doivent", "devaient", "devraient", "durent"], a:2},
+      {q:"Dans 'Je ne sais pas ce qu'il veut', 'ce qu'' est...", opts:["pronom relatif", "pronom interrogatif", "conjonction", "adverbe"], a:0},
+      {q:"Quel est le gerondif du verbe 'manger' ?", opts:["mangeant", "en mangeant", "mange", "avoir mange"], a:1},
+      {q:"Conjugue au subjonctif present : 'Il faut que vous ___ (prendre) le train.'", opts:["prenez", "preniez", "prit", "prendrez"], a:1},
+      {q:"Quelle est la voix passive du verbe 'manger' au present ?", opts:["est mange", "a mange", "mangeait", "sera mange"], a:0},
+      {q:"Dans 'Je doute qu'il vienne', quel mode est correct apres 'douter que' ?", opts:["indicatif", "subjonctif", "conditionnel", "imperatif"], a:1},
+      {q:"Conjugue au conditionnel passe : 'Elle ___ (pouvoir) reussir.'", opts:["a pu", "pourrait", "aurait pu", "puisse"], a:2},
+      {q:"Quel est le nom correspondant au verbe 'grandir' ?", opts:["grandeur", "croissance", "grandissement", "agrandissement"], a:0},
+      {q:"Dans 'Je te telephonerai des que j'arriverai', la subordonnee est...", opts:["relative", "circonstancielle de temps", "circonstancielle de cause", "completive"], a:1},
+      {q:"Conjugue au subjonctif present : 'Il faut qu'on ___ (aller) ensemble.'", opts:["va", "aille", "allait", "ira"], a:1},
+      {q:"Quel est le prefixe du mot 'repartir' ?", opts:["re", "partir", "r", "rep"], a:0},
+      {q:"Quel mode suit l'expression 'bien que' ?", opts:["indicatif", "subjonctif", "conditionnel", "imperatif"], a:1},
+      {q:"Conjugue au plus-que-parfait : 'Il ___ (manger) avant de sortir.'", opts:["a mange", "avait mange", "eut mange", "aurait mange"], a:1},
+      {q:"Dans 'Le garcon que j'ai vu', 'que' est...", opts:["pronom relatif COD", "pronom relatif COI", "adverbe", "conjonction"], a:0},
+      {q:"Quel est le suffixe du mot 'rapidement' ?", opts:["ment", "rapide", "idement", "ement"], a:0},
+      {q:"Conjugue au conditionnel present : 'Tu ___ (etre) plus heureux.'", opts:["es", "etais", "serais", "fus"], a:2},
+      {q:"Dans 'Elle chante mieux que moi', 'que moi' est...", opts:["comparatif", "superlatif", "complement", "sujet"], a:0},
+      {q:"Quel est le pluriel de 'un vitrail' ?", opts:["des vitrails", "des vitraux", "des vitrait", "des vitreaux"], a:1},
+      {q:"Conjugue au subjonctif present : 'Il faut qu'ils ___ (venir) a l'heure.'", opts:["viennent", "venaient", "viendront", "viendraient"], a:0},
+      {q:"Dans 'Il est parti afin que je puisse travailler', la subordonnee exprime...", opts:["le temps", "le but", "la cause", "la consequence"], a:1},
+      {q:"Quel est le feminin de 'sportif' ?", opts:["sportive", "sportife", "sportif", "sportisse"], a:0}
+    ],
+    dictation:[
+      {type:'dictation', q:"Écris le mot : valeur qui s'oppose au passage du courant", accept:["résistance","resistance"], hint:"unité : l'ohm"},
+      {type:'dictation', q:"Écris le mot : phénomène de déviation de la lumière dans l'eau", accept:["réfraction","refraction"], hint:"le crayon semble brisé"},
+      {type:'dictation', q:"Écris le mot : auteur de la pièce « Cyrano de Bergerac »", accept:["edmond rostand","rostand"], hint:"son prénom commence par E"},
+      {type:'dictation', q:"Écris le mot : formule mathématique E = mc²", accept:["e=mc2","e=mc²"], hint:"théorie de la relativité"},
+      {type:'dictation', q:"Écris le mot : figure à 12 côtés", accept:["dodécagone","dodecagone"], hint:"préfixe « dodéca » signifie 12"},
+      {type:'dictation', q:"Écris le mot : plus grand océan du monde", accept:["pacifique","océan pacifique","ocean pacifique"], hint:"son nom signifie « paisible »"},
+    ],
+    sciences: [
+      {q:"Quelle est l'unite de mesure de la force ?", opts:["le watt", "le newton", "le joule", "l'ampere"], a:1},
+      {q:"Quel physicien a decouvert les lois du mouvement ?", opts:["Einstein", "Newton", "Galilee", "Archimede"], a:1},
+      {q:"Quelle est la charge electrique d'un electron ?", opts:["positive", "negative", "neutre", "variable"], a:1},
+      {q:"Quel instrument mesure la tension electrique ?", opts:["l'amperemetre", "le voltmetre", "l'ohmmetre", "le multimetre"], a:1},
+      {q:"Quelle est la vitesse du son dans l'air (environ) ?", opts:["340 m/s", "500 m/s", "1 000 m/s", "150 m/s"], a:0},
+      {q:"Quelle loi dit que l'energie ne se perd ni ne se cree ?", opts:["principe d'Archimede", "loi de la conservation de l'energie", "loi de l'attraction", "principe d'inertie"], a:1},
+      {q:"Quel type de circuit electrique a un seul chemin pour le courant ?", opts:["circuit parallele", "circuit en serie", "circuit mixte", "circuit ouvert"], a:1},
+      {q:"Quel scientifique a decouvert la loi de la gravitation universelle ?", opts:["Pascal", "Newton", "Archimede", "Einstein"], a:1},
+      {q:"Quelle grandeur mesure l'intensite du courant electrique ?", opts:["la tension", "l'intensite", "la resistance", "la puissance"], a:1},
+      {q:"Quelle est la formule reliant la vitesse, la distance et le temps ?", opts:["v = d x t", "v = d / t", "v = t / d", "v = d + t"], a:1},
+      {q:"Quel phenomene est du a la reflexion de la lumiere ?", opts:["l'arc-en-ciel", "le miroir", "la diffraction", "la refraction"], a:1},
+      {q:"Quel element chimique est le principal composant du Soleil ?", opts:["l'oxygene", "l'hydrogene", "l'helium", "le carbone"], a:1},
+      {q:"Qu'est-ce qu'un levier ?", opts:["une machine simple", "un moteur", "une roue", "un engrenage"], a:0},
+      {q:"Quelle est la troisieme loi de Newton ?", opts:["principe d'inertie", "principe d'action-reaction", "principe de la gravitation", "principe de conservation"], a:1},
+      {q:"Quel gaz est utilise dans les ampoules a incandescence ?", opts:["l'argon", "l'oxygene", "l'azote", "le neon"], a:0},
+      {q:"Quel est le symbole de la resistance electrique ?", opts:["V", "A", "O", "W"], a:2},
+      {q:"Quelle planete a le plus de satellites naturels ?", opts:["Jupiter", "Saturne", "Uranus", "Neptune"], a:1},
+      {q:"Quelle force empeche un objet de glisser sur une surface ?", opts:["la gravite", "le poids", "la friction", "l'inertie"], a:2},
+      {q:"Quel appareil convertit l'energie mecanique en energie electrique ?", opts:["le moteur", "la generatrice", "la pile", "la batterie"], a:1},
+      {q:"Quelle est l'unite de la puissance electrique ?", opts:["le watt", "le volt", "l'ampere", "l'ohm"], a:0},
+      {q:"Quel phenomene explique pourquoi un crayon semble brise dans l'eau ?", opts:["la reflexion", "la refraction", "la diffraction", "l'absorption"], a:1},
+      {q:"Quelle est la premiere loi de Newton ?", opts:["F = ma", "principe d'inertie", "action-reaction", "gravitation"], a:1},
+      {q:"Quel metal conduit le mieux l'electricite ?", opts:["le fer", "le cuivre", "l'aluminium", "l'or"], a:1},
+      {q:"Combien de volts delivre une prise electrique domestique en France ?", opts:["110 V", "220 V", "230 V", "240 V"], a:2},
+      {q:"Quelle est la periode de revolution de la Terre autour du Soleil ?", opts:["365 jours", "365,25 jours", "366 jours", "360 jours"], a:1},
+      {q:"Quel est l'effet du courant electrique qui produit de la chaleur ?", opts:["effet Joule", "effet Hall", "effet photoelectrique", "effet Doppler"], a:0},
+      {q:"Quelle est l'unite de l'energie dans le systeme international ?", opts:["le watt", "le joule", "le newton", "le volt"], a:1},
+      {q:"Quel element est radioactif dans la nature ?", opts:["l'uranium", "le plomb", "le fer", "le carbone"], a:0},
+      {q:"Quelle est la pression atmospherique standard au niveau de la mer ?", opts:["1 013 hPa", "1 000 hPa", "760 hPa", "1 200 hPa"], a:0},
+      {q:"Quel scientifique a mis en evidence la pression atmospherique ?", opts:["Pascal", "Torricelli", "Boyle", "Archimede"], a:1}
+    ],
+    monde: [
+      {q:"En quelle annee la Seconde Guerre mondiale a-t-elle commence ?", opts:["1937", "1938", "1939", "1940"], a:2},
+      {q:"Qui etait le premier empereur romain ?", opts:["Jules Cesar", "Auguste", "Neron", "Caligula"], a:1},
+      {q:"En quelle annee le mur de Berlin est-il tombe ?", opts:["1987", "1988", "1989", "1990"], a:2},
+      {q:"Quel pays a ete le premier a accorder le droit de vote aux femmes ?", opts:["la France", "les Etats-Unis", "la Nouvelle-Zelande", "le Royaume-Uni"], a:2},
+      {q:"Quelle civilisation a invente le zero ?", opts:["les Grecs", "les Romains", "les Mayas", "les Egyptiens"], a:2},
+      {q:"Qui a prononce la phrase 'Je suis un homme' au Senat en 1964 ?", opts:["Martin Luther King", "Nelson Mandela", "Malcolm X", "John F. Kennedy"], a:2},
+      {q:"En quelle annee l'ONU a-t-elle ete fondee ?", opts:["1942", "1945", "1948", "1950"], a:1},
+      {q:"Quel empire etait dirige par Gengis Khan ?", opts:["ottoman", "romain", "mongol", "perse"], a:2},
+      {q:"Quel evenement a declenche la Premiere Guerre mondiale ?", opts:["l'assassinat de l'archiduc Francois-Ferdinand", "l'invasion de la Pologne", "la bataille de Verdun", "le traite de Versailles"], a:0},
+      {q:"Qui a ete le premier homme a marcher sur la Lune ?", opts:["Youri Gagarine", "Neil Armstrong", "Buzz Aldrin", "John Glenn"], a:1},
+      {q:"Quel pays a construit le premier chemin de fer souterrain (metro) ?", opts:["la France", "les Etats-Unis", "le Royaume-Uni", "l'Allemagne"], a:2},
+      {q:"Quelle ancienne civilisation a bati Machu Picchu ?", opts:["les Azteques", "les Mayas", "les Incas", "les Olmeques"], a:2},
+      {q:"En quelle annee l'apartheid a-t-il pris fin en Afrique du Sud ?", opts:["1990", "1991", "1992", "1994"], a:3},
+      {q:"Quel traite a cree l'Union europeenne en 1992 ?", opts:["traite de Rome", "traite de Maastricht", "traite d'Amsterdam", "traite de Lisbonne"], a:1},
+      {q:"Quel scientifique a formule la theorie de la relativite restreinte ?", opts:["Newton", "Einstein", "Planck", "Curie"], a:1},
+      {q:"Quelle guerre a oppose les Etats du Nord et du Sud aux Etats-Unis ?", opts:["guerre d'Independance", "guerre de Secession", "guerre de 1812", "guerre du Vietnam"], a:1},
+      {q:"Qui a ecrit 'Romeo et Juliette' ?", opts:["Moliere", "Victor Hugo", "William Shakespeare", "Charles Dickens"], a:2},
+      {q:"En quelle annee l'Union sovietique s'est-elle dissoute ?", opts:["1989", "1990", "1991", "1992"], a:2},
+      {q:"Quel pharaon egyptien a fait construire la plus grande pyramide ?", opts:["Ramsès II", "Kheops", "Toutankhamon", "Akhenaton"], a:1},
+      {q:"Quelle civilisation a invente la democratie ?", opts:["les Romains", "les Perses", "les Grecs", "les Egyptiens"], a:2},
+      {q:"Qui a decouvert le vaccin contre la rage ?", opts:["Fleming", "Pasteur", "Koch", "Jenner"], a:1},
+      {q:"En quelle annee la France a-t-elle aboli l'esclavage ?", opts:["1794", "1848", "1789", "1905"], a:1},
+      {q:"Quel explorateur a fait le premier tour du monde ?", opts:["Christophe Colomb", "Magellan", "Vasco de Gama", "Cook"], a:1},
+      {q:"Quel pays a offert la statue de la Liberte aux Etats-Unis ?", opts:["l'Espagne", "l'Angleterre", "la France", "l'Italie"], a:2},
+      {q:"Qui a ete le dernier roi de France avant la Revolution ?", opts:["Louis XV", "Louis XVI", "Louis XVIII", "Charles X"], a:1},
+      {q:"Quel conflit a eu lieu en Coree de 1950 a 1953 ?", opts:["la guerre de Coree", "la guerre du Vietnam", "la guerre froide", "la guerre du Pacifique"], a:0},
+      {q:"Quelle femme scientifique a decouvert le radium ?", opts:["Rosalind Franklin", "Marie Curie", "Lise Meitner", "Ada Lovelace"], a:1},
+      {q:"En quelle annee la Declaration universelle des droits de l'homme a-t-elle ete adoptee ?", opts:["1945", "1948", "1950", "1952"], a:1},
+      {q:"Quel pays a ete le berceau de la Renaissance ?", opts:["la France", "l'Espagne", "l'Italie", "l'Allemagne"], a:2},
+      {q:"Qui a peint la chapelle Sixtine ?", opts:["Leonard de Vinci", "Raphael", "Michel-Ange", "Donatello"], a:2}
+    ],
+    anglais: [
+      {q:"Complete : 'If I ___ (be) rich, I would travel the world.'", opts:["am", "was", "were", "be"], a:2},
+      {q:"Complete : 'The cake ___ (make) by my grandmother.'", opts:["is made", "is making", "makes", "made"], a:0},
+      {q:"Quel est le conditionnel de 'to go' dans 'I ___ if I had time' ?", opts:["would go", "will go", "went", "go"], a:0},
+      {q:"Complete (passif) : 'The window ___ (break) by the boy.'", opts:["was broken", "broke", "is breaking", "breaks"], a:0},
+      {q:"Complete : 'If it rains, I ___ (stay) home.'", opts:["would stay", "will stay", "stayed", "stay"], a:1},
+      {q:"Complete (voix passive) : 'English ___ (speak) all over the world.'", opts:["is speaking", "is spoken", "speaks", "spoke"], a:1},
+      {q:"Complete : 'If she ___ (study), she would pass the exam.'", opts:["studies", "studied", "will study", "would study"], a:1},
+      {q:"Complete : 'This book ___ (write) in 1920.'", opts:["wrote", "was written", "is written", "has written"], a:1},
+      {q:"Quel temps utilise-t-on dans la proposition 'if' du conditionnel de type 2 ?", opts:["present", "preterit", "futur", "plus-que-parfait"], a:1},
+      {q:"Complete : 'She ___ (tell) to wait outside.'", opts:["told", "was told", "tells", "is telling"], a:1},
+      {q:"Complete : 'If I had known, I ___ (come) earlier.'", opts:["would come", "would have come", "will come", "came"], a:1},
+      {q:"Complete : 'I wish I ___ (can) fly.'", opts:["can", "could", "will", "would"], a:1},
+      {q:"Complete : 'The letter ___ (send) yesterday.'", opts:["sent", "was sent", "is sent", "sends"], a:1},
+      {q:"Complete : 'If he ___ (arrive) on time, we would have seen him.'", opts:["arrived", "had arrived", "arrives", "would arrive"], a:1},
+      {q:"Complete : 'You ___ (should / to tell) the truth.'", opts:["should tell", "should told", "should to tell", "should telling"], a:0},
+      {q:"Complete : 'The house ___ (build) in 1999.'", opts:["built", "was built", "is built", "builds"], a:1},
+      {q:"Complete : 'If it snows, we ___ (stay) inside.'", opts:["stayed", "will stay", "would stay", "stay"], a:1},
+      {q:"Complete : 'He ___ (know) the answer if he had studied.'", opts:["would know", "would have known", "will know", "knows"], a:1},
+      {q:"Complete : 'This song ___ (play) on the radio every day.'", opts:["plays", "is played", "is playing", "played"], a:1},
+      {q:"Complete : 'I ___ (not / go) if I were you.'", opts:["wouldn't go", "won't go", "don't go", "didn't go"], a:0},
+      {q:"Complete : 'The students ___ (give) a test every week.'", opts:["are given", "give", "giving", "were given"], a:0},
+      {q:"Complete : 'If you heat ice, it ___ (melt).'", opts:["melted", "melts", "would melt", "will melt"], a:1},
+      {q:"Complete : 'Smoking ___ (not / allow) in this building.'", opts:["is not allowed", "does not allow", "not allowed", "allow"], a:0},
+      {q:"Complete : 'If they ___ (invite) me, I would have gone.'", opts:["invited", "had invited", "invite", "would invite"], a:1},
+      {q:"Complete : 'He acts as if he ___ (be) the boss.'", opts:["is", "was", "were", "had been"], a:2},
+      {q:"Complete : 'A new hospital ___ (open) next month.'", opts:["opens", "will be opened", "is opening", "opened"], a:1},
+      {q:"Complete : 'If I had more time, I ___ (learn) piano.'", opts:["would learn", "learn", "will learn", "learned"], a:0},
+      {q:"Complete : 'The package ___ (deliver) tomorrow.'", opts:["will deliver", "will be delivered", "delivers", "delivered"], a:1},
+      {q:"Complete : 'I would rather you ___ (stay) quiet.'", opts:["stay", "stayed", "staying", "will stay"], a:1},
+      {q:"Complete : 'By the time he arrived, the food ___ (already / eat).'", opts:["already ate", "had already been eaten", "was already eating", "is already eaten"], a:1}
+    ],
+    geographie: [
+      {q:"Quelle est la capitale de la Republique tcheque ?", opts:["Bratislava", "Prague", "Varsovie", "Budapest"], a:1},
+      {q:"Quel pays asiatique a pour capitale Teheran ?", opts:["la Turquie", "l'Irak", "l'Iran", "l'Afghanistan"], a:2},
+      {q:"Quelle mer est la plus grande du monde ?", opts:["la mer des Caraibes", "la mer de Chine meridionale", "la mer d'Arabie", "la mer Mediterranee"], a:1},
+      {q:"Quelle chaine de montagnes traverse le Maroc ?", opts:["l'Atlas", "le Rif", "les Alpes", "les Pyrenees"], a:0},
+      {q:"Quel est le pays le plus long du monde ?", opts:["le Bresil", "la Russie", "le Chili", "l'Inde"], a:2},
+      {q:"Quelle est la capitale de l'Indonesie ?", opts:["Jakarta", "Bali", "Surabaya", "Bandung"], a:0},
+      {q:"Quel pays d'Afrique possede le plus de langues officielles ?", opts:["l'Afrique du Sud", "le Nigeria", "l'Ethiopie", "le Kenya"], a:0},
+      {q:"Quelle est la capitale de l'Uruguay ?", opts:["Montevideo", "Buenos Aires", "Santiago", "Asuncion"], a:0},
+      {q:"Quel fleuve traverse Berlin et Prague ?", opts:["le Rhin", "la Vistule", "l'Elbe", "l'Oder"], a:2},
+      {q:"Quel est le plus grand parc national du monde ?", opts:["Yellowstone", "le parc national du Nord-Est du Groenland", "Kruger", "Serengeti"], a:1},
+      {q:"Quelle est la capitale de l'Ecosse ?", opts:["Londres", "Edimbourg", "Glasgow", "Cardiff"], a:1},
+      {q:"Quel pays d'Asie centrale a pour capitale Tachkent ?", opts:["le Kazakhstan", "l'Ouzbekistan", "le Turkmenistan", "le Kirghizistan"], a:1},
+      {q:"Quel detroit separe la France de l'Angleterre ?", opts:["le detroit de Gibraltar", "la Manche", "le Pas-de-Calais", "le detroit du Bosphore"], a:1},
+      {q:"Quel est le plus grand port d'Europe ?", opts:["Rotterdam", "Anvers", "Hambourg", "Marseille"], a:0},
+      {q:"Quelle est la capitale de la Slovaquie ?", opts:["Bratislava", "Prague", "Vienne", "Ljubljana"], a:0},
+      {q:"Quel pays africain est le plus industrialise ?", opts:["l'Egypte", "l'Afrique du Sud", "le Nigeria", "le Maroc"], a:1},
+      {q:"Quelle ligne imaginaire passe par le centre de la Terre ?", opts:["l'equateur", "le meridien", "l'axe terrestre", "le tropique"], a:2},
+      {q:"Quel desert se trouve au sud de l'Afrique ?", opts:["le Sahara", "le Namib", "le Kalahari", "le Gobi"], a:2},
+      {q:"Quelle est la capitale de l'Arabie saoudite ?", opts:["La Mecque", "Medine", "Riyad", "Djeddah"], a:2},
+      {q:"Quel est le plus profond ocean du monde ?", opts:["l'Atlantique", "le Pacifique", "l'Indien", "l'Arctique"], a:1},
+      {q:"Quel pays a une frontiere avec l'Espagne et la France ?", opts:["le Portugal", "Andorre", "le Maroc", "l'Italie"], a:1},
+      {q:"Quelle ile est partagee entre la Grece et la Turquie ?", opts:["la Crete", "Rhodes", "Chypre", "Samos"], a:2},
+      {q:"Quel est le plus grand estuaire d'Europe ?", opts:["la Gironde", "la Tamise", "l'Elbe", "le Tage"], a:0},
+      {q:"Quelle ville est la capitale de l'Etat de Californie ?", opts:["Los Angeles", "San Francisco", "Sacramento", "San Diego"], a:2},
+      {q:"Quel pays a pour capitale Muscat ?", opts:["les Emirats arabes unis", "Oman", "le Yemen", "le Qatar"], a:1},
+      {q:"Quel continent a le climat le plus sec ?", opts:["l'Afrique", "l'Australie", "l'Antarctique", "l'Asie"], a:2},
+      {q:"Quel fleuve separe le Bresil de l'Argentine ?", opts:["l'Amazone", "le Paraguay", "l'Uruguay", "l'Iguazu"], a:2},
+      {q:"Quelle est la plus grande ville d'Afrique par la population ?", opts:["Le Caire", "Lagos", "Kinshasa", "Johannesburg"], a:1},
+      {q:"Quel pays a le plus de pyramides au monde ?", opts:["l'Egypte", "le Mexique", "le Soudan", "le Guatemala"], a:2},
+      {q:"Quelle est la capitale du Sri Lanka ?", opts:["Colombo", "Kandy", "Sri Jayawardenepura Kotte", "Jaffna"], a:2}
+    ],
+    formes: [
+      {q:"Quel est le sinus d'un angle de 30 deg ?", opts:["0", "0,5", "1", "V3/2"], a:1},
+      {q:"Dans un triangle rectangle, le cote le plus long s'appelle...", opts:["la base", "la hauteur", "l'hypotenuse", "la mediane"], a:2},
+      {q:"Quel est le cosinus d'un angle de 60 deg ?", opts:["0", "0,5", "1", "V3/2"], a:1},
+      {q:"Quelle est la formule de l'aire d'un trapeze ?", opts:["(B+b)xh/2", "Bxh", "(Bxh)/2", "(B+b)xh"], a:0},
+      {q:"La tangente d'un angle est egale a...", opts:["sin/cos", "cos/sin", "1/sin", "1/cos"], a:0},
+      {q:"Quel theoreme permet de calculer la longueur d'un cote dans un triangle rectangle ?", opts:["Pythagore", "Thales", "Al-Kashi", "Euclide"], a:0},
+      {q:"Quel est le volume d'une sphere de rayon R ?", opts:["4piR2", "(4/3)piR3", "2piR", "piR2h"], a:1},
+      {q:"Combien d'axes de symetrie possede un triangle equilateral ?", opts:["1", "2", "3", "4"], a:2},
+      {q:"Quelle transformation conserve les angles mais change la taille ?", opts:["rotation", "symetrie", "homohetie", "translation"], a:2},
+      {q:"Dans un triangle rectangle, cos(A) = cote adjacent / ... ?", opts:["cote oppose", "hypotenuse", "cote adjacent", "somme des cotes"], a:1},
+      {q:"Quel est le nombre d'or (phi) approximatif ?", opts:["1,414", "1,618", "2,718", "3,141"], a:1},
+      {q:"Deux triangles sont semblables si leurs angles sont...", opts:["sommants", "egaux deux a deux", "supplementaires", "complementaires"], a:1},
+      {q:"Quelle est la somme des angles d'un pentagone ?", opts:["360 deg", "450 deg", "540 deg", "720 deg"], a:2},
+      {q:"Quelle est la formule du volume d'un cylindre ?", opts:["piR2h", "piR2", "2piRh", "(4/3)piR3"], a:0},
+      {q:"Un angle inscrit dans un cercle est egal a...", opts:["la moitie de l'angle au centre", "l'angle au centre", "le double de l'angle au centre", "un quart de l'angle au centre"], a:0},
+      {q:"Quel est le cosinus de 90 deg ?", opts:["0", "1", "-1", "infini"], a:0},
+      {q:"Quelle est l'aire laterale d'un cone de rayon R et de generatrice g ?", opts:["piRg", "piR2", "2piRg", "piR2g"], a:0},
+      {q:"Dans un parallelogramme, les diagonales se coupent...", opts:["en leur milieu", "a angle droit", "au quart", "a l'exterieur"], a:0},
+      {q:"Quel est l'angle entre les diagonales d'un carre ?", opts:["45 deg", "60 deg", "90 deg", "180 deg"], a:2},
+      {q:"Combien de faces a un icosaedre ?", opts:["12", "16", "20", "24"], a:2},
+      {q:"Quel est le volume d'un cone de rayon R et hauteur h ?", opts:["piR2h", "(1/3)piR2h", "2piRh", "(4/3)piR2h"], a:1},
+      {q:"Si deux droites sont paralleles a une meme troisieme, elles sont...", opts:["perpendiculaires", "paralleles entre elles", "secantes", "inverses"], a:1},
+      {q:"Quel est le sinus de 45 deg ?", opts:["V2/2", "1/2", "V3/2", "1"], a:0},
+      {q:"Un triangle rectangle a un angle de 30 deg. L'autre angle aigu mesure...", opts:["30 deg", "45 deg", "60 deg", "90 deg"], a:2},
+      {q:"Quelle est la distance entre un point et une droite ?", opts:["la perpendiculaire", "la parallele", "l'oblique", "la bissectrice"], a:0},
+      {q:"Deux droites qui se coupent forment des angles...", opts:["adjacents", "opposes par le sommet", "complementaires", "supplementaires"], a:1},
+      {q:"Quel est l'homologue du centre dans un cercle pour une sphere ?", opts:["le centre", "le pole", "l'equateur", "le rayon"], a:0},
+      {q:"Combien de diagonales possede un pentagone regulier ?", opts:["3", "4", "5", "6"], a:2},
+      {q:"Quelle est l'aire d'un triangle equilateral de cote c ?", opts:["c2V3/4", "c2/2", "c2V3/2", "c2"], a:0},
+      {q:"Quel est le sinus de 180 deg ?", opts:["0", "1", "-1", "infini"], a:0}
+    ],
+    globe: [
+      {q:"Quelle est la capitale de la Nouvelle-Zelande ?", opts:["Auckland", "Christchurch", "Wellington", "Dunedin"], a:2},
+      {q:"Quel pays est le plus grand exportateur de gaz naturel ?", opts:["la Russie", "le Qatar", "les Etats-Unis", "la Norvege"], a:0},
+      {q:"Quel pays africain est le plus grand producteur d'or ?", opts:["l'Afrique du Sud", "le Ghana", "le Mali", "la Tanzanie"], a:0},
+      {q:"Quelle ville est surnommee 'la ville qui ne dort jamais' ?", opts:["Tokyo", "New York", "Londres", "Shanghai"], a:1},
+      {q:"Quelle est la capitale du Bangladesh ?", opts:["Dhaka", "Chittagong", "Khulna", "Rajshahi"], a:0},
+      {q:"Quel pays a le plus grand nombre de fuseaux horaires ?", opts:["la France", "les Etats-Unis", "la Russie", "le Royaume-Uni"], a:0},
+      {q:"Quel detroit separe l'Inde du Sri Lanka ?", opts:["detroit de Palk", "detroit de Malacca", "detroit de Bosphore", "detroit d'Ormuz"], a:0},
+      {q:"Quelle est la plus grande ile de la Polynesie francaise ?", opts:["Tahiti", "Moorea", "Bora Bora", "Raiatea"], a:0},
+      {q:"Quel pays d'Amerique centrale a pour capitale San Jose ?", opts:["le Costa Rica", "le Nicaragua", "le Panama", "le Honduras"], a:0},
+      {q:"Quel pays est le plus grand importateur de petrole au monde ?", opts:["la Chine", "les Etats-Unis", "l'Inde", "le Japon"], a:1},
+      {q:"Quelle est la capitale du Kenya ?", opts:["Mombasa", "Nairobi", "Kisumu", "Dar es Salam"], a:1},
+      {q:"Quel pays d'Asie du Sud-Est est un archipel de plus de 7 000 iles ?", opts:["l'Indonesie", "les Philippines", "la Malaisie", "le Japon"], a:1},
+      {q:"Quel pays africain etait connu sous le nom de Haute-Volta ?", opts:["le Benin", "le Burkina Faso", "le Mali", "le Niger"], a:1},
+      {q:"Quelle est la capitale de l'Azerbaidjan ?", opts:["Tbilissi", "Erevan", "Bakou", "Teheran"], a:2},
+      {q:"Quel pays a le plus de reserves d'eau douce ?", opts:["le Bresil", "la Russie", "le Canada", "les Etats-Unis"], a:0},
+      {q:"Quelle ville d'Australie est la plus peuplee ?", opts:["Canberra", "Melbourne", "Sydney", "Brisbane"], a:2},
+      {q:"Quel pays est le plus petit d'Asie ?", opts:["Singapour", "les Maldives", "Bahrein", "Brunei"], a:1},
+      {q:"Quel fleuve traverse la ville de Venise ?", opts:["le Po", "l'Adige", "le Tibre", "aucun, Venise est sur une lagune"], a:3},
+      {q:"Quelle est la capitale du Mozambique ?", opts:["Maputo", "Beira", "Nampula", "Tete"], a:0},
+      {q:"Quel pays europeen a le plus de cotes ?", opts:["la Norvege", "la Grece", "le Royaume-Uni", "la Croatie"], a:0},
+      {q:"Quel desert s'etend en Mongolie et en Chine ?", opts:["le Gobi", "le Sahara", "le Kalahari", "le Taklamakan"], a:0},
+      {q:"Quelle est la capitale de la Mongolie ?", opts:["Oulan-Bator", "Pekin", "Astana", "Tachkent"], a:0},
+      {q:"Quel pays a la plus grande densite de population ?", opts:["Monaco", "Singapour", "Hong Kong", "Bahrein"], a:0},
+      {q:"Quelle ile de la mer des Caraibes est partagee entre Haiti et la Republique dominicaine ?", opts:["Cuba", "Porto Rico", "Hispaniola", "la Jamaique"], a:2},
+      {q:"Quel pays a pour capitale N'Djamena ?", opts:["le Cameroun", "le Tchad", "le Niger", "le Mali"], a:1},
+      {q:"Quelle chaine de montagnes traverse la Siberie ?", opts:["l'Oural", "les monts de Siberie orientale", "l'Altaï", "les monts Stanovoï"], a:1},
+      {q:"Quel pays est le plus grand producteur de cacao ?", opts:["la Cote d'Ivoire", "le Ghana", "l'Indonesie", "le Bresil"], a:0},
+      {q:"Quelle est la capitale de la Bielorussie ?", opts:["Minsk", "Kiev", "Varsovie", "Vilnius"], a:0},
+      {q:"Quel pays a la forme la plus longue et la plus etroite ?", opts:["le Chili", "la Norvege", "le Vietnam", "l'Italie"], a:0},
+      {q:"Quel pays insulaire est situe entre l'Inde et le Myanmar ?", opts:["le Sri Lanka", "le Bangladesh", "les Maldives", "l'Indonesie"], a:0}
+    ],
+  },
+  E: {
+    maths: [
+      {q:"Resous : 3x^2 - 12 = 0, que valent x ?", opts:["2 et -2", "3 et -3", "4 et -4", "6 et -6"], a:0},
+      {q:"Quelle est la moyenne ponderee de (3, coeff 2) et (7, coeff 3) ?", opts:["5", "5,2", "5,4", "5,6"], a:2},
+      {q:"Resous : 5x - 3 = 2x + 9, combien vaut x ?", opts:["2", "3", "4", "5"], a:2},
+      {q:"Combien font (-15) + (-8) - (-3) ?", opts:["-20", "-26", "-10", "-6"], a:0},
+      {q:"Quelle est la variance de la serie 1, 3, 5, 7, 9 ?", opts:["6", "8", "10", "12"], a:1},
+      {q:"Resous : 2(x - 3) + 4 = 10, combien vaut x ?", opts:["4", "5", "6", "7"], a:2},
+      {q:"Combien font 7^0 (7 puissance 0) ?", opts:["0", "1", "7", "-7"], a:1},
+      {q:"Quelle est l'equation de la droite passant par (0, 2) et (2, 6) ?", opts:["y = x + 2", "y = 2x + 2", "y = 3x + 2", "y = x + 6"], a:1},
+      {q:"Combien font (2x + 3)(x - 1) developpe ?", opts:["2x2 + x - 3", "2x2 + 5x - 3", "2x2 + x + 3", "2x2 - x - 3"], a:0},
+      {q:"Quel est l'ecart-type de la serie 4, 4, 4, 4 ?", opts:["0", "1", "2", "4"], a:0},
+      {q:"Resous : x^2 + 5x + 6 = 0, quelles sont les solutions ?", opts:["-2 et -3", "2 et 3", "-1 et -6", "1 et 6"], a:0},
+      {q:"Combien font 5^-2 (5 puissance -2) ?", opts:["-25", "1/25", "1/5", "25"], a:1},
+      {q:"Quelle est la derivee de f(x) = 3x^2 + 2x - 5 ?", opts:["6x + 2", "3x + 2", "6x - 5", "3x^2 + 2"], a:0},
+      {q:"Quelle est la mediane de la serie : 2, 5, 8, 12, 15, 18 ?", opts:["8", "9", "10", "12"], a:2},
+      {q:"Resous le systeme : x + y = 10, x - y = 4. Que valent x et y ?", opts:["x=7, y=3", "x=6, y=4", "x=8, y=2", "x=5, y=5"], a:0},
+      {q:"Combien font log10(100) ?", opts:["1", "2", "3", "10"], a:1},
+      {q:"Quel est le coefficient directeur de la droite y = -4x + 7 ?", opts:["7", "-4", "4", "-7"], a:1},
+      {q:"Combien font 8^(2/3) ?", opts:["2", "4", "8", "16"], a:1},
+      {q:"Quelle est la somme des 10 premiers nombres entiers ?", opts:["45", "50", "55", "60"], a:2},
+      {q:"Resous : |x - 3| = 7, que valent x ?", opts:["4 et 10", "-4 et 10", "3 et 7", "-7 et 7"], a:1},
+      {q:"Quelle est la probabilite d'obtenir un 6 avec un de a 6 faces ?", opts:["1/2", "1/3", "1/6", "5/6"], a:2},
+      {q:"Quelle est l'image de 2 par la fonction f(x) = x^2 - 3x + 1 ?", opts:["-1", "1", "-3", "3"], a:0},
+      {q:"Combien font 3V2 x 2V2 ?", opts:["6V2", "6", "12", "12V2"], a:2},
+      {q:"Quel est l'antecedent de 0 pour f(x) = 5x - 15 ?", opts:["-3", "3", "5", "0"], a:1},
+      {q:"Quelle est la limite de 1/x quand x tend vers l'infini ?", opts:["0", "1", "infini", "-infini"], a:0},
+      {q:"Combien de solutions a l'equation x^2 + 1 = 0 dans R ?", opts:["0", "1", "2", "une infinite"], a:0},
+      {q:"Resous : 3x - 7 >= 5, quel est l'ensemble des solutions ?", opts:["x >= 4", "x >= 2", "x <= 4", "x <= 2"], a:0},
+      {q:"Quelle est la forme factorisee de x^2 - 9 ?", opts:["(x-3)^2", "(x-3)(x+3)", "(x+9)(x-9)", "(x+3)^2"], a:1},
+      {q:"Combien font 2V9 + 3V4 ?", opts:["9", "12", "15", "18"], a:1},
+      {q:"Une urne contient 4 boules rouges et 6 bleues. Quelle est la probabilite de tirer une rouge ?", opts:["2/5", "3/5", "1/5", "4/5"], a:0}
+    ],
+    multiplication: [
+      {q:"Combien font 256 x 8 ?", opts:["1 948", "2 048", "2 148", "2 248"], a:1},
+      {q:"Combien font 143 x 7 ?", opts:["981", "991", "1 001", "1 011"], a:2},
+      {q:"Combien font 324 x 5 ?", opts:["1 520", "1 580", "1 600", "1 620"], a:3},
+      {q:"Combien font 97 x 13 ?", opts:["1 201", "1 241", "1 261", "1 281"], a:2},
+      {q:"Combien font 512 x 4 ?", opts:["1 048", "2 048", "3 048", "4 048"], a:1},
+      {q:"Combien font 78 x 24 ?", opts:["1 672", "1 772", "1 872", "1 972"], a:2},
+      {q:"Combien font 186 x 9 ?", opts:["1 574", "1 584", "1 674", "1 684"], a:2},
+      {q:"Combien font 43 x 67 ?", opts:["2 781", "2 801", "2 851", "2 881"], a:2},
+      {q:"Combien font 345 x 6 ?", opts:["1 870", "1 970", "2 070", "2 170"], a:2},
+      {q:"Combien font 222 x 15 ?", opts:["3 130", "3 230", "3 330", "3 430"], a:2},
+      {q:"Combien font 59 x 14 ?", opts:["786", "796", "826", "856"], a:2},
+      {q:"Combien font 711 x 3 ?", opts:["2 033", "2 133", "2 233", "2 333"], a:1},
+      {q:"Combien font 84 x 26 ?", opts:["2 084", "2 104", "2 184", "2 284"], a:2},
+      {q:"Une citerne contient 375 litres. Combien de litres dans 24 citernes ?", opts:["8 500 L", "9 000 L", "9 500 L", "10 000 L"], a:1},
+      {q:"Combien font 147 x 12 ?", opts:["1 664", "1 754", "1 764", "1 864"], a:2},
+      {q:"Combien font 208 x 32 ?", opts:["6 256", "6 556", "6 656", "7 656"], a:2},
+      {q:"Combien font 95 x 17 ?", opts:["1 585", "1 595", "1 605", "1 615"], a:2},
+      {q:"Un avion parcourt 925 km/h. Combien de km en 6 heures ?", opts:["5 250 km", "5 400 km", "5 550 km", "5 650 km"], a:2},
+      {q:"Combien font 63 x 42 ?", opts:["2 446", "2 546", "2 646", "2 746"], a:2},
+      {q:"Combien font 174 x 5 ?", opts:["750", "820", "840", "870"], a:3},
+      {q:"Combien font 239 x 7 ?", opts:["1 573", "1 593", "1 673", "1 773"], a:2},
+      {q:"Combien font 56 x 38 ?", opts:["2 028", "2 128", "2 228", "2 328"], a:1},
+      {q:"Combien font 409 x 6 ?", opts:["2 254", "2 354", "2 454", "2 554"], a:2},
+      {q:"Un paquet de 12 cannettes coute 5,40 euros. Combien coute une cannette ?", opts:["0,38 euro", "0,42 euro", "0,45 euro", "0,50 euro"], a:2},
+      {q:"Combien font 132 x 11 ?", opts:["1 342", "1 442", "1 452", "1 462"], a:2},
+      {q:"Combien font 77 x 14 ?", opts:["1 058", "1 068", "1 078", "1 088"], a:2},
+      {q:"Combien font 301 x 9 ?", opts:["2 609", "2 709", "2 809", "2 909"], a:1},
+      {q:"Combien font 48 x 35 ?", opts:["1 580", "1 600", "1 680", "1 780"], a:2},
+      {q:"Combien font 526 x 4 ?", opts:["2 004", "2 064", "2 104", "2 204"], a:2},
+      {q:"Une usine produit 1 280 pieces par jour. Combien en 25 jours ?", opts:["30 000", "31 000", "32 000", "33 000"], a:2}
+    ],
+    francais: [
+      {q:"Dans 'Je pense donc je suis', 'donc' est une conjonction de...", opts:["coordination", "subordination", "opposition", "cause"], a:0},
+      {q:"Quelle preposition complete correctement : 'Il est passionne ___ musique.'", opts:["par", "pour", "de", "en"], a:2},
+      {q:"Dans 'Bien qu'il pleuve, je sors', 'bien que' exprime...", opts:["la cause", "la consequence", "l'opposition", "le temps"], a:2},
+      {q:"Conjugue au subjonctif present : 'Il faut que tu ___ (partir) avant la nuit.'", opts:["partes", "partis", "partais", "partirais"], a:0},
+      {q:"'Cependant', 'neanmoins', 'pourtant' sont des connecteurs...", opts:["logiques d'opposition", "de cause", "de consequence", "de temps"], a:0},
+      {q:"Complete : 'Je me souviens ___ cet evenement.'", opts:["pour", "par", "de", "sur"], a:2},
+      {q:"Quelle est la fonction de 'facilement' dans 'Il gagne facilement' ?", opts:["adjectif", "adverbe", "nom", "pronom"], a:1},
+      {q:"Dans 'Le train part a midi, c'est-a-dire dans une heure', 'c'est-a-dire' est...", opts:["une conjonction", "une locution explicative", "un adverbe", "une preposition"], a:1},
+      {q:"Complete : 'Cette maison est ___ vendre.'", opts:["pour", "sur", "a", "de"], a:2},
+      {q:"Quel est le mode du verbe dans 'Je souhaite qu'il vienne' ?", opts:["indicatif", "subjonctif", "conditionnel", "imperatif"], a:1},
+      {q:"Dans 'Il court si vite qu'il a gagne', 'si... que' exprime...", opts:["la comparaison", "la consequence", "la cause", "le temps"], a:1},
+      {q:"Complete : 'Nous sommes fiers ___ nos enfants.'", opts:["pour", "sur", "de", "a"], a:2},
+      {q:"Quel est le role de 'or' dans 'Il dit la verite, or il ment' ?", opts:["opposition", "addition", "cause", "consequence"], a:0},
+      {q:"Complete : 'Le livre ___ lequel je t'ai parle.'", opts:["auquel", "duquel", "sur lequel", "dans lequel"], a:1},
+      {q:"'Parce que', 'puisque', 'car' sont des connecteurs de...", opts:["cause", "consequence", "opposition", "temps"], a:0},
+      {q:"Complete : 'Il a reussi ___ des efforts acharnes.'", opts:["par", "pour", "grace a", "a cause de"], a:2},
+      {q:"Dans 'Je ne sais pas s'il viendra', 'si' est une conjonction de...", opts:["temps", "condition", "interrogation indirecte", "opposition"], a:2},
+      {q:"Complete : 'Etre doue ___ quelque chose.'", opts:["pour", "a", "de", "en"], a:0},
+      {q:"Quel est le registre de langue de 'bagnole' par rapport a 'voiture' ?", opts:["soutenu", "courant", "familier", "argotique"], a:2},
+      {q:"Dans 'A moins qu'il ne pleuve', 'a moins que' exprime...", opts:["la cause", "la condition negative", "la consequence", "le temps"], a:1},
+      {q:"Complete : 'Il habite ___ Paris.'", opts:["dans", "sur", "a", "en"], a:2},
+      {q:"Quel est le complement du nom dans 'Un chapeau de paille' ?", opts:["chapeau", "paille", "de paille", "un chapeau"], a:2},
+      {q:"'Afin que', 'pour que', 'de peur que' expriment...", opts:["le but", "la cause", "la consequence", "l'opposition"], a:0},
+      {q:"Complete : 'Je suis ___ Paris depuis 5 ans.'", opts:["a", "dans", "sur", "en"], a:0},
+      {q:"Dans 'Peut-etre viendra-t-il', 'peut-etre' est suivi de l'inversion car c'est un...", opts:["adverbe en tete de phrase", "pronom", "conjonction", "verbe"], a:0},
+      {q:"Quelle est la fonction de 'me' dans 'Il me parle' ?", opts:["COD", "COI", "sujet", "attribut"], a:1},
+      {q:"'Quoique' et 'quoi que' : lequel signifie 'bien que' ?", opts:["quoique", "quoi que", "les deux", "aucun"], a:0},
+      {q:"Complete : 'Il voyage ___ train.'", opts:["dans", "sur", "en", "par"], a:2},
+      {q:"Dans 'C'est un homme de bien', 'de bien' est un complement...", opts:["du nom", "de l'adjectif", "du verbe", "de phrase"], a:0},
+      {q:"Quelle est la nuance entre 'sentir' et 'se sentir' ?", opts:["aucune", "sens different", "reflechi vs non reflechi", "passif vs actif"], a:2}
+    ],
+    dictation:[
+      {type:'dictation', q:"Écris le mot : scientifique qui a découvert le noyau atomique", accept:["rutherford"], hint:"il a travaillé avec l'or"},
+      {type:'dictation', q:"Écris le mot : composé chimique de formule H2SO4", accept:["acide sulfurique"], hint:"un acide très fort"},
+      {type:'dictation', q:"Écris le mot : procédé de division cellulaire en 2 cellules identiques", accept:["mitose"], hint:"les chromosomes se divisent"},
+      {type:'dictation', q:"Écris le mot : opposition rhétorique de « thèse »", accept:["antithèse","antithese"], hint:"préfixe « anti » signifie contre"},
+      {type:'dictation', q:"Écris le mot : ensemble des êtres vivants dans un milieu", accept:["écosystème","ecosysteme"], hint:"« éco » signifie maison en grec"},
+      {type:'dictation', q:"Écris le mot : principe de la relativité restreinte d'Einstein", accept:["e=mc2","e=mc²"], hint:"l'énergie égale masse par vitesse de la lumière au carré"},
+    ],
+    sciences: [
+      {q:"Combien de protons possede un atome de carbone ?", opts:["4", "6", "8", "12"], a:1},
+      {q:"Quel est le nombre d'Avogadro (molecules par mole) ?", opts:["6,022 x 10^23", "3,14 x 10^23", "1,602 x 10^23", "2,998 x 10^23"], a:0},
+      {q:"Quelle est la formule chimique de l'eau ?", opts:["H2O", "CO2", "NaCl", "CH4"], a:0},
+      {q:"Quel atome est le plus petit ?", opts:["l'hydrogene", "l'helium", "le lithium", "le carbone"], a:0},
+      {q:"Quelle est la charge d'un proton ?", opts:["positive", "negative", "neutre", "variable"], a:0},
+      {q:"Quelle est la definition d'une mole ?", opts:["6,022 x 10^23 entites", "1 000 grammes", "1 litre de gaz", "1 atome-gramme"], a:0},
+      {q:"Quelle est la masse molaire de l'eau (H2O) ?", opts:["16 g/mol", "18 g/mol", "20 g/mol", "22 g/mol"], a:1},
+      {q:"Quel type de liaison implique un don d'electrons ?", opts:["covalente", "ionique", "metallique", "hydrogene"], a:1},
+      {q:"Quel est le pH d'une solution acide ?", opts:["< 7", "= 7", "> 7", "= 0"], a:0},
+      {q:"Quelle est la formule du dioxyde de carbone ?", opts:["CO", "CO2", "C2O", "C2O2"], a:1},
+      {q:"Quel element est un gaz rare ?", opts:["l'oxygene", "l'azote", "l'argon", "le chlore"], a:2},
+      {q:"Quelle est la difference entre un atome et une molecule ?", opts:["un atome est plus petit", "une molecule est un groupe d'atomes", "aucune", "un atome est vivant"], a:1},
+      {q:"Quelle est la configuration electronique de l'oxygene ?", opts:["1s2 2s2 2p4", "1s2 2s2 2p6", "1s2 2s2 2p2", "1s2 2s2 2p3"], a:0},
+      {q:"Quel scientifique a decouvert le noyau atomique ?", opts:["Rutherford", "Bohr", "Thomson", "Chadwick"], a:0},
+      {q:"Quelle est la formule de l'acide sulfurique ?", opts:["H2SO4", "H2SO3", "HNO3", "HCl"], a:0},
+      {q:"Quel type de reaction degage de la chaleur ?", opts:["exothermique", "endothermique", "neutre", "isothermique"], a:0},
+      {q:"Quel element chimique a pour symbole 'Fe' ?", opts:["le fluor", "le fer", "le francium", "le phosphore"], a:1},
+      {q:"Quelle est la loi de conservation de la matiere en chimie ?", opts:["Lavoisier", "Dalton", "Boyle", "Charles"], a:0},
+      {q:"Quel est le nombre de masse de l'isotope le plus courant du carbone ?", opts:["12", "13", "14", "16"], a:0},
+      {q:"Quelle est la formule du chlorure de sodium ?", opts:["NaCl", "NaCl2", "Na2Cl", "ClNa"], a:0},
+      {q:"Quel gaz est produit lors de la respiration cellulaire ?", opts:["l'oxygene", "l'azote", "le dioxyde de carbone", "l'hydrogene"], a:2},
+      {q:"Quel acide amine est essentiel pour l'homme ?", opts:["la lysine", "l'alanine", "la glycine", "l'acide glutamique"], a:0},
+      {q:"Quel est le point de fusion de la glace en deg C ?", opts:["0 deg C", "32 deg C", "-10 deg C", "100 deg C"], a:0},
+      {q:"Quel element est le principal composant du noyau terrestre ?", opts:["le fer et le nickel", "le silicium et l'oxygene", "l'aluminium et le magnesium", "le calcium et le sodium"], a:0},
+      {q:"Quelle est la formule chimique du methane ?", opts:["CH4", "C2H6", "C2H4", "CH3OH"], a:0},
+      {q:"Quel est le plus grand organite d'une cellule vegetale ?", opts:["le noyau", "la vacuole", "le chloroplaste", "la mitochondrie"], a:1},
+      {q:"Quelle est la periode du carbone 14 ?", opts:["5 730 ans", "1 000 ans", "10 000 ans", "100 000 ans"], a:0},
+      {q:"Quel gaz est utilise dans les extincteurs ?", opts:["l'oxygene", "le dioxyde de carbone", "l'azote", "l'helium"], a:1},
+      {q:"Quelle est la formule de l'ammoniac ?", opts:["NH3", "NH2", "N2H", "NH4"], a:0},
+      {q:"Quel phenomene se produit dans une pile electrochimique ?", opts:["oxydo-reduction", "evaporation", "distillation", "fusion"], a:0}
+    ],
+    monde: [
+      {q:"Quel pays est le plus grand producteur de petrole au monde ?", opts:["les Etats-Unis", "l'Arabie saoudite", "la Russie", "l'Irak"], a:0},
+      {q:"Quelle organisation internationale a ete fondee en 1945 pour maintenir la paix ?", opts:["l'OTAN", "l'ONU", "l'Union europeenne", "la Croix-Rouge"], a:1},
+      {q:"Quel pays a teste la premiere bombe atomique ?", opts:["les Etats-Unis", "l'URSS", "l'Allemagne", "le Japon"], a:0},
+      {q:"Quel est le pays le plus endette du monde ?", opts:["les Etats-Unis", "le Japon", "la Chine", "l'Inde"], a:0},
+      {q:"Quelle conference a divise l'Afrique en colonies ?", opts:["conference de Berlin (1885)", "conference de Yalta", "conference de Vienne", "congres de Vienne"], a:0},
+      {q:"Quel pays est le plus grand donateur d'aide humanitaire ?", opts:["les Etats-Unis", "l'Allemagne", "le Royaume-Uni", "le Japon"], a:0},
+      {q:"Quel traite a mis fin a la guerre de Cent Ans ?", opts:["traite de Paris", "traite de Troyes", "traite de Bretigny", "traite d'Amiens"], a:1},
+      {q:"Quelle est la plus grande puissance economique d'Afrique ?", opts:["le Nigeria", "l'Afrique du Sud", "l'Egypte", "l'Algerie"], a:0},
+      {q:"Quel conflit est considere comme le premier conflit mondial ?", opts:["la guerre de Sept Ans", "la Premiere Guerre mondiale", "la guerre du Peloponnese", "les guerres napoleoniennes"], a:0},
+      {q:"Quel pays a ete le dernier a rejoindre l'Union europeenne ?", opts:["la Croatie", "la Bulgarie", "la Roumanie", "la Slovenie"], a:0},
+      {q:"Quelle est la devise de la Republique francaise ?", opts:["Liberte, Egalite, Fraternite", "Travail, Famille, Patrie", "Unite, Progres, Justice", "Honneur et Patrie"], a:0},
+      {q:"Quel pays utilise le plus l'energie nucleaire en proportion ?", opts:["la France", "les Etats-Unis", "le Japon", "la Suede"], a:0},
+      {q:"Quelle guerre a oppose la Russie a l'Ukraine recemment ?", opts:["guerre du Donbass", "guerre de Crimee", "guerre russo-ukrainienne", "la Seconde Guerre mondiale"], a:2},
+      {q:"Quel pays a le plus grand nombre de prisonniers politiques ?", opts:["la Chine", "la Russie", "la Coree du Nord", "l'Iran"], a:0},
+      {q:"Quelle est la plus grande organisation de defense des droits de l'homme ?", opts:["Amnesty International", "la Croix-Rouge", "Human Rights Watch", "Medecins sans frontieres"], a:2},
+      {q:"Quel evenement a marque le debut de la mondialisation moderne ?", opts:["la decouverte de l'Amerique", "la Revolution industrielle", "la chute du mur de Berlin", "la creation de l'ONU"], a:1},
+      {q:"Quel pays est le plus grand exportateur de ble ?", opts:["la Russie", "les Etats-Unis", "le Canada", "l'Ukraine"], a:0},
+      {q:"Quel pays a la plus grande biodiversite ?", opts:["le Bresil", "la Colombie", "l'Indonesie", "le Mexique"], a:0},
+      {q:"Quelle est la plus grande place financiere du monde ?", opts:["New York", "Londres", "Tokyo", "Hong Kong"], a:0},
+      {q:"Quel organisme regule le commerce mondial ?", opts:["l'OMC", "le FMI", "la Banque mondiale", "l'OCDE"], a:0},
+      {q:"Quel pays a le plus grand nombre de refugies ?", opts:["la Syrie", "l'Afghanistan", "le Soudan du Sud", "le Myanmar"], a:0},
+      {q:"Quelle periode historique a suivi la chute de l'Empire romain ?", opts:["le Moyen Age", "la Renaissance", "les Temps modernes", "l'Antiquite tardive"], a:0},
+      {q:"Quel pays a le PIB par habitant le plus eleve ?", opts:["la Norvege", "la Suisse", "le Luxembourg", "le Qatar"], a:2},
+      {q:"Quelle guerre a oppose le Royaume-Uni a l'Argentine en 1982 ?", opts:["guerre des Malouines", "guerre des Falklands", "guerre de la Frontiere", "conflit des Caraibes"], a:0},
+      {q:"Quel pays a le plus de centrales nucleaires ?", opts:["les Etats-Unis", "la France", "le Japon", "la Russie"], a:0},
+      {q:"Quelle est la plus ancienne democratie du monde ?", opts:["la Grece", "l'Islande", "le Royaume-Uni", "les Etats-Unis"], a:0},
+      {q:"Quel pays a le taux de chomage le plus bas ?", opts:["le Japon", "la Suisse", "la Norvege", "le Qatar"], a:3},
+      {q:"Quelle catastrophe naturelle a frappe Haiti en 2010 ?", opts:["un tsunami", "un ouragan", "un seisme", "une eruption volcanique"], a:2},
+      {q:"Quel pays a le plus grand reseau ferroviaire ?", opts:["les Etats-Unis", "la Chine", "la Russie", "l'Inde"], a:1},
+      {q:"Quelle est l'organisation des pays exportateurs de petrole ?", opts:["l'OPEP", "l'OPEC", "l'AIE", "la CNUCED"], a:0}
+    ],
+    anglais: [
+      {q:"Transforme au discours indirect : 'He said: I am tired.'", opts:["He said he is tired", "He said he was tired", "He said I am tired", "He said he tired"], a:1},
+      {q:"Que signifie le phrasal verb 'to give up' ?", opts:["donner", "abandonner", "distribuer", "rendre"], a:1},
+      {q:"Transforme au discours indirect : 'She asked: Do you like coffee?'", opts:["She asked if I liked coffee", "She asked do you like coffee", "She asked that I like coffee", "She asked whether I like coffee"], a:0},
+      {q:"Que signifie 'to look after' ?", opts:["regarder apres", "s'occuper de", "chercher", "ressembler a"], a:1},
+      {q:"Transforme au discours indirect : 'He told me: I will call you.'", opts:["He told me he will call me", "He told me he would call me", "He told me he calls me", "He told me he called me"], a:1},
+      {q:"Que signifie le phrasal verb 'to break down' ?", opts:["casser", "tomber en panne", "detruire", "effondrer"], a:1},
+      {q:"Transforme : 'She said: I have finished my homework.'", opts:["She said she finished", "She said she had finished", "She said she has finished", "She said she finishes"], a:1},
+      {q:"Que signifie 'to run out of' ?", opts:["courir dehors", "manquer de", "sortir en courant", "epuiser"], a:1},
+      {q:"Transforme au discours indirect : 'He asked: Where do you live?'", opts:["He asked where I lived", "He asked where do you live", "He asked where I live", "He asked where did I live"], a:0},
+      {q:"Que signifie le phrasal verb 'to put up with' ?", opts:["mettre en haut", "supporter", "poser", "monter"], a:1},
+      {q:"Transforme : 'She said: I will be there tomorrow.'", opts:["She said she will be there tomorrow", "She said she would be there the next day", "She said she would be there tomorrow", "She said she is there"], a:1},
+      {q:"Que signifie 'to come across' ?", opts:["traverser", "rencontrer par hasard", "venir en travers", "accoster"], a:1},
+      {q:"Transforme : 'They said: We were working.'", opts:["They said they were working", "They said they had been working", "They said they worked", "They said we were working"], a:1},
+      {q:"Que signifie le phrasal verb 'to get along with' ?", opts:["obtenir avec", "s'entendre avec", "aller avec", "avoir avec"], a:1},
+      {q:"Transforme : 'He said: I have never been to Paris.'", opts:["He said he has never been to Paris", "He said he had never been to Paris", "He said he never went to Paris", "He said he never goes to Paris"], a:1},
+      {q:"Que signifie 'to bring up' en anglais ?", opts:["apporter", "elever un sujet", "monter", "amener"], a:1},
+      {q:"Transforme : 'She asked: Can you help me?'", opts:["She asked if I could help her", "She asked if I can help her", "She asked can you help me", "She asked that I could help her"], a:0},
+      {q:"Que signifie le phrasal verb 'to turn down' ?", opts:["tourner en bas", "refuser", "descendre", "eteindre"], a:1},
+      {q:"Transforme : 'He said: I am leaving now.'", opts:["He said he was leaving then", "He said he is leaving now", "He said he leaves now", "He said he was leaving now"], a:0},
+      {q:"Que signifie 'to carry out' ?", opts:["porter dehors", "realiser / effectuer", "transporter", "continuer"], a:1},
+      {q:"Transforme : 'They said: We have seen the movie.'", opts:["They said they have seen the movie", "They said they had seen the movie", "They said they saw the movie", "They said we have seen the movie"], a:1},
+      {q:"Que signifie le phrasal verb 'to take over' ?", opts:["prendre au-dessus", "prendre le controle", "emporter", "reprendre"], a:1},
+      {q:"Transforme : 'She said: I will be working late.'", opts:["She said she would be working late", "She said she will be working late", "She said she is working late", "She said she works late"], a:0},
+      {q:"Que signifie 'to set up' ?", opts:["mettre haut", "installer / fonder", "definir", "fixer"], a:1},
+      {q:"Transforme : 'He asked: When did you arrive?'", opts:["He asked when I arrived", "He asked when I had arrived", "He asked when did I arrive", "He asked when I did arrive"], a:1},
+      {q:"Que signifie le phrasal verb 'to look into' ?", opts:["regarder dans", "examiner / se renseigner", "voir a l'interieur", "surveiller"], a:1},
+      {q:"Transforme : 'He said: I must go now.'", opts:["He said he must go now", "He said he had to go then", "He said he must go then", "He said he has to go"], a:1},
+      {q:"Que signifie 'to come up with' ?", opts:["monter avec", "trouver une idee", "arriver avec", "accompagner"], a:1},
+      {q:"Transforme : 'She said: I don't like this.'", opts:["She said she doesn't like this", "She said she didn't like that", "She said she doesn't like that", "She said she didn't like this"], a:1},
+      {q:"Que signifie le phrasal verb 'to put off' ?", opts:["mettre dehors", "remettre a plus tard", "eteindre", "poser"], a:1}
+    ],
+    geographie: [
+      {q:"Quel pays a pour capitale Ankara ?", opts:["la Grece", "la Turquie", "l'Iran", "la Syrie"], a:1},
+      {q:"Quelle est la capitale du Venezuela ?", opts:["Bogota", "Lima", "Caracas", "Quito"], a:2},
+      {q:"Quel pays africain a pour capitale Lusaka ?", opts:["la Zambie", "le Zimbabwe", "le Malawi", "l'Angola"], a:0},
+      {q:"Quel pays d'Asie du Sud a pour capitale Katmandou ?", opts:["le Bhoutan", "le Nepal", "le Bangladesh", "le Myanmar"], a:1},
+      {q:"Quelle mer est situee entre l'Italie et les Balkans ?", opts:["la mer Tyrrhenienne", "la mer Adriatique", "la mer Ionienne", "la mer Egee"], a:1},
+      {q:"Quel est le plus grand desert froid du monde ?", opts:["le Gobi", "l'Antarctique", "le Sahara", "le Kalahari"], a:1},
+      {q:"Quelle est la capitale de la Libye ?", opts:["Benghazi", "Tripoli", "Misrata", "Alger"], a:1},
+      {q:"Quel pays est le plus grand d'Amerique centrale ?", opts:["le Nicaragua", "le Honduras", "le Guatemala", "le Panama"], a:0},
+      {q:"Quel fleuve traverse Londres ?", opts:["la Seine", "la Tamise", "le Rhin", "la Loire"], a:1},
+      {q:"Quelle est la capitale de l'Ouzbekistan ?", opts:["Tachkent", "Achgabat", "Douchanbe", "Achgabat"], a:0},
+      {q:"Quel pays europeen a le plus de voisins (9) ?", opts:["l'Allemagne", "la France", "la Pologne", "l'Italie"], a:0},
+      {q:"Quelle mer interieure est la plus grande du monde ?", opts:["la mer Caspienne", "la mer Noire", "la mer Mediterranee", "la mer Baltique"], a:0},
+      {q:"Quel pays a pour capitale Kigali ?", opts:["le Rwanda", "le Burundi", "l'Ouganda", "la Tanzanie"], a:0},
+      {q:"Quel detroit relie la mer Rouge au golfe d'Aden ?", opts:["Bab-el-Mandeb", "detroit d'Ormuz", "Gibraltar", "Malacca"], a:0},
+      {q:"Quelle ville europeenne est surnommee 'la Venise du Nord' ?", opts:["Bruges", "Amsterdam", "Copenhague", "Stockholm"], a:1},
+      {q:"Quel pays d'Afrique australe est traverse par le tropique du Capricorne ?", opts:["l'Afrique du Sud", "le Botswana", "la Namibie", "le Mozambique"], a:2},
+      {q:"Quelle est la capitale de la Lituanie ?", opts:["Riga", "Vilnius", "Tallinn", "Minsk"], a:1},
+      {q:"Quel pays a la plus longue frontiere avec la France ?", opts:["l'Espagne", "la Belgique", "l'Italie", "l'Allemagne"], a:0},
+      {q:"Quel pays d'Asie du Sud-Est a pour capitale Vientiane ?", opts:["le Vietnam", "le Laos", "le Cambodge", "la Thailande"], a:1},
+      {q:"Quelle est la plus grande ile de la mer Mediterranee ?", opts:["la Sicile", "la Sardaigne", "Chypre", "la Corse"], a:0},
+      {q:"Quel pays africain a pour capitale Ouagadougou ?", opts:["le Burkina Faso", "le Mali", "le Niger", "la Cote d'Ivoire"], a:0},
+      {q:"Quelle est la capitale de la Lettonie ?", opts:["Vilnius", "Tallinn", "Riga", "Minsk"], a:2},
+      {q:"Quel pays d'Amerique du Sud a pour capitale Asuncion ?", opts:["l'Uruguay", "le Paraguay", "la Bolivie", "l'Argentine"], a:1},
+      {q:"Quel fleuve prend sa source dans les Alpes suisses et se jette dans la mer du Nord ?", opts:["le Rhin", "le Rhone", "le Danube", "l'Elbe"], a:0},
+      {q:"Quelle est la capitale de l'Estonie ?", opts:["Riga", "Vilnius", "Tallinn", "Minsk"], a:2},
+      {q:"Quel pays africain est traverse par le fleuve Niger ?", opts:["le Niger", "le Mali", "le Nigeria", "tous les trois"], a:3},
+      {q:"Quel pays du Caucase a pour capitale Erevan ?", opts:["la Georgie", "l'Armenie", "l'Azerbaidjan", "la Turquie"], a:1},
+      {q:"Quelle est la capitale de la Malaisie ?", opts:["Singapour", "Jakarta", "Bangkok", "Kuala Lumpur"], a:3},
+      {q:"Quel pays d'Oceanie a pour capitale Port Moresby ?", opts:["les Fidji", "la Papouasie-Nouvelle-Guinee", "les Iles Salomon", "le Vanuatu"], a:1},
+      {q:"Quel est le point culminant de l'Amerique du Sud ?", opts:["le Mont Blanc", "l'Aconcagua", "le Kilimandjaro", "le McKinley"], a:1}
+    ],
+    formes: [
+      {q:"Dans un carre, la diagonale est egale a cote x ...", opts:["V2", "2", "3", "1,5"], a:0},
+      {q:"Quel est le centre du cercle inscrit dans un triangle ?", opts:["l'orthocentre", "l'incentre", "le centre de gravite", "le cercle circonscrit"], a:1},
+      {q:"Quelle est la formule de l'aire d'une sphere ?", opts:["4/3 pi R3", "4 pi R2", "2 pi R2", "pi R2"], a:1},
+      {q:"Quels sont les trois cotes d'un triangle rectangle 3-4-5 ?", opts:["3, 4, 5", "2, 3, 4", "5, 6, 7", "1, 2, V3"], a:0},
+      {q:"La somme des angles internes d'un hexagone est...", opts:["540 deg", "600 deg", "720 deg", "900 deg"], a:2},
+      {q:"Qu'est-ce qu'une mediatrice ?", opts:["droite perpendiculaire a un segment en son milieu", "droite qui coupe un angle", "droite passant par le sommet", "cercle passant par les sommets"], a:0},
+      {q:"Quel est le volume d'une pyramide a base carree de cote c et hauteur h ?", opts:["c2 h", "(1/3) c2 h", "(1/2) c2 h", "(1/4) c2 h"], a:1},
+      {q:"Combien de plans de symetrie possede un cube ?", opts:["3", "6", "9", "12"], a:3},
+      {q:"Quel est le nom donne au rapport entre le cote oppose et l'hypotenuse ?", opts:["cosinus", "sinus", "tangente", "secante"], a:1},
+      {q:"Dans un triangle rectangle, le carre de l'hypotenuse est egal a...", opts:["la somme des cotes", "la somme des carres des deux autres cotes", "la difference des carres", "le produit des cotes"], a:1},
+      {q:"Quel angle forme la bissectrice entre deux droites perpendiculaires ?", opts:["30 deg", "45 deg", "60 deg", "90 deg"], a:1},
+      {q:"Quel solide a la plus grande capacite pour une surface donnee ?", opts:["cube", "sphere", "cylindre", "cone"], a:1},
+      {q:"Combien de faces a un prisme a base hexagonale ?", opts:["6", "8", "10", "12"], a:1},
+      {q:"Quelle est l'equation d'un cercle centre a l'origine de rayon R ?", opts:["x + y = R", "x2 + y2 = R2", "x2 + y2 = R", "x2 + y2 = 2R"], a:1},
+      {q:"Quel theoreme permet de demontrer que deux triangles sont semblables ?", opts:["AA (angles egaux)", "LLL (cotes proportionnels)", "LAL (angle compris)", "tous les trois"], a:3},
+      {q:"Qu'est-ce qu'un vecteur normal ?", opts:["vecteur parallele", "vecteur perpendiculaire", "vecteur de longueur 1", "vecteur nul"], a:1},
+      {q:"Quel est le nom d'un polygone a 12 cotes ?", opts:["dodecagone", "hendecagone", "tridecagone", "tetradecagone"], a:0},
+      {q:"Quelle est la derivee de sin(x) ?", opts:["cos(x)", "-sin(x)", "-cos(x)", "tan(x)"], a:0},
+      {q:"Combien vaut l'integrale de 0 a 1 de x dx ?", opts:["0", "0,25", "0,5", "1"], a:2},
+      {q:"Quelle est la formule du binome de Newton pour (a+b)^2 ?", opts:["a2 + 2ab + b2", "a2 + b2", "a2 + ab + b2", "2a + 2b"], a:0},
+      {q:"Quel est le lieu des points equidistants de deux droites secantes ?", opts:["cercle", "bissectrice", "mediatrice", "droite"], a:1},
+      {q:"Combien de racines reelles a l'equation x^3 - 1 = 0 ?", opts:["0", "1", "2", "3"], a:1},
+      {q:"Quelle est la limite de sin(x)/x quand x tend vers 0 ?", opts:["0", "1", "infini", "-1"], a:1},
+      {q:"Quel theoreme dit qu'une fonction continue sur un segment atteint son maximum ?", opts:["theoreme des valeurs intermediaires", "theoreme de Rolle", "theoreme de Weierstrass", "theoreme de la bijection"], a:2},
+      {q:"Qu'est-ce qu'une homothetie ?", opts:["transformation qui agrandit/reduit", "rotation", "symetrie", "translation"], a:0},
+      {q:"Quelle est la somme des angles d'un octogone regulier ?", opts:["1 080 deg", "720 deg", "900 deg", "1 260 deg"], a:0},
+      {q:"Quel est le rayon du cercle circonscrit a un triangle equilateral de cote c ?", opts:["c/V3", "c/2", "cV3/3", "c/3"], a:0},
+      {q:"Quelle est la formule du theoreme de la mediane dans un triangle ?", opts:["m2 = (2b2 + 2c2 - a2)/4", "m = a/2", "m2 = a2 + b2", "m2 = (b2 + c2)/2"], a:0},
+      {q:"Combien de points d'intersection deux cercles peuvent-ils avoir au maximum ?", opts:["1", "2", "3", "4"], a:1},
+      {q:"Quelle est l'aire d'un secteur circulaire d'angle theta (en rad) ?", opts:["(theta/2) R2", "theta R2", "pi R2 theta/360", "2 pi R theta"], a:0}
+    ],
+    globe: [
+      {q:"Quel pays est traverse par l'equateur et le tropique du Capricorne ?", opts:["le Bresil", "l'Argentine", "le Chili", "le Perou"], a:0},
+      {q:"Quelle est la capitale du Soudan ?", opts:["Khartoum", "Juba", "Le Caire", "Nairobi"], a:0},
+      {q:"Quel pays africain a pour capitale Antananarivo ?", opts:["la Mauritanie", "Madagascar", "le Mozambique", "les Comores"], a:1},
+      {q:"Quel detroit separe la Malaisie de l'Indonesie ?", opts:["detroit de Malacca", "detroit de la Sonde", "detroit de Lombok", "detroit de Torres"], a:0},
+      {q:"Quelle est la capitale de la Serbie ?", opts:["Zagreb", "Belgrade", "Sarajevo", "Ljubljana"], a:1},
+      {q:"Quel pays a le plus grand nombre d'iles ?", opts:["la Suede", "la Norvege", "la Finlande", "le Canada"], a:0},
+      {q:"Quelle ville est le siege de l'Union africaine ?", opts:["Le Caire", "Addis-Abeba", "Nairobi", "Johannesburg"], a:1},
+      {q:"Quel pays d'Europe a la cote la plus longue ?", opts:["la Norvege", "la Croatie", "la Grece", "le Royaume-Uni"], a:0},
+      {q:"Quelle est la capitale du Bhutan ?", opts:["Thimphou", "Katmandou", "Dacca", "Sri Jayawardenepura"], a:0},
+      {q:"Quel desert est considere comme le plus aride du monde ?", opts:["le Sahara", "l'Atacama", "le Gobi", "le Kalahari"], a:1},
+      {q:"Quelle ville est la plus haute capitale du monde ?", opts:["La Paz", "Quito", "Bogota", "Thimphou"], a:0},
+      {q:"Quel pays a la plus grande zone economique exclusive (ZEE) ?", opts:["les Etats-Unis", "la France", "la Russie", "l'Australie"], a:1},
+      {q:"Quelle est la capitale de la Bosnie-Herzegovine ?", opts:["Zagreb", "Sarajevo", "Belgrade", "Split"], a:1},
+      {q:"Quel continent est le plus touche par la desertification ?", opts:["l'Asie", "l'Afrique", "l'Amerique", "l'Europe"], a:1},
+      {q:"Quel pays a la plus grande population musulmane ?", opts:["l'Arabie saoudite", "l'Inde", "l'Indonesie", "le Pakistan"], a:2},
+      {q:"Quelle mer est bordee par la Russie, l'Iran et le Kazakhstan ?", opts:["la mer Noire", "la mer Caspienne", "la mer d'Aral", "la mer Baltique"], a:1},
+      {q:"Quelle est la capitale de l'Algerie ?", opts:["Casablanca", "Alger", "Tunis", "Rabat"], a:1},
+      {q:"Quel pays du Moyen-Orient a la forme d'une peninsule ?", opts:["l'Irak", "l'Arabie saoudite", "l'Iran", "la Syrie"], a:1},
+      {q:"Quelle est l'ile la plus peuplee du monde ?", opts:["Java", "Honshu", "Grande-Bretagne", "Sumatra"], a:0},
+      {q:"Quel pays africain est le plus vaste ?", opts:["le Nigeria", "l'Algerie", "le Congo", "le Soudan"], a:1},
+      {q:"Quelle est la capitale du Yémen ?", opts:["Sanaa", "Aden", "Riyad", "Mascate"], a:0},
+      {q:"Quelle riviere traverse la ville de Rome ?", opts:["le Tibre", "le Po", "l'Arno", "l'Adige"], a:0},
+      {q:"Quel pays est le plus grand producteur de the ?", opts:["la Chine", "l'Inde", "le Kenya", "le Sri Lanka"], a:0},
+      {q:"Quel pays scandinave fait partie de l'Union europeenne ?", opts:["la Norvege", "la Suede", "l'Islande", "les trois"], a:1},
+      {q:"Quelle est la capitale de la Syrie ?", opts:["Beyrouth", "Amman", "Damas", "Bagdad"], a:2},
+      {q:"Quel pays est le plus grand exportateur de riz ?", opts:["la Thailande", "le Vietnam", "l'Inde", "la Chine"], a:1},
+      {q:"Quelle est la capitale du Ghana ?", opts:["Lagos", "Accra", "Abuja", "Dakar"], a:1},
+      {q:"Quel pays a la plus grande foret equatoriale apres le Bresil ?", opts:["l'Inde", "l'Indonesie", "le Congo", "le Perou"], a:2},
+      {q:"Quel ocean est le plus jeune ?", opts:["Pacifique", "Atlantique", "Indien", "Arctique"], a:1},
+      {q:"Quel pays a pour capitale Bichkek ?", opts:["le Tadjikistan", "le Kirghizistan", "le Kazakhstan", "l'Ouzbekistan"], a:1}
+    ],
+  },
 };
 
 const SUBJECT_META = {
@@ -2111,6 +3261,10 @@ const SUBJECT_META = {
   geographie:{icon:"🗺️", title:"Île de Géographie"},
   formes:{icon:"🔷", title:"Île des Formes"},
   globe:{icon:"🌐", title:"Globe Explorer"},
+  memory:{icon:"🧩", title:"Jeu de Mémoire"},
+  daily:{icon:"🌟", title:"Défi du Jour"},
+  timeattack:{icon:"⚡", title:"Time Attack"},
+  dictation:{icon:"🎤", title:"Dictée"},
 };
 
 const STORIES = [
@@ -2241,14 +3395,16 @@ let state = {
   avatar: 'fox',
   firstName: '',
   age: null,
-  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0 },
-  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1 },
-  current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false },
+  photo: null,
+  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 },
+  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 },
+  current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false, lazyOffset:0 },
   lettersSession: [], lettersIndex: 0, lettersScore: 0,
   wordsSession: [], wordsIndex: 0, wordsScore: 0,
   aiScore: 0,
   points: 0,
   streak: 0,
+  lastActiveDate: null,
   lastDailyDate: null,
   usage: {},
   badges: {},
@@ -2258,6 +3414,12 @@ let state = {
   owlWardrobe: [],
   owlEquipped: null,
   timeAttackScore: 0,
+  soundEnabled: true,
+  timerEnabled: true,
+  timerDuration: 15,
+  history: [],
+  mastery: {},
+  achievements: {},
 };
 let owlTimeout = null;
 
@@ -2296,6 +3458,8 @@ function renderStars(){
     pointsEl.parentElement.classList.add('bump');
   }
   document.getElementById('streakBadge').textContent = state.streak;
+  const tr = document.getElementById('streakTrophy');
+  if(tr) tr.style.display = state.streak > 0 ? 'flex' : 'none';
   const badge2 = document.getElementById('aiScoreBadge');
   if(badge2) badge2.textContent = state.aiScore;
   renderDailyCard();
@@ -2332,6 +3496,40 @@ const BADGE_LIST = [
   {id:'wardrobe3', icon:'👔', name:'Créateur de mode', check:()=>state.owlWardrobe.length>=3},
 ];
 
+const ACHIEVEMENTS = [
+  {id:'first_quiz', icon:'🎉', title:'Premier quiz !', desc:'Complète ton premier quiz'},
+  {id:'all_stars', icon:'🌟', title:'Tout en étoiles !', desc:'Obtiens 3 étoiles dans une matière'},
+  {id:'streak_7', icon:'🔥', title:'7 jours de folie !', desc:'Atteins une série de 7 jours'},
+  {id:'math_master', icon:'🧮', title:'As des maths !', desc:'3 étoiles en maths'},
+  {id:'french_master', icon:'📖', title:'Pro du français !', desc:'3 étoiles en français'},
+  {id:'perfect', icon:'💯', title:'Sans faute !', desc:'Score parfait à un quiz'},
+  {id:'hundred_q', icon:'📚', title:'100 questions !', desc:'Réponds à 100 questions au total'},
+  {id:'time_attack_pro', icon:'⚡', title:'Time Attacker !', desc:'Score 100+ en Time Attack'},
+];
+
+function checkAchievement(id){
+  if(state.achievements[id]) return false;
+  state.achievements[id] = true;
+  scheduleSave();
+  showBadgeBanner(id);
+  return true;
+}
+
+function showBadgeBanner(id){
+  const a = ACHIEVEMENTS.find(x=>x.id===id);
+  if(!a) return;
+  document.getElementById('badgeBannerIcon').textContent = a.icon;
+  document.getElementById('badgeBannerName').textContent = a.title;
+  document.getElementById('badgeBanner').classList.add('show');
+  soundLevelUp();
+  bannerSparkles(12);
+  setTimeout(()=>document.getElementById('badgeBanner').classList.remove('show'), 2800);
+}
+
+function getAchievementCount(){
+  return ACHIEVEMENTS.filter(a=>state.achievements[a.id]).length;
+}
+
 function renderBadges(){
   const unlocked = BADGE_LIST.filter(b => state.badges[b.id] || b.check()).length;
   const el = document.getElementById('badgesCardText');
@@ -2354,7 +3552,56 @@ function openBadgesScreen(){
 }
 
 function renderAvatars(){
-  document.getElementById('headerAvatar').innerHTML = AVATAR_SVGS[state.avatar];
+  const el = document.getElementById('headerAvatar');
+  if(state.photo && state.photo.startsWith('data:image')){
+    el.innerHTML = `<img src="${state.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="Photo de profil">`;
+  } else {
+    el.innerHTML = AVATAR_SVGS[state.avatar];
+  }
+}
+
+function handlePhotoUpload(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 2 * 1024 * 1024){ alert("La photo est trop grande (max 2 Mo) !"); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    // Compresser si > 800px
+    const img = new Image();
+    img.onload = function(){
+      const maxSize = 400;
+      let w = img.width, h = img.height;
+      const ratio = Math.min(maxSize / w, maxSize / h, 1);
+      w = Math.round(w * ratio); h = Math.round(h * ratio);
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.85);
+      state.photo = compressed;
+      // Afficher dans le preview
+      const preview = document.getElementById('onboardPhotoPreview');
+      if(preview) preview.innerHTML = `<img src="${compressed}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="Preview">`;
+      // Sauver dans la liste de profils
+      savePhotoToList();
+      scheduleSave();
+      renderAvatars();
+      soundClick();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function savePhotoToList(){
+  if(!state.profileId) return;
+  try{
+    const list = await loadProfilesList();
+    const entry = list.find(p=>p.id === state.profileId);
+    if(entry){ entry.photo = state.photo; await saveProfilesList(list); }
+  }catch(e){}
 }
 
 function renderAvatarGrid(containerId, onSelect){
@@ -2393,6 +3640,9 @@ function setLevel(lvl){
   soundClick();
   document.getElementById('btnLevelA').classList.toggle('active', lvl==='A');
   document.getElementById('btnLevelB').classList.toggle('active', lvl==='B');
+  document.getElementById('btnLevelC').classList.toggle('active', lvl==='C');
+  document.getElementById('btnLevelD').classList.toggle('active', lvl==='D');
+  document.getElementById('btnLevelE').classList.toggle('active', lvl==='E');
   scheduleSave();
 }
 
@@ -2423,7 +3673,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','settingsScreen','statsScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -2433,6 +3683,33 @@ let voiceEnabled = true;
 
 function stripForSpeech(str){
   return str.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').trim();
+}
+
+function fixMathSpeech(text){
+  return text
+    .replace(/\s*−\s*/g, ' moins ')
+    .replace(/(\d)\s*-\s*/g, '$1 moins ')
+    .replace(/\s*\+\s*/g, ' plus ')
+    .replace(/\s*×\s*/g, ' fois ')
+    .replace(/\s*÷\s*/g, ' divisé par ')
+    .replace(/\s*=\s*/g, ' égale ')
+    .replace(/\s*≠\s*/g, ' pas égal à ')
+    .replace(/\s*<\s*/g, ' plus petit que ')
+    .replace(/\s*>\s*/g, ' plus grand que ')
+    .replace(/\s*≤\s*/g, ' inférieur ou égal à ')
+    .replace(/\s*≥\s*/g, ' supérieur ou égal à ')
+    .replace(/\s*%\s*/g, ' pourcent ')
+    .replace(/\s*\.\s*(\d+)/g, ' virgule $1')
+    .replace(/(\d)\s*\.\s*(\d)/g, '$1 virgule $2')
+    .replace(/\s*,\s*/g, ', ');
+}
+
+function fixFrenchNasals(text){
+  return text
+    .replace(/\bmoins\b/gi, 'mouin')
+    .replace(/\bcoing\b/gi, 'kwain')
+    .replace(/\bloin\b/gi, 'louin')
+    .replace(/\bsoin\b/gi, 'souin');
 }
 
 function pickVoice(lang){
@@ -2484,75 +3761,317 @@ function initVoices(){
     window.speechSynthesis.onvoiceschanged = check;
   }
 }
-let openAIKey = '';
-function loadOpenAIKey(){
+/* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
+let voiceApiKey = '';
+let voiceModel = 'elevenlabs';
+let proxyUrl = '';
+const audioCache = new Map();
+let isSpeaking = false;
+
+function detectProxy(){
+  // Auto-détection du serveur proxy : même origine ou config localStorage
+  const saved = localStorage.getItem('tts_proxy_url');
+  if(saved){ proxyUrl = saved; return; }
+  // Essayer le proxy Render par défaut si déployé
+  proxyUrl = '';
+}
+
+function loadVoiceSettings(){
   try{
-    const k = localStorage.getItem('openai_key');
-    if(k) openAIKey = k;
-    const inp = document.getElementById('openaiKeyInput');
-    if(inp && openAIKey) inp.value = openAIKey;
+    voiceApiKey = localStorage.getItem('voice_api_key') || '';
+    voiceModel = localStorage.getItem('voice_model') || 'elevenlabs';
+    detectProxy();
+    const inp = document.getElementById('settingsApiKey');
+    if(inp && voiceApiKey) inp.value = voiceApiKey;
+    const sel = document.getElementById('voiceModelSelect');
+    if(sel) sel.value = voiceModel;
+    const proxyInp = document.getElementById('proxyUrlInput');
+    if(proxyInp && proxyUrl) proxyInp.value = proxyUrl;
+    const label = document.getElementById('voiceStatusLabel');
+    if(label) label.textContent = getVoiceLabel(voiceModel);
   }catch(e){}
 }
-function saveOpenAIKey(){
-  const inp = document.getElementById('openaiKeyInput');
-  const key = inp ? inp.value.trim() : '';
-  openAIKey = key;
-  try{ localStorage.setItem('openai_key', key); }catch(e){}
-  const st = document.getElementById('openaiKeyStatus');
-  if(st) st.textContent = key ? '✅ Clé enregistrée !' : '⚠️ Aucune clé';
-  setTimeout(()=>{ if(st) st.textContent = ''; }, 2500);
+
+function getVoiceLabel(m){
+  const labels = { 'elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
+  return labels[m] || 'ElevenLabs v2';
 }
+
+function changeVoiceModel(val){
+  voiceModel = val;
+  try{ localStorage.setItem('voice_model', val); }catch(e){}
+  const label = document.getElementById('voiceStatusLabel');
+  if(label) label.textContent = getVoiceLabel(val);
+  const inp = document.getElementById('settingsApiKey');
+  if(!inp) return;
+  if(val === 'native'){
+    inp.placeholder = 'Non nécessaire en mode natif';
+    inp.disabled = true;
+  } else {
+    inp.placeholder = val === 'elevenlabs' ? 'Clé API ElevenLabs (sk_...)' : 'Clé API OpenAI (sk-...)';
+    inp.disabled = false;
+  }
+}
+
+function saveApiKey(){
+  const inp = document.getElementById('settingsApiKey');
+  const key = inp ? inp.value.trim() : '';
+  voiceApiKey = key;
+  try{ localStorage.setItem('voice_api_key', key); }catch(e){}
+  const st = document.getElementById('voiceKeyStatus');
+  if(!st) return;
+  if(key){
+    st.textContent = '✅ Clé enregistrée — la voix IA est active !';
+    st.style.color = 'var(--grass)';
+    // Test auto silencieux
+    testVoice(true);
+  } else {
+    st.textContent = '⚠️ Colle ta clé API pour activer la voix naturelle';
+    st.style.color = 'var(--coral)';
+  }
+  setTimeout(()=>{ if(st) st.textContent = ''; }, 4000);
+}
+
+let testSilent = false;
+function testVoice(silent){
+  testSilent = !!silent;
+  const phrases = [
+    "Bonjour ! Je suis ta chouette préférée. Comment vas-tu aujourd'hui ?",
+    "Le français est une belle langue, n'est-ce pas ? Écoute comme elle résonne !",
+    "Bravo ! Tu as terminé l'exercice. Continuons ensemble !"
+  ];
+  speak(phrases[Math.floor(Math.random()*phrases.length)]);
+}
+
+/* Préparation du texte pour une voix naturelle :
+   - Ponctuation naturelle avec pauses
+   - Mots mathématiques développés
+   - Emojis retirés
+   - Acronymes épelés correctement */
+function prepareTextForSpeech(text){
+  let t = text
+    .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '')
+    .replace(/\s*−\s*/g, ' moins ')
+    .replace(/(\d)\s*-\s*/g, '$1 moins ')
+    .replace(/\s*\+\s*/g, ' plus ')
+    .replace(/\s*×\s*/g, ' fois ')
+    .replace(/\s*÷\s*/g, ' divisé par ')
+    .replace(/\s*=\s*/g, ' égale ')
+    .replace(/\s*≠\s*/g, ' pas égal à ')
+    .replace(/\s*<\s*/g, ' plus petit que ')
+    .replace(/\s*>\s*/g, ' plus grand que ')
+    .replace(/\s*≤\s*/g, ' inférieur ou égal à ')
+    .replace(/\s*≥\s*/g, ' supérieur ou égal à ')
+    .replace(/\s*%\s*/g, ' pourcent ')
+    .replace(/\s*\.\s*(\d+)/g, ' virgule $1')
+    .replace(/(\d)\s*\.\s*(\d)/g, '$1 virgule $2')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // Ajouter une courte pause après les signes de ponctuation forts (pour ElevenLabs)
+  t = t.replace(/[.!?]/g, '$& ');
+  return t;
+}
+
 let speakTimer = 0;
+let speakQueue = [];
+let isPlaying = false;
+
 function speak(text){
   if(!voiceEnabled) return;
   clearTimeout(speakTimer);
   speakTimer = setTimeout(async () => {
     try{
-      const cleanText = stripForSpeech(text);
+      const cleanText = prepareTextForSpeech(text);
       if(!cleanText) return;
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
-      if(openAIKey && openAIKey.startsWith('sk-') && 'fetch' in window){
-        const resp = await fetch('https://api.openai.com/v1/audio/speech', {
-          method:'POST',
-          headers:{ 'Authorization':'Bearer '+openAIKey, 'Content-Type':'application/json' },
-          body: JSON.stringify({ model:'tts-1-hd', voice:'nova', input:cleanText, response_format:'mp3' })
-        });
-        if(resp.ok){
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          const audio = new Audio(url);
-          audio.onended = () => URL.revokeObjectURL(url);
-          window.speechSynthesis.cancel();
-          await audio.play();
-          return;
-        }
+      const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
+
+      if(audioCache.has(cacheKey)){
+        window.speechSynthesis.cancel();
+        const url = audioCache.get(cacheKey);
+        await safeAudioPlay(url);
+        return;
       }
+
+      let played = false;
+      // 1) Proxy serveur (zero config utilisateur si deploye)
+      if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
+        played = await speakViaProxy(cleanText, lang, cacheKey);
+      }
+      // 2) ElevenLabs direct (cle API dans localStorage)
+      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+        played = await speakElevenLabs(cleanText, lang, cacheKey);
+      }
+      // 3) OpenAI direct
+      if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
+        played = await speakOpenAI(cleanText, lang, cacheKey);
+      }
+      // 4) Fallback automatique ElevenLabs vers OpenAI
+      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
+        played = await speakOpenAI(cleanText, lang, cacheKey);
+      }
+      if(played) return;
+
+      // 5) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = isIOS ? 0.95 : 0.72;
-      utter.pitch = isIOS ? 1.0 : 1.35;
+      utter.rate = isIOS ? 0.95 : 0.7;
+      utter.pitch = isIOS ? 1.0 : 1.2;
       utter.volume = 1;
       if(voice) utter.voice = voice;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(utter);
     }catch(e){}
-  }, 30);
+  }, 20);
+}
+
+async function speakViaProxy(text, lang, cacheKey){
+  try{
+    const endpoint = proxyUrl + '/tts/elevenlabs';
+    const resp = await fetch(endpoint, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ text, lang: lang || 'fr-FR' })
+    });
+    if(!resp.ok) return false;
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    return await safeAudioPlay(url);
+  }catch(e){ return false; }
+}
+
+async function speakElevenLabs(text, lang, cacheKey){
+  try{
+    // Voix ElevenLabs natives françaises pour un rendu ultra-naturel
+    const voiceMap = {
+      'fr': 'ThT5KcBeYPX3keUQqHPh',  // Thomas — voix française expressive
+      'en': '21m00Tcm4TlvDq8ikWAM'   // Rachel — voix anglaise naturelle
+    };
+    const voiceId = voiceMap[lang.split('-')[0]] || 'ThT5KcBeYPX3keUQqHPh';
+    
+    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId, {
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+voiceApiKey,
+        'Content-Type':'application/json',
+        'xi-audio-format':'mp3_44100_128'
+      },
+      body: JSON.stringify({
+        text,
+        model_id:'eleven_multilingual_v2',
+        voice_settings: {
+          stability: 0.15,        // Très bas → intonations expressives
+          similarity_boost: 0.85, // Fidélité à la voix originale
+          style: 0.35,           // Légère stylisation
+          use_speaker_boost: true
+        }
+      })
+    });
+    if(!resp.ok){
+      const errText = await resp.text();
+      return false;
+    }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    const played = await safeAudioPlay(url);
+    if(!played) return false;
+    testSilent = false;
+    return true;
+  }catch(e){ return false; }
+}
+
+async function speakOpenAI(text, lang, cacheKey){
+  try{
+    const voice = voiceModel.replace('openai-','');
+    const resp = await fetch('https://api.openai.com/v1/audio/speech', {
+      method:'POST',
+      headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model:'tts-1-hd',
+        voice,
+        input:text,
+        response_format:'mp3',
+        speed: 1.0
+      })
+    });
+    if(!resp.ok) return false;
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey, url);
+    if(audioCache.size > 80){
+      const first = audioCache.keys().next().value;
+      const old = audioCache.get(first);
+      if(old) URL.revokeObjectURL(old);
+      audioCache.delete(first);
+    }
+    window.speechSynthesis.cancel();
+    return await safeAudioPlay(url);
+  }catch(e){ return false; }
+}
+
+function preloadVoice(text){
+  const cleanText = prepareTextForSpeech(text);
+  if(!cleanText || !voiceApiKey) return;
+  const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
+  const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
+  if(audioCache.has(cacheKey)) return;
+  // Préchargement silencieux sans lecture
+  const doPreload = async () => {
+    try{
+      if(voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
+        const voiceId = lang.startsWith('fr') ? 'ThT5KcBeYPX3keUQqHPh' : '21m00Tcm4TlvDq8ikWAM';
+        const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voiceId, {
+          method:'POST',
+          headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json','xi-audio-format':'mp3_44100_128' },
+          body: JSON.stringify({ text:cleanText, model_id:'eleven_multilingual_v2', voice_settings:{ stability:0.15, similarity_boost:0.85, style:0.35, use_speaker_boost:true } })
+        });
+        if(resp.ok){
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          audioCache.set(cacheKey, url);
+        }
+      }
+    }catch(e){}
+  };
+  doPreload();
 }
 
 function toggleVoice(){
   voiceEnabled = !voiceEnabled;
   const btn = document.getElementById('voiceToggle');
-  btn.textContent = voiceEnabled ? '🔊' : '🔇';
-  btn.classList.toggle('muted', !voiceEnabled);
+  if(btn){
+    btn.textContent = voiceEnabled ? '🔊' : '🔇';
+    btn.classList.toggle('muted', !voiceEnabled);
+  }
   if(!voiceEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
   soundClick();
 }
 
-function readAloud(text){
-  speak(text);
+function readAloud(text){ speak(text); }
+
+function saveProxyUrl(url){
+  proxyUrl = url.trim();
+  try{ localStorage.setItem('tts_proxy_url', proxyUrl); }catch(e){}
 }
 
 /* ---------------- OWL ---------------- */
@@ -2674,17 +4193,62 @@ function owlHappy(){
   setTimeout(()=>svg.classList.remove('happy'), 1800);
 }
 
-/* ---------------- SONS (Web Audio, sans fichier externe) ---------------- */
+/* ---------------- SONS (Web Audio, compatible Android) ---------------- */
 let audioCtx = null;
+let audioUnlocked = false;
+
+// Android bloque le son avant le premier geste utilisateur → débloque au premier clic
+function unlockAudio(){
+  if(audioUnlocked) return;
+  const ctx = getAudioCtx();
+  if(ctx && ctx.state === 'suspended'){
+    ctx.resume().then(()=>{ audioUnlocked = true; });
+  } else {
+    audioUnlocked = true;
+  }
+  // Jouer un silence pour valider le déblocage
+  playTone(0, 0.001, 'sine', 0, 0);
+}
+
+// Détection Android
+const IS_ANDROID = /android/i.test(navigator.userAgent);
+
+// Débloque l'audio au premier geste utilisateur (Android)
+if(IS_ANDROID){
+  document.addEventListener('touchstart', unlockAudio, {once:true});
+  document.addEventListener('click', unlockAudio, {once:true});
+}
+
 function getAudioCtx(){
   if(!audioCtx){
-    try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ audioCtx = null; }
+    try{
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(IS_ANDROID && audioCtx.state === 'suspended'){
+        audioCtx.resume().catch(()=>{});
+      }
+    }catch(e){ audioCtx = null; }
+  } else if(IS_ANDROID && audioCtx.state === 'suspended'){
+    audioCtx.resume().catch(()=>{});
   }
   return audioCtx;
 }
+
+// Lecture audio sécurisée (gère le blocage autoplay Android)
+function safeAudioPlay(url){
+  return new Promise((resolve) => {
+    const a = new Audio(url);
+    a.onended = () => { resolve(true); };
+    a.onerror = () => { resolve(false); };
+    a.play().then(()=>{}).catch(()=>{ resolve(false); });
+  });
+}
+
 function playTone(freq, duration, type, delay, gainVal){
   const ctx = getAudioCtx();
   if(!ctx) return;
+  if(IS_ANDROID && ctx.state === 'suspended'){
+    ctx.resume().catch(()=>{});
+  }
   try{
     const t0 = ctx.currentTime + (delay||0);
     const osc = ctx.createOscillator();
@@ -2697,12 +4261,18 @@ function playTone(freq, duration, type, delay, gainVal){
     osc.start(t0); osc.stop(t0 + duration + 0.02);
   }catch(e){ /* audio non disponible, tant pis */ }
 }
-function soundClick(){ playTone(600, 0.06, 'square', 0, 0.05); }
-function soundCorrect(){ playTone(523.25,0.12,'sine',0,0.12); playTone(659.25,0.12,'sine',0.1,0.12); playTone(783.99,0.18,'sine',0.2,0.12); }
-function soundWrong(){ playTone(300,0.16,'sine',0,0.08); playTone(220,0.2,'sine',0.12,0.08); }
-function soundLevelUp(){ [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,0.16,'triangle',i*0.11,0.13)); }
-function soundHonk(){ playTone(220,0.18,'sawtooth',0,0.1); playTone(196,0.24,'sawtooth',0.18,0.1); }
-function soundBlip(){ playTone(650+Math.random()*300, 0.045, 'square', 0, 0.035); }
+function toggleSound(){
+  state.soundEnabled = !state.soundEnabled;
+  try{ localStorage.setItem('av_sound', state.soundEnabled ? '1' : ''); }catch(e){}
+  document.getElementById('settingsSoundToggle').textContent = state.soundEnabled ? '🔊' : '🔇';
+  if(state.soundEnabled) soundClick();
+}
+function soundClick(){ if(!state.soundEnabled) return; playTone(600, 0.06, 'square', 0, 0.05); }
+function soundCorrect(){ if(!state.soundEnabled) return; playTone(523.25,0.12,'sine',0,0.12); playTone(659.25,0.12,'sine',0.1,0.12); playTone(783.99,0.18,'sine',0.2,0.12); }
+function soundWrong(){ if(!state.soundEnabled) return; playTone(300,0.16,'sine',0,0.08); playTone(220,0.2,'sine',0.12,0.08); }
+function soundLevelUp(){ if(!state.soundEnabled) return; [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,0.16,'triangle',i*0.11,0.13)); }
+function soundHonk(){ if(!state.soundEnabled) return; playTone(220,0.18,'sawtooth',0,0.1); playTone(196,0.24,'sawtooth',0.18,0.1); }
+function soundBlip(){ if(!state.soundEnabled) return; playTone(650+Math.random()*300, 0.045, 'square', 0, 0.035); }
 
 function launchCar(){
   const c = document.createElement('div');
@@ -3004,6 +4574,9 @@ function finishWords(){
     state.subjectLevel.mots = (state.subjectLevel.mots || 1) + 1;
     leveledUp = true;
   }
+  state.history.push({date: new Date().toISOString().slice(0,10), subject:'mots', score, total, stars});
+  if(state.history.length > 90) state.history = state.history.slice(-90);
+  updateStreak();
   scheduleSave();
 
   show('resultScreen');
@@ -3139,6 +4712,9 @@ function finishLetters(){
     state.subjectLevel.lettres = (state.subjectLevel.lettres || 1) + 1;
     leveledUp = true;
   }
+  state.history.push({date: new Date().toISOString().slice(0,10), subject:'lettres', score, total, stars});
+  if(state.history.length > 90) state.history = state.history.slice(-90);
+  updateStreak();
   scheduleSave();
 
   show('resultScreen');
@@ -3171,7 +4747,17 @@ function openQuiz(subject){
   state.current.subject = subject;
   state.current.qIndex = 0;
   state.current.score = 0;
-  state.current.questionList = shuffleArray(QUESTIONS[state.level][subject]);
+  state.current.lazyOffset = 0;
+  const src = QUESTIONS[state.level][subject];
+  const indexed = shuffleArray(src.map((q,i)=>({...q, idx:i})));
+  const prefix = state.level + '_' + subject + '_';
+  const mastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) >= 3);
+  const nonMastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) < 3);
+  const kept = nonMastered.length >= 3 ? nonMastered : indexed;
+  state.current.questionList = kept.slice(0, 15);
+  state.current.allQuestions = kept;
+  state.current.masteredCount = mastered.length;
+  state.current.totalQuestionCount = kept.length;
   state.current.missed = [];
   state.current.isReview = false;
   const meta = SUBJECT_META[subject];
@@ -3179,21 +4765,28 @@ function openQuiz(subject){
   document.getElementById('quizTitle').textContent = meta.title;
   show('quizScreen');
   renderQuestion();
-  const quizGreetings = [
-    "C'est parti ! Je crois en toi ! 🚀",
-    "Tu vas déchirer, j'en suis sûr(e) ! 💪",
-    "Prêt(e) ? Let's go ! 🎯",
-    "Chaque question est une victoire en puissance ! ⚡"
-  ];
-  setTimeout(()=>owlSay(quizGreetings[Math.floor(Math.random()*quizGreetings.length)], 2500, true), 300);
+  if(mastered.length > 0 && nonMastered.length >= 3){
+    setTimeout(()=>owlSay(`Tu maîtrises déjà ${mastered.length} question(s) ! On passe aux suivantes ! 🦉✨`, 3000, true), 300);
+  } else {
+    const quizGreetings = [
+      "C'est parti ! Je crois en toi ! 🚀",
+      "Tu vas déchirer, j'en suis sûr(e) ! 💪",
+      "Prêt(e) ? Let's go ! 🎯",
+      "Chaque question est une victoire en puissance ! ⚡"
+    ];
+    setTimeout(()=>owlSay(quizGreetings[Math.floor(Math.random()*quizGreetings.length)], 2500, true), 300);
+  }
 }
 
 function renderProgress(){
   const list = state.current.questionList;
   const total = list.length;
+  const allTotal = state.current.totalQuestionCount || total;
   const current = state.current.qIndex + 1;
   const prefix = state.current.isReview ? '🔁 Révision — ' : '';
-  document.getElementById('quizProgressLabel').textContent = `${prefix}Question ${current}/${total}`;
+  const lazyLabel = allTotal > 15 ? ` (${state.current.lazyOffset+1}-${Math.min(state.current.lazyOffset+15, allTotal)}/${allTotal})` : '';
+  const masteredLabel = state.current.masteredCount > 0 ? ' ✨Maîtrisé' : '';
+  document.getElementById('quizProgressLabel').textContent = `${prefix}Question ${current}/${total}${lazyLabel}${masteredLabel}`;
   document.getElementById('quizProgressFill').style.width = Math.round((state.current.qIndex/total)*100) + '%';
 }
 
@@ -3207,15 +4800,97 @@ function renderQuestion(){
   const optsBox = document.getElementById('optionsBox');
   optsBox.innerHTML = '';
   document.getElementById('feedbackBox').innerHTML = '';
-  q.opts.forEach((opt, i)=>{
+  document.getElementById('hintBtn').style.display = '';
+  if(q.type === 'dictation'){
+    const inputWrap = document.createElement('div');
+    inputWrap.style.cssText = 'display:flex;flex-direction:column;gap:12px;align-items:center;';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'dictationInput';
+    input.autocomplete = 'off';
+    input.spellcheck = false;
+    input.placeholder = 'Écris ta réponse ici...';
+    input.style.cssText = 'width:100%;max-width:320px;padding:16px;font-size:1.3rem;border:3px solid var(--plum);border-radius:16px;text-align:center;outline:none;background:var(--card);color:var(--text);';
+    input.setAttribute('aria-label', 'Zone de saisie pour la dictée');
+    const submitBtn = document.createElement('button');
+    submitBtn.className = 'next-btn pop-in';
+    submitBtn.textContent = 'Valider ✅';
+    submitBtn.onclick = ()=>answerDictation(input, q);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') answerDictation(input, q); });
+    inputWrap.appendChild(input);
+    inputWrap.appendChild(submitBtn);
+    optsBox.appendChild(inputWrap);
+    if(q.hint){
+      document.getElementById('hintBtn').style.display = 'inline-block';
+      document.getElementById('hintBtn').onclick = ()=>{
+        if(state.current.hintUsed) return;
+        soundClick();
+        state.current.hintUsed = true;
+        document.getElementById('hintBtn').disabled = true;
+        owlSay("Indice : " + q.hint, 3000, true);
+      };
+    }
+    setTimeout(()=>input.focus(), 100);
+    speak(q.q);
+    startQuestionTimer(quizTimeout, 'quizTimerFill', 'quizTimerText', '#quizScreen .timer-row');
+    return;
+  }
+  const indices = q.opts.map((_,i)=>i);
+  for(let i=indices.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [indices[i],indices[j]]=[indices[j],indices[i]]; }
+  indices.forEach((origIdx)=>{
     const btn = document.createElement('button');
     btn.className = 'opt-btn pop-in';
-    btn.textContent = opt;
-    btn.onclick = ()=>answerQuiz(i, q, btn);
+    btn.textContent = q.opts[origIdx];
+    btn.dataset.origIdx = origIdx;
+    btn.onclick = ()=>answerQuiz(origIdx, q, btn);
+    btn.setAttribute('role', 'button');
     optsBox.appendChild(btn);
   });
   startQuestionTimer(quizTimeout, 'quizTimerFill', 'quizTimerText', '#quizScreen .timer-row');
   if(state.level === 'A') setTimeout(()=>speak(q.q), 450);
+}
+
+function answerDictation(input, q){
+  const val = input.value.trim().toLowerCase();
+  if(!val){ input.style.borderColor = 'var(--coral)'; input.focus(); return; }
+  stopQuestionTimer();
+  document.querySelectorAll('#optionsBox input, #optionsBox button').forEach(el=>el.disabled=true);
+  document.getElementById('hintBtn').disabled = true;
+  const isCorrect = q.accept.some(a => a.toLowerCase() === val);
+  registerAnswer(isCorrect);
+  if(isCorrect){
+    input.style.borderColor = 'var(--grass)';
+    state.current.score++;
+    addPoints(10);
+    soundCorrect();
+    owlHappy();
+    owlEncourage();
+    screenFlash('correct');
+    if(state.current.subject && !state.current.isReview && q.idx !== undefined){
+      const key = state.level + '_' + state.current.subject + '_' + q.idx;
+      state.mastery[key] = (state.mastery[key] || 0) + 1;
+      scheduleSave();
+    }
+  } else {
+    input.style.borderColor = 'var(--coral)';
+    soundWrong();
+    screenFlash('wrong');
+    owlComfort();
+    owlResetCombo();
+    if(!state.current.isReview) state.current.missed.push(q);
+    const expected = q.accept[0];
+    const feedback = document.createElement('div');
+    feedback.style.cssText = 'margin-top:8px;color:var(--coral);font-size:0.95rem;';
+    feedback.textContent = '✖ Réponse attendue : ' + expected;
+    document.getElementById('optionsBox').appendChild(feedback);
+  }
+  const msg = isCorrect ? 'Bravo, bonne orthographe !' : 'Presque ! Relis bien la consigne.';
+  document.getElementById('feedbackBox').innerHTML = `
+    <div class="msg pop-in">${msg}</div>
+    <button class="next-btn" onclick="nextQuestion(true)">${state.current.qIndex === state.current.questionList.length - 1 ? "Voir mon résultat 🏁" : "Question suivante ➡️"}</button>
+  `;
+  clearTimeout(autoAdvanceTimer);
+  autoAdvanceTimer = setTimeout(()=>nextQuestion(false), isCorrect ? 1300 : 2000);
 }
 
 function useHint(){
@@ -3253,6 +4928,11 @@ function answerQuiz(i, q, btnEl){
     owlComboCheck();
     launchFireworks(btnEl);
     screenFlash('correct');
+    if(state.current.subject && !state.current.isReview && q.idx !== undefined){
+      const key = state.level + '_' + state.current.subject + '_' + q.idx;
+      state.mastery[key] = (state.mastery[key] || 0) + 1;
+      scheduleSave();
+    }
   } else {
     btnEl.classList.add('wrong');
     buttons[q.a].classList.add('correct');
@@ -3320,6 +5000,22 @@ function showLevelUpBanner(newLevel){
   setTimeout(()=>banner.classList.remove('show'), 2200);
 }
 
+function loadMoreQuestions(){
+  const allQ = state.current.allQuestions;
+  const newOffset = state.current.lazyOffset + 15;
+  const nextBatch = allQ.slice(newOffset, newOffset + 15);
+  if(nextBatch.length === 0) return;
+  state.current.lazyOffset = newOffset;
+  state.current.questionList = nextBatch;
+  state.current.qIndex = 0;
+  state.current.score = 0;
+  state.current.missed = [];
+  state.current.hintUsed = false;
+  show('quizScreen');
+  renderQuestion();
+  setTimeout(()=>owlSay("Super ! On continue avec la suite ! 🚀", 2500, true), 300);
+}
+
 function finishQuiz(){
   const total = state.current.questionList.length;
   const score = state.current.score;
@@ -3342,7 +5038,16 @@ function finishQuiz(){
       leveledUp = true;
     }
   }
+  if(!state.current.isReview){
+    state.history.push({date: new Date().toISOString().slice(0,10), subject, score, total, stars});
+    if(state.history.length > 90) state.history = state.history.slice(-90);
+    updateStreak();
+  }
   scheduleSave();
+
+  const allTotal = state.current.totalQuestionCount || total;
+  const hasMore = state.current.lazyOffset + 15 < allTotal;
+  const nextOffset = state.current.lazyOffset + 15;
 
   show('resultScreen');
   document.getElementById('retryBtn').setAttribute('onclick','retrySameQuiz()');
@@ -3363,13 +5068,67 @@ function finishQuiz(){
     reviewBtn.classList.add('hidden');
   }
 
+  const nextBtn = document.getElementById('nextExerciseBtn');
+  if(hasMore && !state.current.isReview){
+    nextBtn.classList.remove('hidden');
+    nextBtn.textContent = `📚 Suite → (${nextOffset+1}-${Math.min(nextOffset+15, allTotal)}/${allTotal})`;
+    nextBtn.setAttribute('onclick', 'loadMoreQuestions()');
+  } else if(!state.current.isReview && subject){
+    const subjects = Object.keys(QUESTIONS[state.level]);
+    const others = subjects.filter(s => s !== subject && QUESTIONS[state.level][s] && QUESTIONS[state.level][s].length > 0);
+    if(others.length > 0){
+      nextBtn.classList.remove('hidden');
+      const pick = others[Math.floor(Math.random() * others.length)];
+      const nextSubj = SUBJECT_META[pick]?.title || pick;
+      nextBtn.textContent = `🔄 ${nextSubj}`;
+      nextBtn.setAttribute('onclick', `openQuiz('${pick}')`);
+    } else {
+      nextBtn.classList.add('hidden');
+    }
+  } else {
+    nextBtn.classList.add('hidden');
+  }
+
   renderStars();
+
+  // Check achievements
+  if(!state.current.isReview){
+    if(stars === 3 && total === score){
+      checkAchievement('perfect');
+      if(subject === 'maths' && stars === 3) checkAchievement('math_master');
+      if(subject === 'francais' && stars === 3) checkAchievement('french_master');
+    }
+    if(stars === 3) checkAchievement('all_stars');
+    if(subject === 'maths' && stars === 3) checkAchievement('math_master');
+    if(subject === 'francais' && stars === 3) checkAchievement('french_master');
+    if(!state.achievements.first_quiz) checkAchievement('first_quiz');
+    if(state.streak >= 7) checkAchievement('streak_7');
+    state.totalCorrect = (state.totalCorrect || 0) + score;
+    if(state.totalCorrect >= 100) checkAchievement('hundred_q');
+    if(state.timeAttackScore >= 100) checkAchievement('time_attack_pro');
+  }
+
+  checkMascotEvolution();
+
   if(stars === 3){ launchConfetti(); bannerSparkles(12); }
   if(leveledUp) setTimeout(()=>showLevelUpBanner(state.subjectLevel[subject]), 500);
   const subj = SUBJECT_META[subject]?.title || subject;
   if(stars === 3) lastSessionMsg = `Parfait sur ${subj} ! Tu es un(e) champion(ne) absolu(e) ! 🏆🎉`;
   else if(stars >= 2) lastSessionMsg = `Bien joué sur ${subj} ! Continue comme ça, tu gères ! 💪✨`;
   else lastSessionMsg = `Bon effort sur ${subj} ! La prochaine sera encore meilleure, j'en suis sûr ! 🌱`;
+}
+
+function shareResult(){
+  const score = state.current ? state.current.score : 0;
+  const total = state.current ? state.current.questionList.length : 0;
+  const text = `J'ai obtenu ${score}/${total} ⭐ aux Aventures du Savoir ! Viens jouer toi aussi ! 🎮`;
+  if(navigator.share){
+    navigator.share({title:'Les Aventures du Savoir', text}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>{
+      owlSay("Résultat copié dans le presse-papier ! 📋", 2500, true);
+    }).catch(()=>{});
+  }
 }
 
 function openReview(){
@@ -3385,6 +5144,13 @@ function openReview(){
 }
 
 function retrySameQuiz(){ openQuiz(state.current.subject); }
+function nextExercise(){
+  const subjects = Object.keys(QUESTIONS[state.level]);
+  const current = state.current.subject;
+  const others = subjects.filter(s => s !== current && QUESTIONS[state.level][s] && QUESTIONS[state.level][s].length > 0);
+  if(others.length === 0){ openQuiz(current); return; }
+  openQuiz(others[Math.floor(Math.random() * others.length)]);
+}
 
 /* ---------------- MEMORY GAME ---------------- */
 const MEM_SETS = {
@@ -3475,6 +5241,9 @@ function showMemoryResult(){
   document.getElementById('reviewBtn').classList.add('hidden');
   addPoints(stars*10);
   if(stars === 3) launchConfetti();
+  state.history.push({date: new Date().toISOString().slice(0,10), subject:'memory', score:mem.found, total:mem.cards.length/2, stars});
+  if(state.history.length > 90) state.history = state.history.slice(-90);
+  updateStreak();
   lastSessionMsg = stars >= 2 ? "Jeu de mémoire : tu as une mémoire d'éléphant ! 🐘🧠" : "Bien essayé ! Tu feras mieux la prochaine fois, j'en suis sûr ! 🎯";
 }
 
@@ -3785,14 +5554,16 @@ function registerAnswer(isCorrect){
 }
 
 /* ---------------- CHRONO SUR LES QUESTIONS ---------------- */
-const QUESTION_TIME_LIMIT = 20;
 let questionTimer = null;
-let questionTimeLeft = QUESTION_TIME_LIMIT;
+let questionTimeLeft = 20;
+let QUESTION_TIME_LIMIT = 20;
 
 function startQuestionTimer(onTimeout, fillId, textId, rowSelector){
   clearInterval(questionTimer);
+  QUESTION_TIME_LIMIT = state.timerEnabled ? (state.timerDuration || 15) : 9999;
   questionTimeLeft = QUESTION_TIME_LIMIT;
   updateTimerUI(fillId, textId, rowSelector);
+  if(!state.timerEnabled){ updateTimerUI(fillId, textId, rowSelector); return; }
   questionTimer = setInterval(()=>{
     questionTimeLeft--;
     updateTimerUI(fillId, textId, rowSelector);
@@ -3806,6 +5577,15 @@ function stopQuestionTimer(){
   clearInterval(questionTimer);
 }
 function updateTimerUI(fillId, textId, rowSelector){
+  if(!state.timerEnabled){
+    const fill = document.getElementById(fillId);
+    const text = document.getElementById(textId);
+    const row = rowSelector ? document.querySelector(rowSelector) : null;
+    if(fill) fill.style.width = '100%';
+    if(text) text.textContent = '--:--';
+    if(row) row.classList.remove('urgent');
+    return;
+  }
   const pct = Math.max(0, (questionTimeLeft/QUESTION_TIME_LIMIT)*100);
   const fill = document.getElementById(fillId);
   const text = document.getElementById(textId);
@@ -3833,9 +5613,14 @@ async function saveAppData(){
     await window.storage.set('profile-'+state.profileId, JSON.stringify({
       avatar: state.avatar, level: state.level, firstName: state.firstName, age: state.age,
       stars: state.stars, subjectLevel: state.subjectLevel, aiScore: state.aiScore,
-      points: state.points, streak: state.streak, lastDailyDate: state.lastDailyDate, usage: state.usage,
+      points: state.points, streak: state.streak, lastActiveDate: state.lastActiveDate, lastDailyDate: state.lastDailyDate, usage: state.usage,
       badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect,
-      stories: state.stories, owlWardrobe: state.owlWardrobe, owlEquipped: state.owlEquipped, timeAttackScore: state.timeAttackScore
+      stories: state.stories, owlWardrobe: state.owlWardrobe, owlEquipped: state.owlEquipped, timeAttackScore: state.timeAttackScore,
+      photo: state.photo,
+      soundEnabled: state.soundEnabled, timerEnabled: state.timerEnabled, timerDuration: state.timerDuration,
+      history: state.history,
+      mastery: state.mastery, achievements: state.achievements,
+      mascotStage: state.mascotStage
     }), false);
   }catch(e){ /* sauvegarde impossible pour le moment, pas grave */ }
 }
@@ -3848,11 +5633,13 @@ async function loadAppData(profileId){
       if(d.level) state.level = d.level;
       if(d.firstName) state.firstName = d.firstName.charAt(0).toUpperCase() + d.firstName.slice(1);
       if(d.age) state.age = d.age;
+      if(d.photo) state.photo = d.photo;
       if(d.stars) Object.assign(state.stars, d.stars);
       if(d.subjectLevel) Object.assign(state.subjectLevel, d.subjectLevel);
       state.aiScore = d.aiScore || 0;
       state.points = d.points || 0;
       state.streak = d.streak || 0;
+      state.lastActiveDate = d.lastActiveDate || null;
       state.lastDailyDate = d.lastDailyDate || null;
       state.usage = d.usage || {};
       state.badges = d.badges || {};
@@ -3862,6 +5649,13 @@ async function loadAppData(profileId){
       state.owlWardrobe = d.owlWardrobe || [];
       state.owlEquipped = d.owlEquipped || null;
       state.timeAttackScore = d.timeAttackScore || 0;
+      if(d.soundEnabled !== undefined) state.soundEnabled = d.soundEnabled;
+      if(d.timerEnabled !== undefined) state.timerEnabled = d.timerEnabled;
+      if(d.timerDuration) state.timerDuration = d.timerDuration;
+      if(d.history) state.history = d.history;
+      if(d.mastery) state.mastery = d.mastery;
+      if(d.achievements) state.achievements = d.achievements;
+      if(d.mascotStage !== undefined) state.mascotStage = d.mascotStage;
     }
   }catch(e){ /* profil vide ou première visite */ }
 }
@@ -3890,12 +5684,14 @@ function resetStateDefaults(){
   state.firstName = '';
   state.age = null;
   state.avatar = 'fox';
+  state.photo = null;
   state.level = 'A';
-  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0 };
-  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1 };
+  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0 };
+  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1 };
   state.aiScore = 0;
   state.points = 0;
   state.streak = 0;
+  state.lastActiveDate = null;
   state.lastDailyDate = null;
   state.usage = {};
   state.badges = {};
@@ -3905,6 +5701,13 @@ function resetStateDefaults(){
   state.owlWardrobe = [];
   state.owlEquipped = null;
   state.timeAttackScore = 0;
+  state.soundEnabled = true;
+  state.timerEnabled = true;
+  state.timerDuration = 15;
+  state.history = [];
+  state.mastery = {};
+  state.achievements = {};
+  state.mascotStage = 0;
 }
 
 async function openProfileSwitcher(){
@@ -3914,8 +5717,11 @@ async function openProfileSwitcher(){
   list.forEach(p=>{
     const card = document.createElement('div');
     card.className = 'profile-card' + (p.id === state.profileId ? ' active' : '');
-    const svg = AVATAR_SVGS[p.avatar] || AVATAR_SVGS.fox;
-    card.innerHTML = `<div class="profile-avatar">${svg}</div><div class="profile-name">${p.firstName}</div>`;
+    const hasPhoto = p.photo && p.photo.startsWith('data:image');
+    const avatarContent = hasPhoto
+      ? `<img src="${p.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="${p.firstName}">`
+      : (AVATAR_SVGS[p.avatar] || AVATAR_SVGS.fox);
+    card.innerHTML = `<div class="profile-avatar">${avatarContent}</div><div class="profile-name">${p.firstName}</div>`;
     card.onclick = ()=>switchProfile(p.id);
     box.appendChild(card);
   });
@@ -3939,6 +5745,9 @@ async function switchProfile(id){
   updatePersonalizedTexts();
   document.getElementById('btnLevelA').classList.toggle('active', state.level==='A');
   document.getElementById('btnLevelB').classList.toggle('active', state.level==='B');
+  document.getElementById('btnLevelC').classList.toggle('active', state.level==='C');
+  document.getElementById('btnLevelD').classList.toggle('active', state.level==='D');
+  document.getElementById('btnLevelE').classList.toggle('active', state.level==='E');
   goHome();
   setTimeout(()=>owlSay(`Salut ${state.firstName} ! Content de te retrouver !`), 500);
 }
@@ -3996,7 +5805,9 @@ function selectAge(age, btnEl){
     document.getElementById('onboardStepAvatar').classList.remove('hidden');
     renderAvatarGrid('onboardAvatarGrid', (id)=>{
       state.avatar = id;
-      finishOnboarding();
+      document.getElementById('onboardStepAvatar').classList.add('hidden');
+      document.getElementById('onboardStepPhoto').classList.remove('hidden');
+      soundClick();
     });
     owlSay("Bien reçu ! Maintenant, choisis ton personnage.");
   }, 350);
@@ -4005,11 +5816,14 @@ function selectAge(age, btnEl){
 async function finishOnboarding(){
   document.getElementById('btnLevelA').classList.toggle('active', state.level==='A');
   document.getElementById('btnLevelB').classList.toggle('active', state.level==='B');
+  document.getElementById('btnLevelC').classList.toggle('active', state.level==='C');
+  document.getElementById('btnLevelD').classList.toggle('active', state.level==='D');
+  document.getElementById('btnLevelE').classList.toggle('active', state.level==='E');
 
   if(!state.profileId){
     state.profileId = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     const list = await loadProfilesList();
-    list.push({ id: state.profileId, firstName: state.firstName, avatar: state.avatar });
+    list.push({ id: state.profileId, firstName: state.firstName, avatar: state.avatar, photo: state.photo });
     await saveProfilesList(list);
   }
   await setActiveProfileId(state.profileId);
@@ -4103,10 +5917,11 @@ function answerDaily(i, q, btnEl){
   if(isCorrect){ btnEl.classList.add('correct'); soundCorrect(); owlHappy(); owlEncourage(); launchFireworks(btnEl); screenFlash('correct'); }
   else { btnEl.classList.add('wrong'); buttons[q.a].classList.add('correct'); soundWrong(); screenFlash('wrong'); owlComfort(); }
 
-  if(state.lastDailyDate === yesterdayStr()) state.streak += 1;
-  else if(state.lastDailyDate !== todayStr()) state.streak = 1;
   state.lastDailyDate = todayStr();
   addPoints(isCorrect ? 50 : 20);
+  state.history.push({date: todayStr(), subject:'daily', score:isCorrect?1:0, total:1, stars:isCorrect?3:0});
+  if(state.history.length > 90) state.history = state.history.slice(-90);
+  updateStreak();
   scheduleSave();
 
   document.getElementById('dailyFeedbackBox').innerHTML = `
@@ -4147,7 +5962,7 @@ function last7Dates(){
 function renderParentScreen(){
   const dates = last7Dates();
   const values = dates.map(d=>state.usage[d] || 0);
-  loadOpenAIKey();
+  loadVoiceSettings();
   const weekTotal = values.reduce((a,b)=>a+b,0);
   document.getElementById('statPoints').textContent = state.points;
   document.getElementById('statStreak').textContent = state.streak + ' 🔥';
@@ -4426,7 +6241,11 @@ function finishTA(){
   document.getElementById('resultText').textContent = taScore + ' points' + (isRecord ? ' — NOUVEAU RECORD ! 🏆' : ' — Record : '+state.timeAttackScore);
   document.getElementById('resultStars').innerHTML = '';
   document.getElementById('reviewBtn').classList.add('hidden');
+  document.getElementById('nextExerciseBtn').classList.add('hidden');
   addPoints(Math.floor(taScore/10));
+  state.history.push({date: new Date().toISOString().slice(0,10), subject:'timeattack', score:taScore, total:150, stars:Math.min(3,Math.floor(taScore/50))});
+  if(state.history.length > 90) state.history = state.history.slice(-90);
+  updateStreak();
   soundLevelUp();
   launchConfetti();
   owlSay('Time Attack terminé ! '+taScore+' points ! '+(isRecord ? 'NOUVEAU RECORD ! 🏆' : ''));
@@ -4434,10 +6253,70 @@ function finishTA(){
 
 /* ---------------- MODE SOMBRE ---------------- */
 function toggleDarkMode(){
+  document.documentElement.classList.toggle('dark-mode');
   document.body.classList.toggle('dark-mode');
-  const isDark = document.body.classList.contains('dark-mode');
-  try{ localStorage.setItem('darkMode', isDark ? '1' : ''); }catch(e){}
-  document.getElementById('darkModeToggle').textContent = isDark ? '☀️ Mode clair' : '🌙 Mode sombre';
+  const isDark = document.documentElement.classList.contains('dark-mode');
+  try{ localStorage.setItem('av_dark_mode', isDark ? '1' : ''); }catch(e){}
+  document.getElementById('darkModeToggleBtn').textContent = isDark ? '☀️' : '🌙';
+  const cb = document.getElementById('settingsDarkToggle');
+  if(cb) cb.checked = isDark;
+}
+
+function toggleHighContrast(){
+  document.body.classList.toggle('high-contrast');
+  const on = document.body.classList.contains('high-contrast');
+  document.getElementById('highContrastToggle').textContent = on ? '🔳' : '🔲';
+  document.getElementById('highContrastToggle').title = on ? 'Désactiver le contraste élevé' : 'Activer le contraste élevé';
+  try{ localStorage.setItem('av_high_contrast', on ? '1' : ''); }catch(e){}
+}
+
+function loadHighContrast(){
+  try{
+    if(localStorage.getItem('av_high_contrast') === '1'){
+      document.body.classList.add('high-contrast');
+      document.getElementById('highContrastToggle').textContent = '🔳';
+      document.getElementById('highContrastToggle').title = 'Désactiver le contraste élevé';
+    }
+  }catch(e){}
+}
+
+const EVO_STAGES = [
+  { minStars:0, icon:'🦉', title:'Petit Hibou', tip:'Continue à apprendre pour évoluer !' },
+  { minStars:10, icon:'🦉⭐', title:'Hibou Curieux', tip:'Super, tu progresses !' },
+  { minStars:30, icon:'🦉✨', title:'Hibou Savant', tip:'Tu es un vrai champion !' },
+  { minStars:60, icon:'🦉🌟', title:'Maître Hibou', tip:'Incroyable, tu es un maître du savoir !' },
+  { minStars:90, icon:'🦉👑', title:'Roi Hibou', tip:'Légendaire ! Tu règnes sur le savoir !' },
+];
+
+function getCurrentEvoStage(){
+  const s = totalStars();
+  let stage = EVO_STAGES[0];
+  for(const st of EVO_STAGES){
+    if(s >= st.minStars) stage = st;
+  }
+  return stage;
+}
+
+function checkMascotEvolution(){
+  const stage = getCurrentEvoStage();
+  if(state.mascotStage !== stage.minStars){
+    const prev = state.mascotStage || 0;
+    state.mascotStage = stage.minStars;
+    scheduleSave();
+    if(stage.minStars > prev && prev > 0){
+      showMascotEvo(stage);
+    }
+  }
+}
+
+function showMascotEvo(stage){
+  document.getElementById('mascotEvoIcon').textContent = stage.icon;
+  document.getElementById('mascotEvoTitle').textContent = stage.title;
+  document.getElementById('mascotEvoDesc').textContent = stage.tip;
+  document.getElementById('mascotEvo').classList.add('show');
+  soundLevelUp();
+  launchConfetti();
+  setTimeout(()=>document.getElementById('mascotEvo').classList.remove('show'), 3500);
 }
 
 /* ---------------- DIPLÔME PDF ---------------- */
@@ -4529,13 +6408,16 @@ function scheduleDailyReminder(){
 
 function updateParentScreenFeatures(){
   const total = totalStars();
-  document.getElementById('parentGateDarkMode').innerHTML = `<span>🌙 Mode sombre</span><label class="toggle"><input type="checkbox" onchange="toggleDarkMode()" ${document.body.classList.contains('dark-mode')?'checked':''}><span class="slider"></span></label>`;
+  const isDark = document.documentElement.classList.contains('dark-mode') || document.body.classList.contains('dark-mode');
+  document.getElementById('parentGateDarkMode').innerHTML = `<span>🌙 Mode sombre</span><label class="toggle"><input type="checkbox" onchange="toggleDarkMode()" ${isDark?'checked':''}><span class="slider"></span></label>`;
   renderProfileComparison();
 }
 function loadParentDarkMode(){
   try{
-    if(localStorage.getItem('darkMode') === '1'){
+    if(localStorage.getItem('av_dark_mode') === '1' || localStorage.getItem('darkMode') === '1'){
+      document.documentElement.classList.add('dark-mode');
       document.body.classList.add('dark-mode');
+      document.getElementById('darkModeToggleBtn').textContent = '☀️';
     }
   }catch(e){}
 }
@@ -4612,12 +6494,187 @@ function stopAutoEncourage(){
   stopIdleAntics();
 }
 
+/* ---------------- PARAMÈTRES & STATS ---------------- */
+function openSettings(){
+  document.getElementById('settingsSoundToggle').textContent = state.soundEnabled ? '🔊' : '🔇';
+  const timerCb = document.getElementById('settingsTimerToggle');
+  if(timerCb) timerCb.checked = state.timerEnabled;
+  const timerRow = document.getElementById('settingsTimerDurationRow');
+  if(timerRow) timerRow.style.display = state.timerEnabled ? 'flex' : 'none';
+  const slider = document.getElementById('settingsTimerSlider');
+  if(slider) slider.value = state.timerDuration || 15;
+  const val = document.getElementById('settingsTimerValue');
+  if(val) val.textContent = (state.timerDuration || 15) + 's';
+  const darkCb = document.getElementById('settingsDarkToggle');
+  if(darkCb) darkCb.checked = document.documentElement.classList.contains('dark-mode');
+  show('settingsScreen');
+}
+function closeSettings(){
+  if(!document.getElementById('statsScreen').classList.contains('hidden')){ show('settingsScreen'); return; }
+  goHome();
+}
+function toggleTimer(){
+  state.timerEnabled = !state.timerEnabled;
+  try{ localStorage.setItem('av_timer', state.timerEnabled ? '1' : ''); }catch(e){}
+  const row = document.getElementById('settingsTimerDurationRow');
+  if(row) row.style.display = state.timerEnabled ? 'flex' : 'none';
+  scheduleSave();
+}
+function updateTimerDuration(val){
+  state.timerDuration = parseInt(val, 10);
+  document.getElementById('settingsTimerValue').textContent = val + 's';
+  try{ localStorage.setItem('av_timer_duration', val); }catch(e){}
+  scheduleSave();
+}
+function toggleFullscreen(){
+  if(document.fullscreenElement){
+    document.exitFullscreen();
+  } else {
+    document.documentElement.requestFullscreen();
+  }
+}
+
+/* ---------------- STREAK ---------------- */
+function updateStreak(){
+  const today = new Date().toISOString().slice(0,10);
+  if(state.lastActiveDate === today) return;
+  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if(state.lastActiveDate === yesterday){
+    state.streak++;
+  } else {
+    state.streak = 1;
+  }
+  state.lastActiveDate = today;
+  const milestones = [3,7,14,30];
+  const bonus = [20,50,100,300];
+  for(let i=0;i<milestones.length;i++){
+    if(state.streak === milestones[i]){
+      state.points += bonus[i];
+      owlSay(`🔥 Série de ${state.streak} jours ! Bonus de ${bonus[i]} points ! 🎉`, 4000);
+      launchConfetti();
+    }
+  }
+  renderStreak();
+  scheduleSave();
+}
+function renderStreak(){
+  const el = document.getElementById('streakBadge');
+  if(el) el.textContent = state.streak;
+  const tr = document.getElementById('streakTrophy');
+  if(tr) tr.style.display = state.streak > 0 ? 'flex' : 'none';
+}
+
+/* ---------------- STATS / HISTORIQUE ---------------- */
+function openStatsScreen(){
+  const totalPoints = state.points;
+  document.getElementById('statsTotalPoints').textContent = totalPoints;
+  const totalQuizzes = state.history.length;
+  document.getElementById('statsTotalQuizzes').textContent = totalQuizzes;
+
+  let bestSubj = '-', bestStars = 0;
+  for(const [s,n] of Object.entries(state.stars)){
+    if(n > bestStars){ bestStars = n; bestSubj = (SUBJECT_META[s]?.title || s); }
+  }
+  document.getElementById('statsBestSubject').textContent = bestSubj;
+
+  renderStatsBarChart();
+  renderRecentActivity();
+  renderAchievements();
+  show('statsScreen');
+}
+
+function renderAchievements(){
+  const grid = document.getElementById('achievementsGrid');
+  grid.innerHTML = '';
+  const total = ACHIEVEMENTS.length;
+  let unlocked = 0;
+  ACHIEVEMENTS.forEach(a=>{
+    const owned = !!state.achievements[a.id];
+    if(owned) unlocked++;
+    const card = document.createElement('div');
+    card.className = 'achievement-card' + (owned ? ' unlocked' : ' locked');
+    card.innerHTML = `<div class="achievement-icon">${owned ? a.icon : '🔒'}</div><div class="achievement-title">${owned ? a.title : '???'}</div><div class="achievement-desc">${owned ? a.desc : 'Encore secret'}</div>`;
+    grid.appendChild(card);
+  });
+  document.querySelector('#achievementsSection h3').textContent = `🏆 Succès (${unlocked}/${total})`;
+}
+
+function shareStats(){
+  const lines = ['📊 *Mes Aventures du Savoir*'];
+  lines.push(`⭐ Total d'étoiles : ${totalStars()}`);
+  lines.push(`📝 Quiz complétés : ${state.history.length}`);
+  const best = Object.entries(state.stars).sort((a,b)=>b[1]-a[1])[0];
+  if(best && best[1] > 0) lines.push(`🏆 Meilleure matière : ${SUBJECT_META[best[0]]?.title || best[0]} (${best[1]}⭐)`);
+  const totalPts = state.points;
+  if(totalPts > 0) lines.push(`💰 Points : ${totalPts}`);
+  lines.push('');
+  lines.push('🔗 Jouer aussi : https://aventures-du-savoir.app');
+  const text = lines.join('\n');
+  if(navigator.share){
+    navigator.share({title:'Mes Aventures du Savoir', text}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>{
+      owlSay('Stats copiées ! Partage avec tes amis ! 📋🎉', 2500, true);
+    }).catch(()=>{});
+  }
+}
+function renderStatsBarChart(){
+  const container = document.getElementById('statsBarChart');
+  container.innerHTML = '<div class="stats-bar-chart"></div>';
+  const inner = container.firstElementChild;
+  const maxStars = Math.max(1, ...Object.values(state.stars));
+  for(const [subj,n] of Object.entries(state.stars)){
+    const label = SUBJECT_META[subj]?.title || subj;
+    const pct = (n / maxStars) * 100;
+    const row = document.createElement('div');
+    row.className = 'stats-bar-row';
+    row.innerHTML = `<div class="stats-bar-label">${label}</div>
+      <div class="stats-bar-track"><div class="stats-bar-fill" style="width:${pct}%"></div></div>
+      <div class="stats-bar-value">${n}⭐</div>`;
+    inner.appendChild(row);
+  }
+}
+function renderRecentActivity(){
+  const container = document.getElementById('statsRecentActivity');
+  const recent = state.history.slice(-10).reverse();
+  if(recent.length === 0){
+    container.innerHTML = '<p style="opacity:0.6;text-align:center;">Aucune session pour le moment</p>';
+    return;
+  }
+  container.innerHTML = recent.map(h => {
+    const date = new Date(h.date + 'T00:00:00').toLocaleDateString('fr-FR');
+    const subj = SUBJECT_META[h.subject]?.title || h.subject;
+    return `<div class="stats-recent-item"><span>${date}</span><span>${subj}</span><span>${h.score}/${h.total} ⭐${h.stars}</span></div>`;
+  }).join('');
+}
+function clearHistory(){
+  if(!confirm('Effacer tout l\'historique des sessions ?')) return;
+  state.history = [];
+  scheduleSave();
+  renderRecentActivity();
+  owlSay("Historique effacé ! 🧹");
+}
+
+/* ---------------- LOAD SETTINGS ---------------- */
+function loadSettings(){
+  try{
+    if(localStorage.getItem('av_sound') === '0') state.soundEnabled = false;
+    if(localStorage.getItem('av_timer') === '0') state.timerEnabled = false;
+    const td = localStorage.getItem('av_timer_duration');
+    if(td) state.timerDuration = parseInt(td, 10);
+  }catch(e){}
+}
+
 async function initApp(){
   addAmbientOrbs();
   addClouds();
   addDecor();
   initVoices();
+  loadVoiceSettings();
+  loadSettings();
   loadParentDarkMode();
+  loadHighContrast();
+  renderStreak();
   const activeId = await getActiveProfileId();
   if(activeId){
     state.profileId = activeId;
@@ -4625,9 +6682,15 @@ async function initApp(){
   }
   document.getElementById('btnLevelA').classList.toggle('active', state.level==='A');
   document.getElementById('btnLevelB').classList.toggle('active', state.level==='B');
+  document.getElementById('btnLevelC').classList.toggle('active', state.level==='C');
+  document.getElementById('btnLevelD').classList.toggle('active', state.level==='D');
+  document.getElementById('btnLevelE').classList.toggle('active', state.level==='E');
   renderAvatars();
   renderStars();
   startUsageTracking();
+  if(state.profileId){
+    if(state.firstName && state.age) checkMascotEvolution();
+  }
   if(state.profileId && state.firstName && state.age){
     updatePersonalizedTexts();
     show('homeScreen');
