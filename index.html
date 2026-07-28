@@ -1311,6 +1311,7 @@
       <div class="trophy" id="coinsDisplay" style="background:#FFC800;color:#fff;">🪙 0</div>
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
       <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou">🔊</div>
+      <div class="voice-toggle" id="leaderboardBtn" onclick="openLiveLeaderboard()" title="Voir le classement des enfants" style="background:#FFC800;color:#fff;">🏆</div>
       <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil">👪</div>
       <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre">🌙</div>
       <div class="voice-toggle" onclick="openSettings()" title="Paramètres">⚙️</div>
@@ -1855,6 +1856,15 @@
     <div style="text-align:center;margin-top:12px;">
       <button class="btn-secondary" onclick="shareStats()">📤 Partager mes progrès</button>
     </div>
+  </div>
+
+  <div id="liveLeaderboardScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
+      <div class="subject-title">🏆 Classement des enfants</div>
+      <div style="font-size:0.8rem;opacity:0.7;">Mis à jour automatiquement</div>
+    </div>
+    <div id="liveLeaderboardContent" style="max-height:60vh;overflow-y:auto;"></div>
   </div>
 
   <div class="parent-link" onclick="openParentGate()">👪 Espace Parents — suivi &amp; statistiques</div>
@@ -3684,7 +3694,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen','liveLeaderboardScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -5988,6 +5998,30 @@ function renderParentScreen(){
   loadParentDarkMode();
 }
 
+async function openLiveLeaderboard(){
+  show('liveLeaderboardScreen');
+  const list = await loadProfilesList();
+  const lb = document.getElementById('liveLeaderboardContent');
+  if(!lb) return;
+  let entries = [];
+  for(const p of list){
+    try{
+      const res = await window.storage.get('profile-'+p.id, false);
+      if(!res||!res.value) continue;
+      const d = JSON.parse(res.value);
+      const stars = Object.values(d.stars||{}).reduce((a,b)=>a+b,0);
+      entries.push({name:p.firstName, photo:p.photo, avatar:p.avatar, points:d.points||0, coins:d.coins||0, stars, streak:d.streak||0, hangman:(d.stars||{}).hangman||0, ta:d.timeAttackScore||0});
+    }catch(e){}
+  }
+  entries.sort((a,b)=>b.points-a.points);
+  const medals = ['🥇','🥈','🥉'];
+  lb.innerHTML = entries.map((e,i)=>{
+    const bg = i<3?'background:linear-gradient(160deg,#FFF8E1,#FFE082);border:2px solid #FFC800;border-radius:14px;padding:12px;margin-bottom:8px;':'padding:10px 12px;border-bottom:1px solid #e8e8e8;';
+    const rank = i<3?medals[i]:'#'+(i+1);
+    const photo = e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:3px solid '+(i<3?'#FFC800':'#ddd')+';">':'<span style="font-size:2rem;">'+({fox:'🦊',panda:'🐼',lion:'🦁',penguin:'🐧',turtle:'🐢',butterfly:'🦋'}[e.avatar]||'⭐')+'</span>';
+    return '<div style="display:flex;align-items:center;gap:12px;'+bg+'"><span style="font-size:1.8rem;width:36px;text-align:center;">'+rank+'</span>'+photo+'<div style="flex:1;"><div style="font-weight:800;font-size:1.1rem;">'+e.name+'</div><div style="font-size:0.8rem;opacity:0.7;">'+e.streak+'🔥 | 💀'+e.hangman+' | ⚡'+e.ta+'</div></div><div style="text-align:right;"><div style="font-weight:800;font-size:1.2rem;">🏅'+e.points+'</div><div style="font-size:0.8rem;opacity:0.7;">🪙'+e.coins+' | ⭐'+e.stars+'</div></div></div>';
+  }).join('')||'<p style="text-align:center;opacity:0.6;padding:30px;">Crée des profils enfants pour voir le classement ! 🏆</p>';
+}
 async function renderLeaderboard(){const list=await loadProfilesList();const lb=document.getElementById('leaderboardList');if(!lb)return;const active=state.profileId;let entries=[];for(const p of list){try{const res=await window.storage.get('profile-'+p.id,false);if(!res||!res.value)continue;const d=JSON.parse(res.value);entries.push({name:p.firstName,photo:p.photo,points:d.points||0,coins:d.coins||0,stars:Object.values(d.stars||{}).reduce((a,b)=>a+b,0)});}catch(e){}}entries.sort((a,b)=>b.points-a.points);lb.innerHTML=entries.map((e,i)=>{const bg=e.points>0&&e.points===entries[0].points?'background:rgba(255,200,0,0.2);font-weight:700;':'';const photo=e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">':'';return'<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #e8e8e8;'+bg+'"><b>#'+(i+1)+'</b>'+photo+'<span style="flex:1;">'+e.name+'</span><span>🏅'+e.points+'</span><span>🪙'+e.coins+'</span><span>⭐'+e.stars+'</span></div>';}).join('')||'<p style="opacity:0.6;text-align:center;">Aucun joueur</p>';}
 
 function renderUsageChart(dates, values){
