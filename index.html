@@ -5796,9 +5796,8 @@ async function syncProfileToCloud(){
   _syncLock = true;
   try{
     const { sha, entries } = await cloudFetchLeaderboard();
-    var idx = entries.findIndex(e => e.id === state.profileId);
-    if(idx < 0) idx = entries.findIndex(e => e.name === state.firstName);
-    const entry = {
+    var filtered = entries.filter(e => e.name !== state.firstName);
+    filtered.push({
       id: state.profileId,
       name: state.firstName,
       avatar: state.avatar,
@@ -5810,22 +5809,10 @@ async function syncProfileToCloud(){
       hangman: (state.stars||{}).hangman || 0,
       ta: state.timeAttackScore || 0,
       lastActive: Date.now()
-    };
-    if(idx >= 0){
-      entries[idx] = entry;
-    } else {
-      entries.push(entry);
-    }
-    var dedup = {};
-    var merged = [];
-    for(var i = entries.length - 1; i >= 0; i--){
-      var key = entries[i].id || entries[i].name;
-      if(!dedup[key]){ dedup[key] = true; merged.push(entries[i]); }
-    }
-    merged.reverse();
-    merged.sort((a,b) => b.points - a.points);
-    if(merged.length > 100) merged.length = 100;
-    await cloudSaveLeaderboard(merged, sha);
+    });
+    filtered.sort((a,b) => b.points - a.points);
+    if(filtered.length > 100) filtered.length = 100;
+    await cloudSaveLeaderboard(filtered, sha);
   }catch(e){ /* sync cloud pas critique */ }
   _syncLock = false;
 }
