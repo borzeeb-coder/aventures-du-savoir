@@ -1338,7 +1338,7 @@
       <div class="onboard-owl"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#8B6FD9"/><circle cx="23" cy="28" r="8" fill="#3D2C56"/><circle cx="41" cy="28" r="8" fill="#3D2C56"/><circle cx="23" cy="27" r="2.8" fill="#fff"/><circle cx="41" cy="27" r="2.8" fill="#fff"/><polygon points="32,35 26,44 38,44" fill="#FFC800"/></svg></div>
       <h2>Salut ! Moi c'est Professeur Hibou.</h2>
       <p class="onboard-sub">Comment tu t'appelles ?</p>
-      <input type="text" id="onboardName" class="onboard-input" placeholder="Ton prénom" maxlength="20" onkeydown="if(event.key==='Enter') document.getElementById('onboardPseudo').focus();" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);">
+      <input type="text" id="onboardName" class="onboard-input" placeholder="Ton prénom" maxlength="20" onkeydown="if(event.key==='Enter') document.getElementById('onboardPseudo').focus();" autocomplete="off" autocapitalize="words">
       <p class="onboard-sub" style="margin-top:8px;font-size:0.85rem;">Choisis un pseudo unique pour le classement :</p>
       <input type="text" id="onboardPseudo" class="onboard-input" placeholder="Pseudo (ex: BenjaminFouDuJava)" maxlength="20" onkeydown="if(event.key==='Enter') validateName();">
       <button class="next-btn" onclick="validateName()">Valider ✅</button>
@@ -5932,6 +5932,7 @@ async function validateName(){
   const name = input.value.trim();
   if(name.length < 2){
     document.getElementById('onboardNameError').textContent = "Écris ton prénom (au moins 2 lettres) 😊";
+    input.focus();
     return;
   }
   const pseudoInput = document.getElementById('onboardPseudo');
