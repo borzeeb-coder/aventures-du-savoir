@@ -3851,7 +3851,7 @@ function updateApiKeyUI(){
   } else if(val.startsWith('openai-')){
     inp.placeholder = 'Colle ta clé API OpenAI (sk-...)';
     inp.disabled = false;
-    if(instructions) instructions.innerHTML = '🤖 <strong>OpenAI TTS</strong> : besoin d'une clé API OpenAI (sk-...) depuis platform.openai.com';
+    if(instructions) instructions.innerHTML = "🤖 <strong>OpenAI TTS</strong> : besoin d'une clé API OpenAI (sk-...) depuis platform.openai.com";
   } else {
     inp.placeholder = 'Colle ta clé API ElevenLabs';
     inp.disabled = false;
@@ -4046,7 +4046,6 @@ function toggleVoice(){
 }
 
 function readAloud(text){ speak(text); }
-}
 
 /* ---------------- OWL ---------------- */
 function owlSay(text, duration, skipSpeak){
