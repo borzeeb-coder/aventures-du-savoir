@@ -1,13 +1,9 @@
 const CACHE = 'avent-du-savoir-v52';
 const STATIC = [
   './',
-  './index.html',
   './manifest.json',
-  './sw.js'
-];
-const FONTS = [
-  'https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap',
-  'https://fonts.gstatic.com'
+  './sw.js',
+  'https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap'
 ];
 
 self.addEventListener('install', (e) => {
@@ -26,15 +22,36 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
+  const isHtml = url.pathname === '/' || url.pathname === '/index.html';
+  const isFont = url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com';
 
-  if (FONTS.some((f) => url.origin + url.pathname.startsWith(f))) {
+  if (isFont) {
     e.respondWith(fontStrategy(e.request));
     return;
   }
   if (url.origin === self.location.origin) {
-    e.respondWith(cacheFirst(e.request));
+    if (isHtml) {
+      e.respondWith(networkFirst(e.request));
+    } else {
+      e.respondWith(cacheFirst(e.request));
+    }
   }
 });
+
+async function networkFirst(req) {
+  try {
+    const res = await fetch(req);
+    if (res.ok) {
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(req, copy));
+    }
+    return res;
+  } catch {
+    const hit = await caches.match(req);
+    if (hit) return hit;
+    return new Response('Hors-ligne', { status: 503 });
+  }
+}
 
 async function cacheFirst(req) {
   const hit = await caches.match(req);
@@ -47,7 +64,7 @@ async function cacheFirst(req) {
     }
     return res;
   } catch {
-    const fallback = await caches.match('./index.html');
+    const fallback = await caches.match('/');
     if (fallback) return fallback;
     return new Response('Hors-ligne', { status: 503 });
   }
