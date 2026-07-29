@@ -1,4 +1,4 @@
-const CACHE = 'avent-du-savoir-v54';
+const CACHE = 'avent-du-savoir-v55';
 const STATIC = [
   './',
   './manifest.json',
