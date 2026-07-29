@@ -1367,7 +1367,7 @@
       <div style="width:110px;height:110px;border-radius:50%;border:3px dashed var(--plum);margin:10px auto;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);cursor:pointer;position:relative;" id="onboardPhotoPreview" onclick="document.getElementById('onboardPhotoInput').click()">
         <span style="font-size:2.5rem;opacity:0.5;">📷</span>
       </div>
-      <input type="file" id="onboardPhotoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
+      <input type="file" id="onboardPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
       <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
         <button class="btn-secondary" onclick="finishOnboarding()">Passer</button>
         <button class="next-btn" onclick="finishOnboarding()">Continuer ✅</button>
@@ -1644,7 +1644,7 @@
     </div>
     <div class="avatar-grid" id="avatarChangeGrid"></div>
     <div style="text-align:center;margin:10px 0;">
-      <input type="file" id="profilePhotoInput" accept="image/*" capture="user" style="display:none" onchange="handlePhotoUpload(this)">
+      <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
       <button class="btn-secondary" onclick="document.getElementById('profilePhotoInput').click()" style="font-size:0.85rem;">📷 Prendre une photo de profil</button>
     </div>
   </div>
