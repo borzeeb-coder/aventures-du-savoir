@@ -1826,7 +1826,7 @@
       <button class="next-btn" onclick="openStatsScreen()" style="flex:1;font-size:0.85rem;">📊 Statistiques</button>
       <button class="btn-secondary" onclick="clearHistory()" style="flex:1;font-size:0.85rem;padding:10px;">🗑️ Effacer l'historique</button>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn-secondary" onclick="exportData()" style="flex:1;font-size:0.8rem;padding:8px;">💾 Exporter</button><button class="btn-secondary" onclick="document.getElementById('importFile').click()" style="flex:1;font-size:0.8rem;padding:8px;">📥 Importer</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)"></div><div class="chart-wrap" style="margin-bottom:12px;background:#FFF8E1;border-color:#FFC800;"><h3>🌍 Theme</h3><select id="themeSelect" onchange="changeTheme(this.value)" style="width:100%;padding:8px;border:2px solid var(--plum);border-radius:12px;font-weight:600;font-size:0.85rem;background:var(--cream);color:var(--plum);"><option value="default">Par defaut</option><option value="jungle">🌿 Jungle</option><option value="space">🚀 Espace</option><option value="ocean">🌊 Ocean</option></select></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;"><button class="btn-secondary" onclick="exportData()" style="flex:1;font-size:0.8rem;padding:8px;">💾 Exporter</button><button class="btn-secondary" onclick="document.getElementById('importFile').click()" style="flex:1;font-size:0.8rem;padding:8px;">📥 Importer</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)"></div><div class="chart-wrap" style="margin-bottom:12px;background:#E8F5E9;border-color:#58CC02;"><h3>🌐 Synchronisation cloud</h3><div style="font-size:0.8rem;opacity:0.75;margin-bottom:4px;">Token GitHub (optionnel) — pour sauvegarder le classement en ligne</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;"><input type="password" id="githubTokenInput" placeholder="ghp_... (token GitHub)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);"><button onclick="saveGithubToken()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button></div><span id="githubTokenStatus" style="font-size:0.75rem;font-weight:700;margin-top:2px;display:block;"></span></div><div class="chart-wrap" style="margin-bottom:12px;background:#FFF8E1;border-color:#FFC800;"><h3>🌍 Theme</h3><select id="themeSelect" onchange="changeTheme(this.value)" style="width:100%;padding:8px;border:2px solid var(--plum);border-radius:12px;font-weight:600;font-size:0.85rem;background:var(--cream);color:var(--plum);"><option value="default">Par defaut</option><option value="jungle">🌿 Jungle</option><option value="space">🚀 Espace</option><option value="ocean">🌊 Ocean</option></select></div>
   </div>
 
   <!-- STATS SCREEN -->
@@ -1861,10 +1861,14 @@
   <div id="liveLeaderboardScreen" class="card-screen hidden">
     <div class="screen-head">
       <button class="back-btn" onclick="goHome()">⬅ Retour</button>
-      <div class="subject-title">🏆 Classement des enfants</div>
-      <div style="font-size:0.8rem;opacity:0.7;">Mis à jour automatiquement</div>
+      <div class="subject-title">🏆 Classement mondial</div>
+      <div style="font-size:0.8rem;opacity:0.7;" id="leaderboardSyncStatus">🔄 Synchronisation...</div>
     </div>
-    <div id="liveLeaderboardContent" style="max-height:60vh;overflow-y:auto;"></div>
+    <div style="text-align:center;padding:4px 0 8px;">
+      <button onclick="syncNow()" style="background:#58CC02;color:#fff;border:none;border-radius:10px;padding:6px 16px;font-size:0.85rem;font-weight:700;cursor:pointer;">🔄 Synchroniser maintenant</button>
+    </div>
+    <div id="liveLeaderboardContent" style="max-height:55vh;overflow-y:auto;"></div>
+    <div style="text-align:center;padding:8px;font-size:0.75rem;opacity:0.5;">Top 100 • Données synchronisées depuis tous les appareils</div>
   </div>
 
   <div class="parent-link" onclick="openParentGate()">👪 Espace Parents — suivi &amp; statistiques</div>
@@ -3838,6 +3842,31 @@ function saveApiKey(){
   setTimeout(()=>{ if(st) st.textContent = ''; }, 4000);
 }
 
+function saveGithubToken(){
+  const inp = document.getElementById('githubTokenInput');
+  const token = inp ? inp.value.trim() : '';
+  try{ localStorage.setItem('av_github_token', token); }catch(e){}
+  const st = document.getElementById('githubTokenStatus');
+  if(!st) return;
+  if(token){
+    st.textContent = '✅ Token GitHub enregistré — synchronisation cloud active !';
+    st.style.color = 'var(--grass)';
+  } else {
+    st.textContent = '⚠️ Sans token, le classement est en lecture seule';
+    st.style.color = 'var(--coral)';
+  }
+  setTimeout(()=>{ if(st) st.textContent = ''; }, 4000);
+}
+
+function loadGithubToken(){
+  try{
+    const inp = document.getElementById('githubTokenInput');
+    if(!inp) return;
+    const token = localStorage.getItem('av_github_token');
+    if(token) inp.value = token;
+  }catch(e){}
+}
+
 let testSilent = false;
 function testVoice(silent){
   testSilent = !!silent;
@@ -3933,10 +3962,15 @@ function speak(text){
       utter.pitch = 1.0;
       utter.volume = 1;
       if(voice) utter.voice = voice;
+      // Android: delai obligatoire entre cancel() et speak()
       window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(utter);
+      if(IS_ANDROID){
+        setTimeout(()=>window.speechSynthesis.speak(utter), 60);
+      } else {
+        window.speechSynthesis.speak(utter);
+      }
     }catch(e){}
-  }, 20);
+  }, IS_ANDROID ? 5 : 20);
 }
 
 async function speakViaProxy(text, lang, cacheKey){
@@ -4219,8 +4253,12 @@ function unlockAudio(){
   } else {
     audioUnlocked = true;
   }
-  // Jouer un silence pour valider le déblocage
   playTone(0, 0.001, 'sine', 0, 0);
+  // Initialiser speechSynthesis (Android exige resume)
+  if('speechSynthesis' in window){
+    if(typeof speechSynthesis.resume === 'function') speechSynthesis.resume();
+    try{const s=new SpeechSynthesisUtterance('');s.volume=0;speechSynthesis.speak(s);}catch(e){}
+  }
 }
 
 // Détection Android
@@ -5613,6 +5651,108 @@ function updateTimerUI(fillId, textId, rowSelector){
 }
 
 /* ---------------- STORAGE (sauvegarde persistante multi-profils) ---------------- */
+if(!window.storage){
+  const _store = {};
+  try{
+    const raw = localStorage.getItem('_av_db');
+    if(raw) Object.assign(_store, JSON.parse(raw));
+  }catch(e){}
+  function _flush(){
+    try{ localStorage.setItem('_av_db', JSON.stringify(_store)); }catch(e){}
+  }
+  window.storage = {
+    async get(key, _opts){
+      return { value: _store[key] || null };
+    },
+    async set(key, val, _opts){
+      _store[key] = val;
+      _flush();
+    },
+    async remove(key, _opts){
+      delete _store[key];
+      _flush();
+    },
+    async keys(_opts){
+      return Object.keys(_store);
+    },
+    async clear(_opts){
+      Object.keys(_store).forEach(k => delete _store[k]);
+      _flush();
+    }
+  };
+}
+
+/* ---- Synchronisation cloud (GitHub) ---- */
+const GITHUB_OWNER = 'borzeeb-coder';
+const GITHUB_REPO = 'aventures-du-savoir';
+const GITHUB_LEADERBOARD_PATH = 'leaderboard.json';
+
+function getGithubToken(){
+  try{ return localStorage.getItem('av_github_token') || ''; }catch(e){ return ''; }
+}
+
+async function cloudFetchLeaderboard(){
+  try{
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_LEADERBOARD_PATH}`;
+    const token = getGithubToken();
+    const headers = { Accept: 'application/vnd.github.v3+json' };
+    if(token) headers['Authorization'] = 'Bearer ' + token;
+    const res = await fetch(url, { headers });
+    if(!res.ok) return { sha: null, entries: [] };
+    const data = await res.json();
+    const content = data.content ? atob(data.content.replace(/\n/g,'')) : '[]';
+    return { sha: data.sha, entries: JSON.parse(content) };
+  }catch(e){ return { sha: null, entries: [] }; }
+}
+
+async function cloudSaveLeaderboard(entries, sha){
+  const token = getGithubToken();
+  if(!token) return false;
+  try{
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_LEADERBOARD_PATH}`;
+    const body = {
+      message: 'Synchro classement',
+      content: btoa(unescape(encodeURIComponent(JSON.stringify(entries, null, 2)))),
+      sha: sha || undefined
+    };
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return res.ok;
+  }catch(e){ return false; }
+}
+
+async function syncProfileToCloud(){
+  if(!state.profileId || !state.firstName) return;
+  try{
+    const { sha, entries } = await cloudFetchLeaderboard();
+    const idx = entries.findIndex(e => e.id === state.profileId);
+    const entry = {
+      id: state.profileId,
+      name: state.firstName,
+      avatar: state.avatar,
+      photo: state.photo,
+      points: state.points || 0,
+      coins: state.coins || 0,
+      stars: Object.values(state.stars||{}).reduce((a,b)=>a+b,0),
+      streak: state.streak || 0,
+      hangman: (state.stars||{}).hangman || 0,
+      ta: state.timeAttackScore || 0,
+      lastActive: Date.now()
+    };
+    if(idx >= 0){
+      entries[idx] = entry;
+    } else {
+      entries.push(entry);
+    }
+    entries.sort((a,b) => b.points - a.points);
+    if(entries.length > 100) entries.length = 100;
+    await cloudSaveLeaderboard(entries, sha);
+  }catch(e){ /* sync cloud pas critique */ }
+}
+
 const todayStr = ()=> new Date().toISOString().slice(0,10);
 const yesterdayStr = ()=> new Date(Date.now()-86400000).toISOString().slice(0,10);
 
@@ -5636,6 +5776,7 @@ async function saveAppData(){
       mastery: state.mastery, achievements: state.achievements,
       mascotStage: state.mascotStage
     }), false);
+    syncProfileToCloud();
   }catch(e){ /* sauvegarde impossible pour le moment, pas grave */ }
 }
 async function loadAppData(profileId){
@@ -6000,27 +6141,54 @@ function renderParentScreen(){
 
 async function openLiveLeaderboard(){
   show('liveLeaderboardScreen');
+  document.getElementById('leaderboardSyncStatus').textContent = '🔄 Synchronisation...';
   const list = await loadProfilesList();
   const lb = document.getElementById('liveLeaderboardContent');
   if(!lb) return;
   let entries = [];
+  const localIds = new Set();
   for(const p of list){
     try{
       const res = await window.storage.get('profile-'+p.id, false);
       if(!res||!res.value) continue;
       const d = JSON.parse(res.value);
       const stars = Object.values(d.stars||{}).reduce((a,b)=>a+b,0);
-      entries.push({name:p.firstName, photo:p.photo, avatar:p.avatar, points:d.points||0, coins:d.coins||0, stars, streak:d.streak||0, hangman:(d.stars||{}).hangman||0, ta:d.timeAttackScore||0});
+      entries.push({name:p.firstName, photo:p.photo, avatar:p.avatar, points:d.points||0, coins:d.coins||0, stars, streak:d.streak||0, hangman:(d.stars||{}).hangman||0, ta:d.timeAttackScore||0, id:p.id});
+      localIds.add(p.id);
     }catch(e){}
   }
+  try{
+    const cloud = await cloudFetchLeaderboard();
+    for(const c of cloud.entries){
+      const existing = entries.findIndex(e => e.id === c.id);
+      if(existing >= 0){
+        if(c.points > entries[existing].points) entries[existing] = {...entries[existing], points: c.points, coins: c.coins, stars: c.stars, streak: c.streak, hangman: c.hangman, ta: c.ta};
+      } else if(c.id) {
+        entries.push({name:c.name, photo:c.photo, avatar:c.avatar, points:c.points||0, coins:c.coins||0, stars:c.stars||0, streak:c.streak||0, hangman:c.hangman||0, ta:c.ta||0, id:c.id});
+      }
+    }
+    document.getElementById('leaderboardSyncStatus').textContent = '🌐 Classement mondial • ' + cloud.entries.length + ' joueurs';
+  } catch(e){
+    document.getElementById('leaderboardSyncStatus').textContent = '💻 Classement local';
+  }
   entries.sort((a,b)=>b.points-a.points);
+  if(entries.length > 100) entries.length = 100;
   const medals = ['🥇','🥈','🥉'];
   lb.innerHTML = entries.map((e,i)=>{
-    const bg = i<3?'background:linear-gradient(160deg,#FFF8E1,#FFE082);border:2px solid #FFC800;border-radius:14px;padding:12px;margin-bottom:8px;':'padding:10px 12px;border-bottom:1px solid #e8e8e8;';
+    const isMe = e.id === state.profileId;
+    const bg = isMe ? 'background:linear-gradient(160deg,#E8F5E9,#C8E6C9);border:2px solid #58CC02;border-radius:14px;padding:12px;margin-bottom:6px;' : (i<3?'background:linear-gradient(160deg,#FFF8E1,#FFE082);border:2px solid #FFC800;border-radius:14px;padding:12px;margin-bottom:6px;':'padding:10px 12px;border-bottom:1px solid #e8e8e8;');
     const rank = i<3?medals[i]:'#'+(i+1);
-    const photo = e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:3px solid '+(i<3?'#FFC800':'#ddd')+';">':'<span style="font-size:2rem;">'+({fox:'🦊',panda:'🐼',lion:'🦁',penguin:'🐧',turtle:'🐢',butterfly:'🦋'}[e.avatar]||'⭐')+'</span>';
-    return '<div style="display:flex;align-items:center;gap:12px;'+bg+'"><span style="font-size:1.8rem;width:36px;text-align:center;">'+rank+'</span>'+photo+'<div style="flex:1;"><div style="font-weight:800;font-size:1.1rem;">'+e.name+'</div><div style="font-size:0.8rem;opacity:0.7;">'+e.streak+'🔥 | 💀'+e.hangman+' | ⚡'+e.ta+'</div></div><div style="text-align:right;"><div style="font-weight:800;font-size:1.2rem;">🏅'+e.points+'</div><div style="font-size:0.8rem;opacity:0.7;">🪙'+e.coins+' | ⭐'+e.stars+'</div></div></div>';
+    const photo = e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:3px solid '+(isMe?'#58CC02':i<3?'#FFC800':'#ddd')+';">':'<span style="font-size:2rem;">'+({fox:'🦊',panda:'🐼',lion:'🦁',penguin:'🐧',turtle:'🐢',butterfly:'🦋'}[e.avatar]||'⭐')+'</span>';
+    const meTag = isMe ? ' <span style="background:#58CC02;color:#fff;font-size:0.65rem;border-radius:8px;padding:1px 6px;">C\'EST MOI</span>' : '';
+    return '<div style="display:flex;align-items:center;gap:12px;'+bg+'"><span style="font-size:1.8rem;width:36px;text-align:center;">'+rank+'</span>'+photo+'<div style="flex:1;"><div style="font-weight:800;font-size:1.1rem;">'+e.name+meTag+'</div><div style="font-size:0.8rem;opacity:0.7;">'+e.streak+'🔥 | 💀'+e.hangman+' | ⚡'+e.ta+'</div></div><div style="text-align:right;"><div style="font-weight:800;font-size:1.2rem;">🏅'+e.points+'</div><div style="font-size:0.8rem;opacity:0.7;">🪙'+e.coins+' | ⭐'+e.stars+'</div></div></div>';
   }).join('')||'<p style="text-align:center;opacity:0.6;padding:30px;">Crée des profils enfants pour voir le classement ! 🏆</p>';
+}
+
+async function syncNow(){
+  const status = document.getElementById('leaderboardSyncStatus');
+  if(status) status.textContent = '🔄 Synchronisation en cours...';
+  if(state.profileId) await syncProfileToCloud();
+  await openLiveLeaderboard();
 }
 async function renderLeaderboard(){const list=await loadProfilesList();const lb=document.getElementById('leaderboardList');if(!lb)return;const active=state.profileId;let entries=[];for(const p of list){try{const res=await window.storage.get('profile-'+p.id,false);if(!res||!res.value)continue;const d=JSON.parse(res.value);entries.push({name:p.firstName,photo:p.photo,points:d.points||0,coins:d.coins||0,stars:Object.values(d.stars||{}).reduce((a,b)=>a+b,0)});}catch(e){}}entries.sort((a,b)=>b.points-a.points);lb.innerHTML=entries.map((e,i)=>{const bg=e.points>0&&e.points===entries[0].points?'background:rgba(255,200,0,0.2);font-weight:700;':'';const photo=e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">':'';return'<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #e8e8e8;'+bg+'"><b>#'+(i+1)+'</b>'+photo+'<span style="flex:1;">'+e.name+'</span><span>🏅'+e.points+'</span><span>🪙'+e.coins+'</span><span>⭐'+e.stars+'</span></div>';}).join('')||'<p style="opacity:0.6;text-align:center;">Aucun joueur</p>';}
 
@@ -6569,6 +6737,7 @@ function openSettings(){
   if(val) val.textContent = (state.timerDuration || 15) + 's';
   const darkCb = document.getElementById('settingsDarkToggle');
   if(darkCb) darkCb.checked = document.documentElement.classList.contains('dark-mode');
+  loadGithubToken();
   show('settingsScreen');
 }
 function closeSettings(){
