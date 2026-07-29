@@ -1814,13 +1814,19 @@
             <option value="openai-coral">OpenAI Coral</option>
           </select>
         </div>
-        <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;" id="voiceApiInstructions">
-          🎧 <strong>ElevenLabs</strong> : crée un compte sur elevenlabs.io → copie ta clé API (onglet API Keys) → colle-la ci-dessous pour une voix ultra-naturelle
+        <div style="font-size:0.8rem;opacity:0.75;margin-bottom:4px;padding:6px 8px;background:var(--bg);border-radius:8px;" id="voiceApiInstructions">
+          🎧 <strong>ElevenLabs</strong> : besoin d'un serveur proxy (Cloudflare Worker) pour sécuriser ta clé API
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:4px;" id="ttsProxyRow">
+          <input type="url" id="ttsProxyUrl" placeholder="https://tts-proxy.workers.dev" style="flex:1;min-width:180px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+          <button onclick="saveTtsProxyUrl()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
+        </div>
+        <div style="display:none;gap:6px;align-items:center;flex-wrap:wrap;" id="openaiKeyRow">
+          <input type="password" id="settingsApiKey" placeholder="Clé API OpenAI (sk-...)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+          <button onclick="saveApiKey()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <input type="password" id="settingsApiKey" placeholder="Clé API ElevenLabs" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
-          <button onclick="saveApiKey()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
-          <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Test</button>
+          <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Test la voix</button>
         </div>
         <span id="voiceKeyStatus" style="font-size:0.75rem;font-weight:700;margin-top:4px;display:block;"></span>
       </div>
@@ -3841,22 +3847,23 @@ function changeVoiceEngine(val){
 
 function updateApiKeyUI(){
   const val = voiceModel;
-  const inp = document.getElementById('settingsApiKey');
+  const proxyRow = document.getElementById('ttsProxyRow');
+  const openaiRow = document.getElementById('openaiKeyRow');
   const instructions = document.getElementById('voiceApiInstructions');
-  if(!inp) return;
   if(val === 'native'){
-    inp.placeholder = 'Aucune clé nécessaire en mode natif';
-    inp.disabled = true;
+    if(proxyRow) proxyRow.style.display = 'none';
+    if(openaiRow) openaiRow.style.display = 'none';
     if(instructions) instructions.innerHTML = '🔊 Mode natif — aucune clé requise';
   } else if(val.startsWith('openai-')){
-    inp.placeholder = 'Colle ta clé API OpenAI (sk-...)';
-    inp.disabled = false;
-    if(instructions) instructions.innerHTML = "🤖 <strong>OpenAI TTS</strong> : besoin d'une clé API OpenAI (sk-...) depuis platform.openai.com";
+    if(proxyRow) proxyRow.style.display = 'none';
+    if(openaiRow) openaiRow.style.display = 'flex';
+    if(instructions) instructions.innerHTML = '🤖 <strong>OpenAI TTS</strong> : colle ta clé API OpenAI (sk-...)';
   } else {
-    inp.placeholder = 'Colle ta clé API ElevenLabs';
-    inp.disabled = false;
-    if(instructions) instructions.innerHTML = '🎧 <strong>ElevenLabs</strong> : crée un compte sur elevenlabs.io → copie ta clé API (onglet API Keys) → colle-la ci-dessous pour une voix ultra-naturelle';
+    if(proxyRow) proxyRow.style.display = 'flex';
+    if(openaiRow) openaiRow.style.display = 'none';
+    if(instructions) instructions.innerHTML = '🎧 <strong>ElevenLabs</strong> : déploie le Cloudflare Worker (voir tts-worker.js) et colle son URL ci-dessus — la clé API reste sur le serveur';
   }
+}
 }
 
 function saveApiKey(){
@@ -3918,6 +3925,11 @@ function loadVoiceSettings(){
       const inp = document.getElementById('settingsApiKey');
       if(inp) inp.value = key;
     }
+    const proxyUrl = localStorage.getItem('tts_proxy_url');
+    if(proxyUrl){
+      const inp = document.getElementById('ttsProxyUrl');
+      if(inp) inp.value = proxyUrl;
+    }
     const engine = document.getElementById('voiceEngineSelect');
     if(engine && voiceModel){
       if(voiceModel.startsWith('openai-')) engine.value = 'openai';
@@ -3965,15 +3977,13 @@ async function speakOpenAI(text, cacheKey){
 
 async function speakElevenLabs(text, cacheKey){
   try{
+    const proxyUrl = localStorage.getItem('tts_proxy_url') || '';
+    if(!proxyUrl) return false;
     const voiceId = voiceModel;
-    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId, {
+    const resp = await fetch(proxyUrl, {
       method: 'POST',
-      headers: { 'xi-api-key': voiceApiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        text: text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: { stability: 0.25, similarity_boost: 0.85, style: 0.4, use_speaker_boost: true }
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text, voiceId: voiceId })
     });
     if(!resp.ok) return false;
     const blob = await resp.blob();
@@ -3991,6 +4001,22 @@ async function speakElevenLabs(text, cacheKey){
   }catch(e){ return false; }
 }
 
+function saveTtsProxyUrl(){
+  const inp = document.getElementById('ttsProxyUrl');
+  const url = inp ? inp.value.trim() : '';
+  try{ localStorage.setItem('tts_proxy_url', url); }catch(e){}
+  const st = document.getElementById('voiceKeyStatus');
+  if(!st) return;
+  if(url){
+    st.textContent = '\u2705 Serveur proxy configur\u00e9 \u2014 ElevenLabs actif !';
+    st.style.color = 'var(--grass)';
+  } else {
+    st.textContent = '\u26a0\ufe0f Sans proxy, ElevenLabs est d\u00e9sactiv\u00e9 (fallback OpenAI/Native)';
+    st.style.color = 'var(--coral)';
+  }
+  setTimeout(() => { if(st) st.textContent = ''; }, 4000);
+}
+
 function speak(text){
   if(!voiceEnabled) return;
   clearTimeout(speakTimer);
@@ -4006,9 +4032,10 @@ function speak(text){
         if(await safeAudioPlay(audioCache.get(cacheKey))) return;
       }
 
-      // 1) ElevenLabs (prioritaire — voix la plus naturelle pour le français)
+      // 1) ElevenLabs via proxy (prioritaire — clé sur le serveur, pas dans le code)
+      const ttsProxy = localStorage.getItem('tts_proxy_url') || '';
       const isElevenLabs = voiceModel && !voiceModel.startsWith('openai-') && voiceModel !== 'native';
-      if(voiceApiKey && isElevenLabs){
+      if(ttsProxy && isElevenLabs){
         if(await speakElevenLabs(cleanText, cacheKey)) return;
       }
 
