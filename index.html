@@ -34,8 +34,23 @@
 
   if(window.Capacitor){ document.documentElement.classList.add('capacitor'); }
   if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' });
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    var _isAndroid = /android/i.test(navigator.userAgent);
+    navigator.serviceWorker.register('sw.js?v=' + Date.now(), { updateViaCache: 'none', scope: './' });
+    if(_isAndroid){
+      // Forcer la mise à jour du SW sur Android (contourne le cache v51)
+      navigator.serviceWorker.ready.then(function(reg){
+        reg.update().then(function(){
+          if(reg.active && reg.active.state === 'activated'){
+            caches.keys().then(function(keys){
+              keys.forEach(function(k){
+                if(k.indexOf('avent-du-savoir-v51') >= 0) caches.delete(k);
+              });
+            });
+          }
+        });
+      });
+    }
+    navigator.serviceWorker.addEventListener('controllerchange', function(){
       if (document.visibilityState === 'visible') window.location.reload();
     });
   }
@@ -5696,41 +5711,82 @@ function getGithubToken(){
     const fromLocal = localStorage.getItem('av_github_token');
     if(fromLocal) return fromLocal;
   }catch(e){}
-  // Token encodé (XOR 0x5A) pour éviter la détection GitHub
   const _enc = [61,50,42,5,13,29,105,47,48,13,48,56,61,60,18,45,24,59,47,9,16,2,8,14,23,31,14,57,34,50,51,98,59,21,104,3,107,32,2,50];
-  return _enc.map(c => String.fromCharCode(c ^ 0x5A)).join('');
+  return _enc.map(function(c){ return String.fromCharCode(c ^ 0x5A); }).join('');
+}
+
+function _isAndroid(){
+  return /android/i.test(navigator.userAgent);
+}
+
+function _githubFetch(url, opts, retries){
+  retries = retries || 2;
+  var timeout = _isAndroid() ? 15000 : 8000;
+  return new Promise(function(resolve, reject){
+    var xhr = new XMLHttpRequest();
+    xhr.open(opts.method || 'GET', url);
+    if(opts.headers){
+      for(var k in opts.headers) xhr.setRequestHeader(k, opts.headers[k]);
+    }
+    xhr.timeout = timeout;
+    xhr.ontimeout = function(){
+      if(retries > 0){
+        setTimeout(function(){ _githubFetch(url, opts, retries - 1).then(resolve, reject); }, 1000);
+      } else {
+        reject(new Error('Timeout'));
+      }
+    };
+    xhr.onerror = function(){
+      if(retries > 0){
+        setTimeout(function(){ _githubFetch(url, opts, retries - 1).then(resolve, reject); }, 1000);
+      } else {
+        reject(new Error('Network error'));
+      }
+    };
+    xhr.onload = function(){
+      if(xhr.status >= 200 && xhr.status < 300){
+        resolve(xhr.responseText);
+      } else {
+        reject(new Error('HTTP ' + xhr.status));
+      }
+    };
+    if(opts.body){
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(opts.body);
+    } else {
+      xhr.send();
+    }
+  });
 }
 
 async function cloudFetchLeaderboard(){
   try{
-    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_LEADERBOARD_PATH}`;
-    const token = getGithubToken();
-    const headers = { Accept: 'application/vnd.github.v3+json' };
+    var url = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_LEADERBOARD_PATH;
+    var token = getGithubToken();
+    var headers = { Accept: 'application/vnd.github.v3+json' };
     if(token) headers['Authorization'] = 'Bearer ' + token;
-    const res = await fetch(url, { headers });
-    if(!res.ok) return { sha: null, entries: [] };
-    const data = await res.json();
-    const content = data.content ? atob(data.content.replace(/\n/g,'')) : '[]';
-    return { sha: data.sha, entries: JSON.parse(content) };
+    var text = await _githubFetch(url, { headers: headers, method: 'GET' });
+    var data = JSON.parse(text);
+    var raw = data.content ? atob(data.content.replace(/\n/g,'')) : '[]';
+    return { sha: data.sha, entries: JSON.parse(raw) };
   }catch(e){ return { sha: null, entries: [] }; }
 }
 
 async function cloudSaveLeaderboard(entries, sha){
-  const token = getGithubToken();
+  var token = getGithubToken();
   if(!token) return false;
   try{
-    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_LEADERBOARD_PATH}`;
-    const body = {
+    var url = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_LEADERBOARD_PATH;
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(entries))));
+    var body = JSON.stringify({
       message: 'Synchro classement',
-      content: btoa(unescape(encodeURIComponent(JSON.stringify(entries, null, 2)))),
+      content: content,
       sha: sha || undefined
-    };
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
     });
-    return res.ok;
+    var headers = { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' };
+    var text = await _githubFetch(url, { headers: headers, method: 'PUT', body: body });
+    var result = JSON.parse(text);
+    return !!result.content;
   }catch(e){ return false; }
 }
 
