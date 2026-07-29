@@ -1338,7 +1338,9 @@
       <div class="onboard-owl"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="23" fill="#8B6FD9"/><circle cx="23" cy="28" r="8" fill="#3D2C56"/><circle cx="41" cy="28" r="8" fill="#3D2C56"/><circle cx="23" cy="27" r="2.8" fill="#fff"/><circle cx="41" cy="27" r="2.8" fill="#fff"/><polygon points="32,35 26,44 38,44" fill="#FFC800"/></svg></div>
       <h2>Salut ! Moi c'est Professeur Hibou.</h2>
       <p class="onboard-sub">Comment tu t'appelles ?</p>
-      <input type="text" id="onboardName" class="onboard-input" placeholder="Ton prénom" maxlength="20" onkeydown="if(event.key==='Enter') validateName();" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);">
+      <input type="text" id="onboardName" class="onboard-input" placeholder="Ton prénom" maxlength="20" onkeydown="if(event.key==='Enter') document.getElementById('onboardPseudo').focus();" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);">
+      <p class="onboard-sub" style="margin-top:8px;font-size:0.85rem;">Choisis un pseudo unique pour le classement :</p>
+      <input type="text" id="onboardPseudo" class="onboard-input" placeholder="Pseudo (ex: BenjaminFouDuJava)" maxlength="20" onkeydown="if(event.key==='Enter') validateName();">
       <button class="next-btn" onclick="validateName()">Valider ✅</button>
       <div class="onboard-error" id="onboardNameError"></div>
     </div>
@@ -3432,6 +3434,7 @@ let state = {
   avatar: 'fox',
   firstName: '',
   age: null,
+  pseudo: '',
   photo: null,
   stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 },
   subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 },
@@ -5792,14 +5795,18 @@ async function cloudSaveLeaderboard(entries, sha){
 
 let _syncLock = false;
 async function syncProfileToCloud(){
-  if(!state.profileId || !state.firstName || _syncLock) return;
+  if(!state.profileId || _syncLock) return;
   _syncLock = true;
+  if(!state.pseudo && state.firstName){
+    state.pseudo = state.firstName + '_' + state.profileId.slice(-4);
+    scheduleSave();
+  }
   try{
     const { sha, entries } = await cloudFetchLeaderboard();
-    var filtered = entries.filter(e => e.name !== state.firstName);
+    var filtered = entries.filter(e => e.name !== state.pseudo);
     filtered.push({
       id: state.profileId,
-      name: state.firstName,
+      name: state.pseudo,
       avatar: state.avatar,
       photo: state.photo,
       points: state.points || 0,
@@ -5829,7 +5836,7 @@ async function saveAppData(){
   if(!state.profileId) return;
   try{
     await window.storage.set('profile-'+state.profileId, JSON.stringify({
-      avatar: state.avatar, level: state.level, firstName: state.firstName, age: state.age,
+      avatar: state.avatar, level: state.level, firstName: state.firstName, pseudo: state.pseudo, age: state.age,
       stars: state.stars, subjectLevel: state.subjectLevel, aiScore: state.aiScore,
       coins: state.coins, points: state.points, streak: state.streak, lastActiveDate: state.lastActiveDate, lastDailyDate: state.lastDailyDate, usage: state.usage,
       badges: state.badges, bestCombo: state.bestCombo, totalCorrect: state.totalCorrect,
@@ -5851,6 +5858,7 @@ async function loadAppData(profileId){
       if(d.avatar) state.avatar = d.avatar;
       if(d.level) state.level = d.level;
       if(d.firstName) state.firstName = d.firstName.charAt(0).toUpperCase() + d.firstName.slice(1);
+      if(d.pseudo) state.pseudo = d.pseudo;
       if(d.age) state.age = d.age;
       if(d.photo) state.photo = d.photo;
       if(d.stars) Object.assign(state.stars, d.stars);
@@ -5902,6 +5910,7 @@ async function setActiveProfileId(id){
 function resetStateDefaults(){
   state.profileId = null;
   state.firstName = '';
+  state.pseudo = '';
   state.age = null;
   state.avatar = 'fox';
   state.photo = null;
@@ -5942,7 +5951,7 @@ async function openProfileSwitcher(){
     const avatarContent = hasPhoto
       ? `<img src="${p.photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" alt="${p.firstName}">`
       : (AVATAR_SVGS[p.avatar] || AVATAR_SVGS.fox);
-    card.innerHTML = `<div class="profile-avatar">${avatarContent}</div><div class="profile-name">${p.firstName}</div>`;
+    card.innerHTML = `<div class="profile-avatar">${avatarContent}</div><div class="profile-name">${p.firstName}</div><div style="font-size:0.65rem;opacity:0.6;">@${p.pseudo || ''}</div>`;
     card.onclick = ()=>switchProfile(p.id);
     box.appendChild(card);
   });
@@ -5976,6 +5985,7 @@ async function switchProfile(id){
 function startNewProfile(){
   resetStateDefaults();
   document.getElementById('onboardName').value = '';
+  document.getElementById('onboardPseudo').value = '';
   document.getElementById('onboardNameError').textContent = '';
   document.getElementById('onboardStepName').classList.remove('hidden');
   document.getElementById('onboardStepAge').classList.add('hidden');
@@ -5985,15 +5995,29 @@ function startNewProfile(){
 }
 
 /* ---------------- ONBOARDING (prénom + âge) ---------------- */
-function validateName(){
+async function validateName(){
   const input = document.getElementById('onboardName');
   const name = input.value.trim();
   if(name.length < 2){
     document.getElementById('onboardNameError').textContent = "Écris ton prénom (au moins 2 lettres) 😊";
     return;
   }
+  const pseudoInput = document.getElementById('onboardPseudo');
+  const pseudo = pseudoInput.value.trim();
+  if(pseudo.length < 2){
+    document.getElementById('onboardNameError').textContent = "Choisis un pseudo (au moins 2 caractères) 😊";
+    pseudoInput.focus();
+    return;
+  }
+  const list = await loadProfilesList();
+  if(list.some(p => p.pseudo && p.pseudo.toLowerCase() === pseudo.toLowerCase())){
+    document.getElementById('onboardNameError').textContent = "Ce pseudo est déjà pris, choisis-en un autre 😊";
+    pseudoInput.focus();
+    return;
+  }
   document.getElementById('onboardNameError').textContent = '';
   state.firstName = name.charAt(0).toUpperCase() + name.slice(1);
+  state.pseudo = pseudo;
   soundClick();
   document.getElementById('onboardStepName').classList.add('hidden');
   document.getElementById('onboardStepAge').classList.remove('hidden');
@@ -6044,7 +6068,7 @@ async function finishOnboarding(){
   if(!state.profileId){
     state.profileId = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     const list = await loadProfilesList();
-    list.push({ id: state.profileId, firstName: state.firstName, avatar: state.avatar, photo: state.photo });
+    list.push({ id: state.profileId, firstName: state.firstName, pseudo: state.pseudo, avatar: state.avatar, photo: state.photo });
     await saveProfilesList(list);
   }
   await setActiveProfileId(state.profileId);
@@ -6217,7 +6241,7 @@ async function openLiveLeaderboard(){
       if(!res||!res.value) continue;
       const d = JSON.parse(res.value);
       const stars = Object.values(d.stars||{}).reduce((a,b)=>a+b,0);
-      entries.push({name:p.firstName, photo:p.photo, avatar:p.avatar, points:d.points||0, coins:d.coins||0, stars, streak:d.streak||0, hangman:(d.stars||{}).hangman||0, ta:d.timeAttackScore||0, id:p.id});
+      entries.push({name:p.pseudo || p.firstName, photo:p.photo, avatar:p.avatar, points:d.points||0, coins:d.coins||0, stars, streak:d.streak||0, hangman:(d.stars||{}).hangman||0, ta:d.timeAttackScore||0, id:p.id});
       localIds.add(p.id);
     }catch(e){}
   }
@@ -6254,7 +6278,7 @@ async function syncNow(){
   if(state.profileId) await syncProfileToCloud();
   await openLiveLeaderboard();
 }
-async function renderLeaderboard(){const list=await loadProfilesList();const lb=document.getElementById('leaderboardList');if(!lb)return;const active=state.profileId;let entries=[];for(const p of list){try{const res=await window.storage.get('profile-'+p.id,false);if(!res||!res.value)continue;const d=JSON.parse(res.value);entries.push({name:p.firstName,photo:p.photo,points:d.points||0,coins:d.coins||0,stars:Object.values(d.stars||{}).reduce((a,b)=>a+b,0)});}catch(e){}}entries.sort((a,b)=>b.points-a.points);lb.innerHTML=entries.map((e,i)=>{const bg=e.points>0&&e.points===entries[0].points?'background:rgba(255,200,0,0.2);font-weight:700;':'';const photo=e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">':'';return'<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #e8e8e8;'+bg+'"><b>#'+(i+1)+'</b>'+photo+'<span style="flex:1;">'+e.name+'</span><span>🏅'+e.points+'</span><span>🪙'+e.coins+'</span><span>⭐'+e.stars+'</span></div>';}).join('')||'<p style="opacity:0.6;text-align:center;">Aucun joueur</p>';}
+async function renderLeaderboard(){const list=await loadProfilesList();const lb=document.getElementById('leaderboardList');if(!lb)return;const active=state.profileId;let entries=[];for(const p of list){try{const res=await window.storage.get('profile-'+p.id,false);if(!res||!res.value)continue;const d=JSON.parse(res.value);entries.push({name:p.pseudo||p.firstName,photo:p.photo,points:d.points||0,coins:d.coins||0,stars:Object.values(d.stars||{}).reduce((a,b)=>a+b,0)});}catch(e){}}entries.sort((a,b)=>b.points-a.points);lb.innerHTML=entries.map((e,i)=>{const bg=e.points>0&&e.points===entries[0].points?'background:rgba(255,200,0,0.2);font-weight:700;':'';const photo=e.photo&&e.photo.startsWith('data:image')?'<img src="'+e.photo+'" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">':'';return'<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid #e8e8e8;'+bg+'"><b>#'+(i+1)+'</b>'+photo+'<span style="flex:1;">'+e.name+'</span><span>🏅'+e.points+'</span><span>🪙'+e.coins+'</span><span>⭐'+e.stars+'</span></div>';}).join('')||'<p style="opacity:0.6;text-align:center;">Aucun joueur</p>';}
 
 function renderUsageChart(dates, values){
   const max = Math.max(1, ...values);
