@@ -5790,11 +5790,14 @@ async function cloudSaveLeaderboard(entries, sha){
   }catch(e){ return false; }
 }
 
+let _syncLock = false;
 async function syncProfileToCloud(){
-  if(!state.profileId || !state.firstName) return;
+  if(!state.profileId || !state.firstName || _syncLock) return;
+  _syncLock = true;
   try{
     const { sha, entries } = await cloudFetchLeaderboard();
-    const idx = entries.findIndex(e => e.id === state.profileId);
+    var idx = entries.findIndex(e => e.id === state.profileId);
+    if(idx < 0) idx = entries.findIndex(e => e.name === state.firstName);
     const entry = {
       id: state.profileId,
       name: state.firstName,
@@ -5813,10 +5816,18 @@ async function syncProfileToCloud(){
     } else {
       entries.push(entry);
     }
-    entries.sort((a,b) => b.points - a.points);
-    if(entries.length > 100) entries.length = 100;
-    await cloudSaveLeaderboard(entries, sha);
+    var dedup = {};
+    var merged = [];
+    for(var i = entries.length - 1; i >= 0; i--){
+      var key = entries[i].id || entries[i].name;
+      if(!dedup[key]){ dedup[key] = true; merged.push(entries[i]); }
+    }
+    merged.reverse();
+    merged.sort((a,b) => b.points - a.points);
+    if(merged.length > 100) merged.length = 100;
+    await cloudSaveLeaderboard(merged, sha);
   }catch(e){ /* sync cloud pas critique */ }
+  _syncLock = false;
 }
 
 const todayStr = ()=> new Date().toISOString().slice(0,10);
