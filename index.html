@@ -59,68 +59,73 @@
     const UNLOCK = 'aventures_unlocked';
     if(sessionStorage.getItem(UNLOCK)) return;
 
-    const d = document, dd = d.documentElement;
+    function initLogin(){
+      const d = document, dd = d.documentElement;
 
-    const styles = d.createElement('style');
-    styles.textContent = `
-      #av-login{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;
-        background:linear-gradient(135deg,#1CB0F6,#2EC4B6);font-family:'Quicksand','Segoe UI',sans-serif;}
-      #av-login .box{background:#fff;border-radius:24px;padding:40px 32px;width:340px;max-width:90vw;
-        box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center;animation:avFadeIn .5s ease;}
-      @keyframes avFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-      #av-login .icon{font-size:56px;margin-bottom:8px;}
-      #av-login h1{font-family:'Baloo 2','Quicksand',sans-serif;font-size:22px;color:#3C3C3C;margin:0 0 4px;}
-      #av-login p{font-size:13px;color:#888;margin:0 0 24px;}
-      #av-login .input-wrap{position:relative;margin-bottom:16px;}
-      #av-login input{width:100%;padding:14px 16px;border:2px solid #E0E0E0;border-radius:12px;font-size:16px;
-        outline:none;transition:border-color .3s;box-sizing:border-box;font-family:'Quicksand',sans-serif;}
-      #av-login input:focus{border-color:#1CB0F6;}
-      #av-login .error{color:#FF4B4B;font-size:13px;min-height:20px;margin-bottom:12px;}
-      #av-login button{width:100%;padding:14px;background:#58CC02;color:#fff;border:none;border-radius:12px;
-        font-size:17px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;
-        font-family:'Quicksand',sans-serif;}
-      #av-login button:hover{background:#4AB702;}
-      #av-login button:active{transform:scale(0.97);}
-      #av-login .footer{font-size:11px;color:#bbb;margin-top:20px;}
-    `;
-    d.head.appendChild(styles);
+      const styles = d.createElement('style');
+      styles.textContent = `
+        #av-login{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;
+          background:linear-gradient(135deg,#1CB0F6,#2EC4B6);font-family:'Quicksand','Segoe UI',sans-serif;}
+        #av-login .box{background:#fff;border-radius:24px;padding:40px 32px;width:340px;max-width:90vw;
+          box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center;animation:avFadeIn .5s ease;}
+        @keyframes avFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        #av-login .icon{font-size:56px;margin-bottom:8px;}
+        #av-login h1{font-family:'Baloo 2','Quicksand',sans-serif;font-size:22px;color:#3C3C3C;margin:0 0 4px;}
+        #av-login p{font-size:13px;color:#888;margin:0 0 24px;}
+        #av-login .input-wrap{position:relative;margin-bottom:16px;}
+        #av-login input{width:100%;padding:14px 16px;border:2px solid #E0E0E0;border-radius:12px;font-size:16px;
+          outline:none;transition:border-color .3s;box-sizing:border-box;font-family:'Quicksand',sans-serif;}
+        #av-login input:focus{border-color:#1CB0F6;}
+        #av-login .error{color:#FF4B4B;font-size:13px;min-height:20px;margin-bottom:12px;}
+        #av-login button{width:100%;padding:14px;background:#58CC02;color:#fff;border:none;border-radius:12px;
+          font-size:17px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;
+          font-family:'Quicksand',sans-serif;}
+        #av-login button:hover{background:#4AB702;}
+        #av-login button:active{transform:scale(0.97);}
+        #av-login .footer{font-size:11px;color:#bbb;margin-top:20px;}
+      `;
+      d.head.appendChild(styles);
 
-    const overlay = d.createElement('div');
-    overlay.id = 'av-login';
-    overlay.innerHTML = `
-      <div class="box">
-        <div class="icon">📚</div>
-        <h1>Les Aventures du Savoir</h1>
-        <p>Entrez le code d'accès pour continuer</p>
-        <div class="input-wrap"><input type="password" id="av-pass" placeholder="Code d'accès" autocomplete="off"></div>
-        <div class="error" id="av-err"></div>
-        <button id="av-btn">Accéder</button>
-        <div class="footer">Application éducative pour enfants</div>
-      </div>
-    `;
-    d.body.appendChild(overlay);
+      const overlay = d.createElement('div');
+      overlay.id = 'av-login';
+      overlay.innerHTML = `
+        <div class="box">
+          <div class="icon">📚</div>
+          <h1>Les Aventures du Savoir</h1>
+          <p>Entrez le code d'accès pour continuer</p>
+          <div class="input-wrap"><input type="password" id="av-pass" placeholder="Code d'accès" autocomplete="off"></div>
+          <div class="error" id="av-err"></div>
+          <button id="av-btn">Accéder</button>
+          <div class="footer">Application éducative pour enfants</div>
+        </div>
+      `;
+      d.body.appendChild(overlay);
 
-    const input = d.getElementById('av-pass');
-    const err = d.getElementById('av-err');
-    const btn = d.getElementById('av-btn');
+      const input = d.getElementById('av-pass');
+      const err = d.getElementById('av-err');
+      const btn = d.getElementById('av-btn');
 
-    function check() {
-      if(input.value === APP_PASSWORD){
-        sessionStorage.setItem(UNLOCK, '1');
-        overlay.style.opacity = '0';
-        overlay.style.transition = 'opacity .4s';
-        setTimeout(() => overlay.remove(), 400);
-      } else {
-        err.textContent = '❌ Code incorrect. Réessaie.';
-        input.value = '';
-        input.focus();
-        setTimeout(() => { err.textContent = ''; }, 2500);
+      function check() {
+        if(input.value === APP_PASSWORD){
+          sessionStorage.setItem(UNLOCK, '1');
+          overlay.style.opacity = '0';
+          overlay.style.transition = 'opacity .4s';
+          setTimeout(() => overlay.remove(), 400);
+        } else {
+          err.textContent = '❌ Code incorrect. Réessaie.';
+          input.value = '';
+          input.focus();
+          setTimeout(() => { err.textContent = ''; }, 2500);
+        }
       }
+
+      btn.addEventListener('click', check);
+      input.addEventListener('keydown', (e) => { if(e.key === 'Enter') check(); });
+      input.focus();
     }
 
-    btn.addEventListener('click', check);
-    input.addEventListener('keydown', (e) => { if(e.key === 'Enter') check(); });
-    input.focus();
+    if(document.body) { initLogin(); }
+    else { document.addEventListener('DOMContentLoaded', initLogin); }
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
