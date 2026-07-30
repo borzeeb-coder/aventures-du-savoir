@@ -1791,6 +1791,7 @@
           <option value="tiktok-fr2">TikTok — Voix féminine</option>
           <option value="tiktok-fr1">TikTok — Voix masculine</option>
           <option value="google-tts">Google — Standard</option>
+          <option value="elevenlabs">🎙️ ElevenLabs — Qualité maximale (IA)</option>
           <option value="native">Voix du téléphone</option>
         </select>
         <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;">
@@ -1799,6 +1800,15 @@
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
           <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Tester la voix</button>
         </div>
+      </div>
+      <div style="margin-top:8px;padding:8px;background:#F3E5F5;border-radius:12px;border:2px solid #CE82FF;">
+        <div style="font-size:0.8rem;opacity:0.75;margin-bottom:4px;">🔑 Clé API ElevenLabs (optionnelle) — voix IA premium</div>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <input type="password" id="elevenLabsKeyInput" placeholder="sk_... (clé API ElevenLabs)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
+          <button onclick="saveElevenLabsKey()" style="background:#CE82FF;color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
+        </div>
+        <span id="elevenLabsKeyStatus" style="font-size:0.75rem;font-weight:700;margin-top:2px;display:block;"></span>
+        <div style="margin-top:6px;"><button onclick="testElevenLabsVoice()" id="testElevenLabsBtn" style="background:var(--coral);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;display:none;">🔊 Tester ElevenLabs</button></div>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
         <span>⏱️ Minuteur</span>
@@ -3784,7 +3794,7 @@ function loadVoiceSettings(){
 }
 
 function getVoiceLabel(m){
-  var labels = { 'edge-female':'Edge — Voix féminine (Denise)','edge-male':'Edge — Voix masculine (Henri)','tiktok-fr2':'TikTok — Voix féminine','tiktok-fr1':'TikTok — Voix masculine','google-tts':'Google — Standard','native':'Voix du téléphone' };
+  var labels = { 'edge-female':'Edge — Voix féminine (Denise)','edge-male':'Edge — Voix masculine (Henri)','tiktok-fr2':'TikTok — Voix féminine','tiktok-fr1':'TikTok — Voix masculine','google-tts':'Google — Standard','elevenlabs':'ElevenLabs — Qualité maximale (IA)','native':'Voix du téléphone' };
   return labels[m] || 'Edge';
 }
 
@@ -3824,6 +3834,88 @@ function loadGithubToken(){
       inp.placeholder = '✅ Token intégré — fonctionne automatiquement';
     }
   }catch(e){}
+}
+
+function saveElevenLabsKey(){
+  const inp = document.getElementById('elevenLabsKeyInput');
+  const key = inp ? inp.value.trim() : '';
+  try{ localStorage.setItem('av_elevenlabs_key', key); }catch(e){}
+  const st = document.getElementById('elevenLabsKeyStatus');
+  if(!st) return;
+  if(key){
+    st.textContent = '✅ Clé ElevenLabs enregistrée — voix premium active !';
+    st.style.color = 'var(--grass)';
+  } else {
+    st.textContent = '⚠️ Sans clé, les autres voix seront utilisées';
+    st.style.color = 'var(--coral)';
+  }
+  var testBtn = document.getElementById('testElevenLabsBtn');
+  if(testBtn) testBtn.style.display = key ? 'inline-block' : 'none';
+  updateVoiceModelUI();
+  setTimeout(()=>{ if(st) st.textContent = ''; }, 4000);
+}
+
+function loadElevenLabsKey(){
+  try{
+    const inp = document.getElementById('elevenLabsKeyInput');
+    if(!inp) return;
+    const key = localStorage.getItem('av_elevenlabs_key');
+    if(key) inp.value = key;
+    var testBtn = document.getElementById('testElevenLabsBtn');
+    if(testBtn) testBtn.style.display = key ? 'inline-block' : 'none';
+    updateVoiceModelUI();
+  }catch(e){}
+}
+
+function getElevenLabsKey(){
+  try{ return localStorage.getItem('av_elevenlabs_key') || ''; }catch(e){ return ''; }
+}
+
+function updateVoiceModelUI(){
+  var sel = document.getElementById('voiceModelSelect');
+  var key = getElevenLabsKey();
+  if(!sel) return;
+  var opt = sel.querySelector('option[value="elevenlabs"]');
+  if(opt) opt.style.display = key ? '' : 'none';
+}
+
+async function speakElevenLabs(text,lang,cacheKey){
+  try{
+    const key = getElevenLabsKey();
+    if(!key) return false;
+    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/SAz9YHvvjVPxjG8GHp5R',{
+      method:'POST',
+      headers:{'xi-api-key':key,'Content-Type':'application/json'},
+      body:JSON.stringify({text:text.substring(0,5000),model_id:'eleven_multilingual_v2',voice_settings:{stability:0.5,similarity_boost:0.8}})
+    });
+    if(!resp.ok) return false;
+    const blob = await resp.blob();
+    if(blob.size<500) return false;
+    const url = URL.createObjectURL(blob);
+    audioCache.set(cacheKey,url);
+    if(audioCache.size>80){
+      const f=audioCache.keys().next().value;
+      const o=audioCache.get(f);
+      if(o) URL.revokeObjectURL(o);
+      audioCache.delete(f);
+    }
+    window.speechSynthesis.cancel();
+    return await safeAudioPlay(url);
+  }catch(e){ return false; }
+}
+
+function testElevenLabsVoice(){
+  const key = getElevenLabsKey();
+  if(!key){ alert('Veuillez d\'abord entrer une clé API ElevenLabs.'); return; }
+  const phrases = [
+    "Bonjour ! Je suis ta chouette preferee. Comment vas-tu aujourd'hui ?",
+    "Le francais est une belle langue, n'est-ce pas ? Ecoute comme elle resonne !",
+    "Bravo ! Tu as termine l'exercice. Continuons ensemble !"
+  ];
+  const text = phrases[Math.floor(Math.random()*phrases.length)];
+  const cleanText = prepareTextForSpeech(text);
+  const cacheKey = 'elevenlabs_test';
+  speakElevenLabs(cleanText,'fr-FR',cacheKey);
 }
 
 let testSilent = false;
@@ -3898,7 +3990,7 @@ function speak(text){
       const cleanText = prepareTextForSpeech(text);
       if(!cleanText) return;
       const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
-      const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
+      const cacheKey = (getElevenLabsKey() ? 'elevenlabs' : voiceModel) + '|' + lang + '|' + cleanText;
 
       if(audioCache.has(cacheKey)){
         window.speechSynthesis.cancel();
@@ -3908,15 +4000,17 @@ function speak(text){
       }
 
       let played = false;
-      // 1) Edge TTS (neural voices, free)
-      if(voiceModel.startsWith('edge-')){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
-      // 2) TikTok TTS fallback
+      // 1) ElevenLabs (premium AI voice, primary)
+      played = await speakElevenLabs(cleanText, lang, cacheKey);
+      // 2) Edge TTS (neural voices, free)
+      if(!played && voiceModel.startsWith('edge-')){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
+      // 3) TikTok TTS fallback
       if(!played && voiceModel.startsWith('tiktok-')){ played = await speakTikTokTTS(cleanText, lang, cacheKey); }
-      // 3) Google TTS fallback
+      // 4) Google TTS fallback
       if(!played){ played = await speakGoogleTTS(cleanText, lang, cacheKey); }
       if(played) return;
 
-      // 4) Dernier recours : synthese native du navigateur
+      // 5) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -6719,6 +6813,7 @@ function openSettings(){
   const darkCb = document.getElementById('settingsDarkToggle');
   if(darkCb) darkCb.checked = document.documentElement.classList.contains('dark-mode');
   loadGithubToken();
+  loadElevenLabsKey();
   show('settingsScreen');
 }
 function closeSettings(){
@@ -7014,6 +7109,7 @@ async function initApp(){
   addClouds();
   addDecor();
   loadVoiceSettings();
+  loadElevenLabsKey();
   loadSettings();
   loadParentDarkMode();
   loadHighContrast();
