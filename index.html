@@ -176,6 +176,7 @@
   .island.anglais h3{color:white;}
   .island.dictation{background:#6B4FC0;}
   .island.dictation h3{color:#fff;}
+  .island.horloge h3{color:#fff;}
   .island.lettres{background:#FF9600;}
   .island.mots{background:#2EC4B6;}
   .island.geographie{background:#3FA9F5;}
@@ -186,6 +187,9 @@
 
   .island.pop-appear{animation:islandAppear .5s cubic-bezier(.34,1.56,.64,1) backwards;}
   @keyframes islandAppear{ from{opacity:0; transform:translateY(24px) scale(0.85);} to{opacity:1; transform:translateY(0) scale(1);} }
+
+@keyframes splashFly{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-15px) rotate(5deg);}}
+@keyframes splashOut{0%{opacity:1;}100%{opacity:0;visibility:hidden;}}
 
   /* CARD SCREENS */
   .card-screen{
@@ -1403,6 +1407,12 @@
         <span class="level-badge" id="level-formes" style="color:#FF9600;background:rgba(255,255,255,0.9)">Niveau 1</span>
         <span class="stars" id="stars-formes">☆ ☆ ☆</span>
       </div>
+      <div class="island horloge" onclick="openClock()" style="background:#FFC800">
+        <span class="icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="#fff" opacity="0.3"/><circle cx="32" cy="32" r="22" fill="none" stroke="#fff" stroke-width="2.5"/><line x1="32" y1="18" x2="32" y2="32" stroke="#fff" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="32" x2="42" y2="32" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="3" fill="#fff"/></svg></span>
+        <h3 style="color:#fff">Île de l'Horloge</h3>
+        <span class="level-badge" id="level-horloge">Niveau 1</span>
+        <span class="stars" id="stars-horloge">☆ ☆ ☆</span>
+      </div>
       <div class="island globe" onclick="openQuiz('globe')" style="background:#3FA9F5">
         <span class="icon"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#fff" opacity="0.3"/><ellipse cx="32" cy="32" rx="22" ry="9" fill="none" stroke="#fff" stroke-width="2.5"/><line x1="10" y1="32" x2="54" y2="32" stroke="#fff" stroke-width="2.5"/><path d="M20 18 Q30 12 42 18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/><path d="M18 46 Q30 52 42 46" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg></span>
         <h3 style="color:#fff">Globe Explorer</h3>
@@ -1635,6 +1645,40 @@
     </div>
     <div class="options" id="taOptionsBox"></div>
     <div class="feedback" id="taFeedbackBox"></div>
+  </div>
+
+  <div id="clockScreen" class="card-screen hidden">
+    <div class="screen-head">
+      <button class="back-btn" onclick="goHome()">⬅ Retour</button>
+      <div class="subject-title">🕐 Île de l'Horloge</div>
+      <div style="width:90px;"></div>
+    </div>
+    <div class="quiz-progress">
+      <div class="quiz-progress-label" id="clockProgressLabel">Question 1/10</div>
+      <div class="quiz-progress-track"><div class="quiz-progress-fill" id="clockProgressFill" style="width:0%"></div></div>
+    </div>
+    <div class="timer-row">
+      <span class="timer-icon">⏱️</span>
+      <div class="timer-track"><div class="timer-fill" id="clockTimerFill"></div></div>
+      <span class="timer-text" id="clockTimerText">20s</span>
+    </div>
+    <div class="question-box">
+      <p id="clockQuestion"></p>
+      <div style="text-align:center;margin:10px 0;">
+        <svg id="clockSvg" width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="68" fill="#fff" stroke="#333" stroke-width="4"/>
+          <circle cx="75" cy="75" r="3" fill="#333"/>
+          <line x1="75" y1="75" x2="75" y2="30" stroke="#333" stroke-width="5" stroke-linecap="round" id="clockHour"/>
+          <line x1="75" y1="75" x2="75" y2="20" stroke="#1CB0F6" stroke-width="3" stroke-linecap="round" id="clockMinute"/>
+          <text x="75" y="18" text-anchor="middle" font-size="10" font-weight="bold" fill="#333">12</text>
+          <text x="126" y="79" text-anchor="middle" font-size="10" font-weight="bold" fill="#333">3</text>
+          <text x="75" y="144" text-anchor="middle" font-size="10" font-weight="bold" fill="#333">6</text>
+          <text x="26" y="79" text-anchor="middle" font-size="10" font-weight="bold" fill="#333">9</text>
+        </svg>
+      </div>
+    </div>
+    <div class="options" id="clockOptionsBox"></div>
+    <div class="feedback" id="clockFeedbackBox"></div>
   </div>
 
   <div id="hangmanScreen" class="card-screen hidden"><div class="screen-head"><button class="back-btn" onclick="goHome()">⬅ Retour</button><div class="subject-title">💀 Pendu</div><div id="hangmanScore">Score : 0</div></div><div style="text-align:center;"><div id="hangmanDrawing" style="font-size:5rem;min-height:120px;"></div><div id="hangmanWord" style="font-size:2.4rem;letter-spacing:8px;font-family:'Baloo 2';font-weight:800;margin:14px 0;"></div><div id="hangmanKeyboard" style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:420px;margin:10px auto;"></div><div id="hangmanFeedback" style="min-height:30px;font-weight:700;font-size:1.1rem;margin-top:8px;"></div><button class="next-btn hidden" id="hangmanNextBtn" onclick="nextHangmanWord()">Mot suivant ➡</button></div></div>
@@ -3216,6 +3260,7 @@ const SUBJECT_META = {
   daily:{icon:"🌟", title:"Défi du Jour"},
   timeattack:{icon:"⚡", title:"Time Attack"},
   dictation:{icon:"🎤", title:"Dictée"},
+  horloge:{icon:"🕐", title:"Île de l'Horloge"},
   hangman:{icon:"💀", title:"Pendu"},
 };
 
@@ -3348,8 +3393,8 @@ let state = {
   firstName: '',
   age: null,
   photo: null,
-  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 },
-  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 },
+  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, horloge:0, hangman:0 },
+  subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, horloge:1, hangman:1 },
   current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false, lazyOffset:0 },
   lettersSession: [], lettersIndex: 0, lettersScore: 0,
   wordsSession: [], wordsIndex: 0, wordsScore: 0,
@@ -3628,7 +3673,7 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','hangmanScreen','settingsScreen','statsScreen','liveLeaderboardScreen'].forEach(s=>{
+  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','clockScreen','hangmanScreen','settingsScreen','statsScreen','liveLeaderboardScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
 }
@@ -5885,8 +5930,8 @@ function resetStateDefaults(){
   state.avatar = 'fox';
   state.photo = null;
   state.level = 'A';
-  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, hangman:0 };
-  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, hangman:1 };
+  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, horloge:0, hangman:0 };
+  state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, horloge:1, hangman:1 };
   state.aiScore = 0;
   state.points = 0;
   state.coins = 0;
@@ -6956,6 +7001,123 @@ function loadSettings(){
   }catch(e){}
 }
 
+var CLOCK_QUESTIONS = [];
+var _clockQIndex = 0;
+var _clockScore = 0;
+var _clockList = [];
+
+function generateClockQuestions(){
+  CLOCK_QUESTIONS = [];
+  for(var h=1;h<=12;h++){
+    for(var m=0;m<60;m+=15){
+      var timeStr = h+'h'+(m===0?'00':m);
+      var hDisplay = h>12?h-12:h;
+      var opts = [];
+      var correct = timeStr;
+      opts.push(correct);
+      var h2 = ((h+Math.floor(Math.random()*3+1))%12)||12;
+      var m2 = (m+15)%60;
+      opts.push(h2+'h'+(m2===0?'00':m2));
+      var h3 = ((h+Math.floor(Math.random()*5+2))%12)||12;
+      opts.push(h3+'h'+(m===0?'00':m));
+      opts.push(((h%12)+1)+'h'+(m===0?'00':m));
+      opts = opts.sort(function(){return Math.random()-0.5;});
+      CLOCK_QUESTIONS.push({h:h,m:m,q:'Quelle heure est-il ?',opts:opts,a:opts.indexOf(correct)});
+    }
+  }
+  CLOCK_QUESTIONS = CLOCK_QUESTIONS.sort(function(){return Math.random()-0.5;}).slice(0,20);
+}
+
+function openClock(){
+  stopAutoEncourage();
+  generateClockQuestions();
+  _clockQIndex = 0;
+  _clockScore = 0;
+  _clockList = CLOCK_QUESTIONS.slice(0,10);
+  show('clockScreen');
+  renderClockQuestion();
+}
+
+function renderClockQuestion(){
+  if(_clockQIndex >= _clockList.length) return showClockResult();
+  var q = _clockList[_clockQIndex];
+  document.getElementById('clockProgressLabel').textContent = 'Question ' + (_clockQIndex+1) + '/' + _clockList.length;
+  document.getElementById('clockProgressFill').style.width = Math.round((_clockQIndex/_clockList.length)*100)+'%';
+  document.getElementById('clockQuestion').textContent = q.q;
+  renderClockSvg(q.h, q.m);
+  var box = document.getElementById('clockOptionsBox');
+  box.innerHTML = '';
+  q.opts.forEach(function(o,i){
+    var btn = document.createElement('button');
+    btn.className = 'opt-btn pop-in';
+    btn.textContent = o;
+    btn.onclick = function(){ answerClock(i,q,btn); };
+    box.appendChild(btn);
+  });
+  document.getElementById('clockFeedbackBox').innerHTML = '';
+  startQuestionTimer(20, 'clockTimerFill', 'clockTimerText', '#clockScreen .timer-row');
+}
+
+function renderClockSvg(h,m){
+  var hourAngle = ((h%12)*30)+(m*0.5);
+  var minAngle = m*6;
+  document.getElementById('clockHour').setAttribute('transform','rotate('+hourAngle+' 75 75)');
+  document.getElementById('clockMinute').setAttribute('transform','rotate('+minAngle+' 75 75)');
+}
+
+function answerClock(i,q,btnEl){
+  stopQuestionTimer();
+  var btns = document.querySelectorAll('#clockOptionsBox .opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  var correct = i===q.a;
+  registerAnswer(correct);
+  if(correct){
+    btnEl.classList.add('correct');
+    _clockScore++;
+    addPoints(8);
+    soundCorrect();
+    owlHappy();
+    screenFlash('correct');
+  } else {
+    btnEl.classList.add('wrong');
+    btns[q.a].classList.add('correct');
+    soundWrong();
+    screenFlash('wrong');
+  }
+  document.getElementById('clockFeedbackBox').innerHTML = 
+    '<div class="msg pop-in">'+(correct?'Bravo ! ✅':'Presque ! Regarde bien les aiguilles 🕐')+'</div>'+
+    '<button class="next-btn" onclick="nextClockQuestion()">'+
+    (_clockQIndex===_clockList.length-1?'Voir résultat 🏁':'Suivante ➡️')+'</button>';
+}
+
+function nextClockQuestion(){
+  _clockQIndex++;
+  renderClockQuestion();
+}
+
+function showClockResult(){
+  var pct = _clockScore/_clockList.length;
+  var stars = pct>=0.9?3:pct>=0.6?2:pct>=0.3?1:0;
+  if(stars>state.stars.horloge) state.stars.horloge=stars;
+  scheduleSave();
+  renderStars();
+  goHome();
+  setTimeout(function(){
+    owlSay('Tu as eu '+_clockScore+'/'+_clockList.length+' à l\'horloge ! 🕐 '+(stars>=2?'Génial !':'Continue à t\'entraîner !'),4000,true);
+  },500);
+}
+
+function showSplash(){
+  if(localStorage.getItem('av_splash_done')) return;
+  localStorage.setItem('av_splash_done','1');
+  var s = document.createElement('div');
+  s.id = 'avSplash';
+  s.style.cssText = 'position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1CB0F6,#8B6FD9);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Baloo 2",sans-serif;color:#fff;animation:splashOut .5s ease 2s forwards;';
+  s.innerHTML = '<div style="font-size:4rem;animation:splashFly 1.5s ease-in-out infinite;">🦉</div><h1 style="font-size:2rem;margin:10px 0 0;text-shadow:2px 2px 0 rgba(0,0,0,0.2);">Les Aventures du Savoir</h1><p style="font-size:1rem;opacity:0.8;margin-top:4px;">Apprendre en s\'amusant !</p>';
+  document.body.appendChild(s);
+  setTimeout(function(){ s.remove(); }, 2600);
+}
+
 async function initApp(){
   addAmbientOrbs();
   addClouds();
@@ -6986,6 +7148,7 @@ async function initApp(){
   if(state.profileId && state.firstName && state.age){
     updatePersonalizedTexts();
     show('homeScreen');
+    showSplash();
     staggerIslands();
     setTimeout(()=>{
       const greetings = [
