@@ -32,7 +32,7 @@
           if(reg.active && reg.active.state === 'activated'){
             caches.keys().then(function(keys){
               keys.forEach(function(k){
-                if(k.indexOf('avent-du-savoir-v51') >= 0) caches.delete(k);
+                if(k.indexOf('avent-du-savoir-v59') >= 0) caches.delete(k);
               });
             });
           }
@@ -60,6 +60,7 @@
     --purple:#CE82FF;
     --purple-l:#CE82FF;
     --plum:#3C3C3C;
+    --plum-l:#e9dfff;
     --cream:#FFFFFF;
     --gold:#FFC800;
     --bg:#F7F9FC;
@@ -455,7 +456,7 @@
   .ambient-orb:nth-of-type(3){width:200px;height:200px;top:40%;left:55%;background:radial-gradient(circle,#1CB0F6,transparent);animation-duration:17s;animation-delay:-9s;}
   .ambient-orb:nth-of-type(4){width:180px;height:180px;bottom:30%;left:15%;background:radial-gradient(circle,#FFC800,transparent);animation-duration:21s;animation-delay:-3s;}
   .ambient-orb:nth-of-type(5){width:240px;height:240px;top:15%;right:25%;background:radial-gradient(circle,#FF86D0,transparent);animation-duration:16s;animation-delay:-7s;}
-  body.dark .ambient-orb{opacity:0.05;}
+  body.dark-mode .ambient-orb{opacity:0.05;}
 
   /* Island icon pulse on hover */
   .island .icon{transition:transform .3s ease;}
@@ -513,7 +514,6 @@
     width:100px;
     height:100px;
     filter:drop-shadow(0 8px 10px rgba(0,0,0,0.25));
-  }
   }
   @keyframes owlBounce{
     0%,100%{transform:translateY(0) scale(1);}
@@ -1071,6 +1071,10 @@
   .dark-mode .daily-card.done{background:#2d6b35;border-color:#1a4a22}
   .dark-mode .daily-card h3{color:var(--plum)}
   .dark-mode .daily-card .sub-txt{color:var(--text-muted)}
+  .badges-card{display:flex;align-items:center;gap:12px;cursor:pointer;background:var(--cream);border:3.5px solid #2D2D3A;border-radius:18px;padding:14px 16px;margin:10px 0;box-shadow:0 4px 0 #2D2D3A,0 8px 14px rgba(30,20,50,0.10);}
+  .badges-card:hover{transform:translateY(-2px);}
+  .badges-card .icon{font-size:2rem;}
+  .island:focus-visible,.feature-card:focus-visible,.daily-card:focus-visible,.badges-card:focus-visible{outline:4px solid var(--sun);outline-offset:2px;}
   .dark-mode .badges-card{background:var(--surface)}
   .dark-mode .badges-card h3{color:var(--plum)}
   .dark-mode .trophy{background:var(--surface-hover);color:var(--plum)}
@@ -1247,11 +1251,11 @@
       <div class="trophy">⭐ <span id="totalStars">0</span></div>
       <div class="trophy" id="coinsDisplay" style="background:#FFC800;color:#fff;">🪙 0</div>
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
-      <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou">🔊</div>
-      <div class="voice-toggle" id="leaderboardBtn" onclick="openLiveLeaderboard()" title="Voir le classement des enfants" style="background:#FFC800;color:#fff;">🏆</div>
-      <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil">👪</div>
-      <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre">🌙</div>
-      <div class="voice-toggle" onclick="openSettings()" title="Paramètres">⚙️</div>
+      <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou" role="button" tabindex="0">🔊</div>
+      <div class="voice-toggle" id="leaderboardBtn" onclick="openLiveLeaderboard()" title="Voir le classement des enfants" style="background:#FFC800;color:#fff;" role="button" tabindex="0">🏆</div>
+      <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil" role="button" tabindex="0">👪</div>
+      <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre" role="button" tabindex="0">🌙</div>
+      <div class="voice-toggle" onclick="openSettings()" title="Paramètres" role="button" tabindex="0">⚙️</div>
     </div>
   </div>
 
@@ -1338,7 +1342,7 @@
         <div style="font-weight:800;font-size:1rem;color:#e67e00;">AMAZON · Livres Enfants</div>
         <div style="font-size:0.85rem;opacity:0.8;">Cahiers, BD, romans jeunesse — livraison rapide !</div>
       </div>
-      <a href="https://www.amazon.fr/s?k=livres+enfants+éducatifs&tag=benjamin031-21" target="_blank" rel="sponsored" style="background:#FFC800;color:#3C3C3C;padding:8px 18px;border-radius:16px;font-weight:800;text-decoration:none;font-size:0.9rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Amazon ➤</a>
+      <a href="https://www.amazon.fr/s?k=livres+enfants+éducatifs&tag=benjamin031-21" target="_blank" rel="sponsored noopener noreferrer" style="background:#FFC800;color:#3C3C3C;padding:8px 18px;border-radius:16px;font-weight:800;text-decoration:none;font-size:0.9rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Amazon ➤</a>
     </div>
 
     <div class="level-toggle">
@@ -1428,7 +1432,7 @@
         <span class="level-badge" id="level-globe" style="color:#3FA9F5;background:rgba(255,255,255,0.9)">Niveau 1</span>
         <span class="stars" id="stars-globe">☆ ☆ ☆</span>
       </div>
-      <div class="island" style="background:#FF6B6B;" onclick="openHangman()"><span class="icon">💀</span><h3 style="color:#fff">Pendu</h3><span class="stars" id="stars-hangman">☆ ☆ ☆</span></div>
+      <div class="island" style="background:#FF6B6B;" onclick="openHangman()"><span class="icon">💀</span><h3 style="color:#fff">Pendu</h3><span class="level-badge" id="level-hangman">Niveau 1</span><span class="stars" id="stars-hangman">☆ ☆ ☆</span></div>
       <div class="island game" onclick="openMemory()">
         <div>
           <h3>Île Mystère</h3>
@@ -1448,7 +1452,7 @@
     <div style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border:3px solid #58CC02;border-radius:18px;padding:12px;margin:16px 0 8px;text-align:center;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;box-shadow:0 4px 0 #388E3C;">
       <span style="font-size:2.2rem;">🎲</span>
       <div style="text-align:left;"><div style="font-weight:800;font-size:0.9rem;color:#2E7D32;">FNAC · Jeux Éducatifs</div><div style="font-size:0.8rem;opacity:0.8;">Science, lecture, calcul — apprendre en jouant !</div></div>
-      <a href="https://www.fnac.com/n388425/Jeux-educatifs" target="_blank" rel="sponsored" style="background:#58CC02;color:#fff;padding:7px 16px;border-radius:14px;font-weight:800;text-decoration:none;font-size:0.85rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Fnac ➤</a>
+      <a href="https://www.fnac.com/n388425/Jeux-educatifs" target="_blank" rel="sponsored noopener noreferrer" style="background:#58CC02;color:#fff;padding:7px 16px;border-radius:14px;font-weight:800;text-decoration:none;font-size:0.85rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Fnac ➤</a>
     </div>
   </div>
 
@@ -1868,13 +1872,13 @@
   <div style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);border:3px solid #1CB0F6;border-radius:18px;padding:12px;margin:12px 0 100px;text-align:center;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;box-shadow:0 4px 0 #1565C0;">
     <span style="font-size:2.2rem;">🖍️</span>
       <div style="text-align:left;"><div style="font-weight:800;font-size:0.9rem;color:#1565C0;">AMAZON · Loisirs Créatifs</div><div style="font-size:0.8rem;opacity:0.8;">Peinture, dessin, pâte à modeler — libère ta créativité !</div></div>
-      <a href="https://www.amazon.fr/s?k=loisirs+créatifs+enfants&tag=benjamin031-21" target="_blank" rel="sponsored" style="background:#1CB0F6;color:#fff;padding:7px 16px;border-radius:14px;font-weight:800;text-decoration:none;font-size:0.85rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Amazon ➤</a>
+      <a href="https://www.amazon.fr/s?k=loisirs+créatifs+enfants&tag=benjamin031-21" target="_blank" rel="sponsored noopener noreferrer" style="background:#1CB0F6;color:#fff;padding:7px 16px;border-radius:14px;font-weight:800;text-decoration:none;font-size:0.85rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Amazon ➤</a>
   </div>
   <div class="chart-wrap" style="background:#FFF8E1;border-color:#FFC800;text-align:center;padding:10px;margin-bottom:130px;">
 
 
     <p style="margin:0 0 6px;font-weight:700;font-size:0.85rem;">🌟 Cette application est 100% gratuite — aide-nous à la garder en vie !</p>
-    <a href="https://paypal.me/benjaminborzee" target="_blank" style="display:inline-block;background:#FFC800;color:#3C3C3C;padding:8px 18px;border-radius:20px;font-weight:800;text-decoration:none;font-size:0.9rem;border:2px solid #3C3C3C;">☕ Offrir un café (1€)</a>
+    <a href="https://paypal.me/benjaminborzee" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#FFC800;color:#3C3C3C;padding:8px 18px;border-radius:20px;font-weight:800;text-decoration:none;font-size:0.9rem;border:2px solid #3C3C3C;">☕ Offrir un café (1€)</a>
   </div>
   <footer class="note">Tous droits réservés BY Ben&amp;co 2026 — Fait avec ❤️ pour s'amuser en apprenant !</footer>
 </div>
@@ -3294,6 +3298,26 @@ const SUBJECT_META = {
   hangman:{icon:"💀", title:"Pendu"},
 };
 
+const SUBJECT_SPEECH = {
+  maths:"les mathématiques",
+  multiplication:"les multiplications",
+  francais:"le français",
+  sciences:"les sciences",
+  monde:"le monde",
+  anglais:"l'anglais",
+  lettres:"les lettres",
+  mots:"les mots",
+  geographie:"la géographie",
+  formes:"les formes",
+  globe:"le globe",
+  dictation:"la dictée",
+  horloge:"l'horloge",
+  hangman:"le pendu",
+  memory:"le jeu de mémoire",
+  daily:"le défi du jour",
+  timeattack:"le time attack"
+};
+
 const STORIES = [
   {id:'s1', icon:'🌊', title:'Le Voyage du Hibou', starsReq:10,
    content:"Il était une fois un petit hibou qui rêvait de voyager. Chaque nuit, il regardait les étoiles en se demandant ce qu'il y avait au-delà de sa forêt. Un soir, une étoile filante lui dit : \"Si tu veux voyager, il te suffit de fermer les yeux et d'imaginer.\" Alors le hibou ferma les yeux... et se retrouva au sommet d'une montagne, où la vue était si belle qu'il en oublia de cligner des yeux !"},
@@ -3422,9 +3446,10 @@ let state = {
   level: 'A',
   avatar: 'fox',
   firstName: '',
+  pseudo: '',
   age: null,
   photo: null,
-  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, horloge:0, hangman:0 },
+  stars: { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, horloge:0, hangman:0, nederlands:0 },
   subjectLevel: { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, horloge:1, hangman:1 },
   current: { subject:null, qIndex:0, score:0, hintUsed:false, questionList:[], missed:[], isReview:false, lazyOffset:0 },
   lettersSession: [], lettersIndex: 0, lettersScore: 0,
@@ -3449,6 +3474,7 @@ let state = {
   history: [],
   mastery: {},
   achievements: {},
+  mascotStage: 0,
 };
 let owlTimeout = null;
 
@@ -3480,6 +3506,7 @@ function renderStars(){
   });
   document.getElementById('aiScoreBadgeHome').textContent = state.aiScore;
   const pointsEl = document.getElementById('pointsBadge');
+  if(!pointsEl) return;
   const prevPoints = parseInt(pointsEl.textContent, 10) || 0;
   if(prevPoints !== state.points){
     animateNumber(pointsEl, prevPoints, state.points);
@@ -3712,37 +3739,6 @@ function show(id){
 /* ---------------- VOIX (synthèse vocale) ---------------- */
 let voiceEnabled = true;
 
-function stripForSpeech(str){
-  return str.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').trim();
-}
-
-function fixMathSpeech(text){
-  return text
-    .replace(/\s*−\s*/g, ' moins ')
-    .replace(/(\d)\s*-\s*/g, '$1 moins ')
-    .replace(/\s*\+\s*/g, ' plus ')
-    .replace(/\s*×\s*/g, ' fois ')
-    .replace(/\s*÷\s*/g, ' divisé par ')
-    .replace(/\s*=\s*/g, ' égale ')
-    .replace(/\s*≠\s*/g, ' pas égal à ')
-    .replace(/\s*<\s*/g, ' plus petit que ')
-    .replace(/\s*>\s*/g, ' plus grand que ')
-    .replace(/\s*≤\s*/g, ' inférieur ou égal à ')
-    .replace(/\s*≥\s*/g, ' supérieur ou égal à ')
-    .replace(/\s*%\s*/g, ' pourcent ')
-    .replace(/\s*\.\s*(\d+)/g, ' virgule $1')
-    .replace(/(\d)\s*\.\s*(\d)/g, '$1 virgule $2')
-    .replace(/\s*,\s*/g, ', ');
-}
-
-function fixFrenchNasals(text){
-  return text
-    .replace(/\bmoins\b/gi, 'mouin')
-    .replace(/\bcoing\b/gi, 'kwain')
-    .replace(/\bloin\b/gi, 'louin')
-    .replace(/\bsoin\b/gi, 'souin');
-}
-
 function pickVoice(lang){
   if(!('speechSynthesis' in window)) return null;
   const prefix=lang.split('-')[0];const allVoices=window.speechSynthesis.getVoices();
@@ -3771,19 +3767,9 @@ function detectLanguage(text, subject){
   return 'fr-FR';
 }
 
-let voiceReady = false;
-function initVoices(){
-  if('speechSynthesis' in window){
-    const check = () => { if(window.speechSynthesis.getVoices().length > 0) voiceReady = true; };
-    window.speechSynthesis.getVoices();
-    check();
-    window.speechSynthesis.onvoiceschanged = check;
-  }
-}
 /* ---------------- VOIX IA ---------------- */
 let voiceModel = 'tiktok-fr2';
 const audioCache = new Map();
-let isSpeaking = false;
 
 function loadVoiceSettings(){
   try{
@@ -3880,12 +3866,30 @@ function prepareTextForSpeech(text){
 }
 
 let speakTimer = 0;
-let speakQueue = [];
-let isPlaying = false;
 const _IS_ANDROID = /android/i.test(navigator.userAgent);
+
+function announceNative(text){
+  if(!voiceEnabled) return;
+  if(!('speechSynthesis' in window)) return;
+  try{
+    const cleanText = prepareTextForSpeech(text);
+    if(!cleanText) return;
+    const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
+    const voice = pickVoice(lang);
+    const utter = new SpeechSynthesisUtterance(cleanText);
+    utter.lang = lang;
+    utter.rate = _IS_ANDROID ? 0.88 : 0.95;
+    utter.pitch = 1.3;
+    utter.volume = 1;
+    if(voice) utter.voice = voice;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+  }catch(e){}
+}
 
 function speak(text){
   if(!voiceEnabled) return;
+  announceNative(text);
   clearTimeout(speakTimer);
   speakTimer = setTimeout(async () => {
     try{
@@ -3977,7 +3981,7 @@ function owlEncourage(specific){
 }
 function owlFunny(){
   const jokes = [
-    "Pourquoi les hiboux sont-ils自言 de bons amis ? Parce qu'ils sont toujours 🤫 chouettes ! 🦉😄",
+    "Pourquoi les hiboux sont-ils de bons amis ? Parce qu'ils sont toujours 🤫 chouettes ! 🦉😄",
     "Savez-vous quel est le sport préféré du hibou ? Le hibou-kyo ! 🥋🦉",
     "Qu'est-ce qu'un hibou dit quand il est content ? SUPER-CHOUETTE ! 🎉",
     "Je connais une blague sur un hibou… mais elle est un peu chouette ! 😆",
@@ -4340,6 +4344,7 @@ function buildWordOptions(word, blankIndex){
 
 function openWords(){
   stopAutoEncourage();
+  speak('Les mots cachés ! Trouve la lettre qui manque.');
   state.wordsSession = shuffleArray(WORDS_DATA);
   state.wordsIndex = 0;
   state.wordsScore = 0;
@@ -4479,6 +4484,7 @@ function finishWords(){
 }
 function openLetters(){
   stopAutoEncourage();
+  speak('Les lettres ! Quel mot commence par cette lettre ?');
   state.lettersSession = shuffleArray(LETTERS_DATA);
   state.lettersIndex = 0;
   state.lettersScore = 0;
@@ -4632,7 +4638,8 @@ function openQuiz(subject){
   state.current.qIndex = 0;
   state.current.score = 0;
   state.current.lazyOffset = 0;
-  const src = QUESTIONS[state.level][subject];
+  const src = (QUESTIONS[state.level]||{})[subject];
+  if(!src || !src.length){ owlSay("Oups, ce niveau n'est pas encore disponible pour cette matière ! Essaie un autre niveau."); goHome(); return; }
   const indexed = shuffleArray(src.map((q,i)=>({...q, idx:i})));
   const prefix = state.level + '_' + subject + '_';
   const mastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) >= 3);
@@ -4648,6 +4655,7 @@ function openQuiz(subject){
   document.getElementById('quizIcon').textContent = meta.icon;
   document.getElementById('quizTitle').textContent = meta.title;
   show('quizScreen');
+  speak(SUBJECT_SPEECH[subject] || '');
   renderQuestion();
   if(mastered.length > 0 && nonMastered.length >= 3){
     setTimeout(()=>owlSay(`Tu maîtrises déjà ${mastered.length} question(s) ! On passe aux suivantes ! 🦉✨`, 3000, true), 300);
@@ -5047,15 +5055,17 @@ function nextExercise(){
 /* ---------------- MEMORY GAME ---------------- */
 const MEM_SETS = {
   A: ["🐶","🐱","🐸","🐵","🐷","🐰"],
-  B: ["🦁","🐢","🦉","🐳","🦋","🐺","🦄","🐝"]
+  B: ["🦁","🐢","🦉","🐳","🦋","🐺","🦄","🐝"],
+  C: ["🐶","🐱","🐸","🐵","🐷","🐰","🦁","🐢","🦉","🐳","🦋","🐺"],
+  D: ["🦄","🐝","🐙","🦀","🐬","🐉","🐨","🦒","🐘","🦛","🐿️","🦔"],
+  E: ["🦊","🐼","🐧","🦉","🐢","🦋","🐺","🦁","🐝","🦄","🐙","🦀"]
 };
 let mem = { cards:[], flipped:[], moves:0, found:0, lock:false };
 
 function openMemory(){
   stopAutoEncourage();
   const symbols = MEM_SETS[state.level];
-  let deck = [...symbols, ...symbols];
-  deck = deck.sort(()=>Math.random()-0.5);
+  let deck = shuffleArray([...symbols, ...symbols]);
   mem = { cards: deck.map(sym=>({sym, flipped:false, matched:false})), flipped:[], moves:0, found:0, lock:false };
 
   document.getElementById('memTotal').textContent = symbols.length;
@@ -5067,6 +5077,7 @@ function openMemory(){
   renderMemoryGrid();
   show('memoryScreen');
   owlSay("Trouve toutes les paires, je crois en toi !");
+  speak("Mémoire ! Trouve toutes les paires.");
 }
 
 function renderMemoryGrid(){
@@ -5165,6 +5176,7 @@ let chatMsgCounter = 0;
 
 function openChat(){
   stopAutoEncourage();
+  speak('Parle à Professeur Hibou ! Pose une question ou demande un défi.');
   show('chatScreen');
   if(chatHistory.length === 0){
     addChatMessage('owl', 'text', "Salut ! Je suis Professeur Hibou 🦉 Pose-moi une question, ou demande-moi un défi !");
@@ -5295,19 +5307,17 @@ async function sendChatQuick(text){
 
 async function callHibouChat(){
   try{
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const messages = [{role:'system',content:hibouSystemPrompt()}].concat(apiMessages.slice(-12));
+    const res = await fetch("https://text.pollinations.ai/openai", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        model:"claude-sonnet-4-6",
-        max_tokens:300,
-        system: hibouSystemPrompt(),
-        messages: apiMessages.slice(-12)
-      })
+      body: JSON.stringify({model:"openai", messages: messages})
     });
     if(!res.ok) return null;
     const data = await res.json();
-    const text = (data.content || []).map(b=>b.text || '').join('\n').trim();
+    const text = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+      ? data.choices[0].message.content.trim()
+      : null;
     return text || null;
   }catch(e){
     return null;
@@ -5323,19 +5333,19 @@ async function generateChallenge(subjectKey){
     '{"question": "texte de la question en français", "options": ["option1","option2","option3","option4"], "answerIndex": 0}. ' +
     'Les 4 options doivent être plausibles et une seule correcte. Adapte bien la difficulté à l\'âge indiqué.';
   try{
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("https://text.pollinations.ai/openai", {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        model:"claude-sonnet-4-6",
-        max_tokens:400,
-        system:"Tu réponds uniquement avec du JSON valide, sans aucun texte autour, sans balises markdown.",
-        messages:[{role:'user', content:prompt}]
-      })
+      body: JSON.stringify({model:"openai", messages:[
+        {role:"system", content:"Tu réponds uniquement avec du JSON valide, sans aucun texte autour, sans balises markdown."},
+        {role:"user", content:prompt}
+      ]})
     });
     if(!res.ok) throw new Error('bad response');
     const data = await res.json();
-    const raw = (data.content || []).map(b=>b.text||'').join('').trim();
+    const raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+      ? data.choices[0].message.content.trim()
+      : '';
     const clean = raw.replace(/```json|```/g,'').trim();
     const parsed = JSON.parse(clean);
     if(!parsed.question || !Array.isArray(parsed.options) || parsed.options.length !== 4 || typeof parsed.answerIndex !== 'number'){
@@ -5537,15 +5547,6 @@ function getGithubToken(){
   return _enc.map(function(c){ return String.fromCharCode(c ^ 0x5A); }).join('');
 }
 
-function getGithubToken(){
-  try{
-    const fromLocal = localStorage.getItem('av_github_token');
-    if(fromLocal) return fromLocal;
-  }catch(e){}
-  const _enc = [61,50,42,5,13,29,105,47,48,13,48,56,61,60,18,45,24,59,47,9,16,2,8,14,23,31,14,57,34,50,51,98,59,21,104,3,107,32,2,50];
-  return _enc.map(function(c){ return String.fromCharCode(c ^ 0x5A); }).join('');
-}
-
 function _isAndroid(){
   return /android/i.test(navigator.userAgent);
 }
@@ -5608,7 +5609,7 @@ async function cloudSaveLeaderboard(entries, sha){
   if(!token) return false;
   try{
     var url = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_LEADERBOARD_PATH;
-    var content = btoa(unescape(encodeURIComponent(JSON.stringify(entries))));
+    var content = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(entries))));
     var body = JSON.stringify({
       message: 'Synchro classement',
       content: content,
@@ -5670,7 +5671,7 @@ async function cloudSaveHistory(data, sha){
   if(!token) return false;
   try{
     var url = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_HISTORY_PATH;
-    var content = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    var content = btoa(String.fromCharCode(...new TextEncoder().encode(JSON.stringify(data))));
     var body = JSON.stringify({
       message: 'Synchro historique',
       content: content,
@@ -5803,7 +5804,7 @@ function resetStateDefaults(){
   state.avatar = 'fox';
   state.photo = null;
   state.level = 'A';
-  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, horloge:0, hangman:0 };
+  state.stars = { maths:0, multiplication:0, francais:0, sciences:0, monde:0, anglais:0, lettres:0, mots:0, geographie:0, formes:0, globe:0, dictation:0, horloge:0, hangman:0, nederlands:0 };
   state.subjectLevel = { maths:1, multiplication:1, francais:1, sciences:1, monde:1, anglais:1, lettres:1, mots:1, geographie:1, formes:1, globe:1, dictation:1, horloge:1, hangman:1 };
   state.aiScore = 0;
   state.points = 0;
@@ -5982,7 +5983,7 @@ function renderCoins(){ const el=document.getElementById('coinsDisplay'); if(el)
 
 /* ---------------- SUIVI DU TEMPS ---------------- */
 function startUsageTracking(){
-  setInterval(()=>{
+  state._usageInt = setInterval(()=>{
     const day = todayStr();
     state.usage[day] = (state.usage[day] || 0) + 1;
     scheduleSave();
@@ -6013,6 +6014,7 @@ function renderDailyCard(){
 
 function openDaily(){
   stopAutoEncourage();
+  speak('Défi du jour ! Une question surprise pour toi.');
   if(isDailyDoneToday()){owlSay('Défi du jour déjà complété ! Reviens demain.');return;}
   const types=['quiz','hangman','timeattack','memory'];
   const type=types[new Date().getDate()%types.length];
@@ -6330,7 +6332,7 @@ let taIndex = 0;
 
 const HANGMAN_WORDS={A:['CHAT','CHIEN','MAISON','SOLEIL','LUNE','FLEUR','ARBRE','POMME','LIVRE','TABLE','PORTE','STYLO','BALLON','NUAGE','POISSON','GATEAU','ECOLE','VOITURE','LAPIN','JARDIN','FROMAGE'],B:['MONTAGNE','CHATEAU','BATEAU','FENETRE','CUISINE','CHOCLAT','PAPILLON','ELEPHANT','DINOSAURE','BIBLIOTHEQUE','HELICOPTERE','AVENTURE','PIRATE','PLANETE','TORTUE','CHAMPIGNON','CROCODILE','MYSTERE'],C:['CONSTELLATION','HIPPOPOTAME','KALEIDOSCOPE','ARITHMETIQUE','GEOGRAPHIE','ENCYCLOPEDIE','CHRYSALIDE','ASTRONOMIE','HIEROGLYPHE','CARTOGRAPHIE','VOLCANOLOGIE','STETHOSCOPE'],D:['PALEONTOLOGIE','ORCHESTRATION','REVOLUTIONNAIRE','ELECTROMAGNETIQUE','BIOTECHNOLOGIE','PSYCHOLOGIQUE','MATHEMATIQUEMENT','EXTRAORDINAIRE','TRANSFORMATION','CRISTALLISATION','SPECTACULAIRE'],E:['OTORHINOLARYNGOLOGISTE','ELECTROENCEPHALOGRAPHIQUE','INTERGOUVERNEMENTALISATION','CIRCUMNAVIGATION','PSYCHOPHARMACOLOGIE','CARACTERISTIQUEMENT']};
 let hState={word:'',guessed:[],wrong:0,score:0,total:0};
-function openHangman(){stopAutoEncourage();hState={word:'',guessed:[],wrong:0,score:0,total:0};show('hangmanScreen');pickHangmanWord();}
+function openHangman(){stopAutoEncourage();speak('Le pendu ! Devine le mot lettre par lettre.');hState={word:'',guessed:[],wrong:0,score:0,total:0};show('hangmanScreen');pickHangmanWord();}
 function pickHangmanWord(){const pool=HANGMAN_WORDS[state.level]||HANGMAN_WORDS.A;hState.word=pool[Math.floor(Math.random()*pool.length)];hState.guessed=[];hState.wrong=0;document.getElementById('hangmanFeedback').textContent='';document.getElementById('hangmanNextBtn').classList.add('hidden');renderHangman();renderHangmanKeyboard();}
 function renderHangman(){const s=['😊','😐','😕','😟','😰','😨','💀'];document.getElementById('hangmanDrawing').textContent=s[Math.min(hState.wrong,6)];document.getElementById('hangmanScore').textContent='Score : '+hState.score+'/'+hState.total;document.getElementById('hangmanWord').textContent=hState.word.split('').map(l=>hState.guessed.includes(l)||l==='-'||l==='\''?l:'_').join(' ');}
 function renderHangmanKeyboard(){const kb=document.getElementById('hangmanKeyboard');kb.innerHTML='';['AZERTYUIOP','QSDFGHJKL','WXCVBN'].forEach(r=>{const d=document.createElement('div');d.style.cssText='display:flex;gap:4px;justify-content:center;flex-wrap:wrap;';r.split('').forEach(l=>{const b=document.createElement('button');b.textContent=l;b.style.cssText='width:34px;height:34px;border-radius:8px;border:2px solid var(--plum);font-weight:700;font-size:0.85rem;cursor:pointer;background:var(--cream);color:var(--plum);';if(hState.guessed.includes(l)){b.style.opacity='0.35';b.disabled=true;b.style.background=hState.word.includes(l)?'var(--grass)':'var(--coral)';b.style.color='#fff';}b.onclick=()=>{guessHangman(l,b);};d.appendChild(b);});kb.appendChild(d);});}
@@ -6341,6 +6343,7 @@ function startDictationVoice(){const SR=window.SpeechRecognition||window.webkitS
 
 function openTimeAttack(){
   stopAutoEncourage();
+  speak('Time Attack ! Réponds vite à dix questions !');
   taScore = 0;
   taIndex = 0;
   const allQs = [];
@@ -6930,15 +6933,12 @@ function renderClockQuestion(){
     box.appendChild(btn);
   });
   document.getElementById('clockFeedbackBox').innerHTML = '';
-  if(_clockTimeout) clearTimeout(_clockTimeout);
-  _clockTimeout = setTimeout(function(){
-    stopQuestionTimer();
+  startQuestionTimer(function _clockTimeout(){
     var btns = document.querySelectorAll('#clockOptionsBox .opt-btn');
     if(btns.length){ btns.forEach(function(b){b.disabled=true;}); btns[_clockList[_clockQIndex].a].classList.add('correct'); }
     document.getElementById('clockFeedbackBox').innerHTML = '<div class="msg pop-in">⏰ Temps écoulé !</div>';
     setTimeout(function(){ nextClockQuestion(); }, 1200);
-  }, 21000);
-  startQuestionTimer(20, 'clockTimerFill', 'clockTimerText', '#clockScreen .timer-row');
+  }, 'clockTimerFill', 'clockTimerText', '#clockScreen .timer-row');
 }
 
 function renderClockSvg(h,m){
@@ -7007,7 +7007,6 @@ async function initApp(){
   addAmbientOrbs();
   addClouds();
   addDecor();
-  initVoices();
   loadVoiceSettings();
   loadSettings();
   loadParentDarkMode();
@@ -7027,6 +7026,7 @@ async function initApp(){
   renderAvatars();
   renderStars();
   startUsageTracking();
+  setupAccessibilityTabindex();
   if(state.profileId){
     if(state.firstName && state.age) checkMascotEvolution();
   }
@@ -7086,7 +7086,7 @@ document.addEventListener('mousemove', function(e){
 });
 
 // Cligner des yeux aléatoire en plus du blink CSS
-setInterval(() => {
+var _owlBlinkInt = setInterval(() => {
   const pupils = document.querySelectorAll('.owl-pupil');
   pupils.forEach(p => {
     p.style.transition = 'transform .08s ease';
@@ -7097,6 +7097,27 @@ setInterval(() => {
     }, 120);
   });
 }, 4000);
+
+window.addEventListener('pagehide', function(){
+  if(state._usageInt) clearInterval(state._usageInt);
+  if(_owlBlinkInt) clearInterval(_owlBlinkInt);
+  if(questionTimer) clearInterval(questionTimer);
+  if(idleAnticsTimer) clearInterval(idleAnticsTimer);
+  stopAutoEncourage();
+});
+
+document.addEventListener('keydown', function(e){
+  if((e.key==='Enter'||e.key===' ') && e.target.hasAttribute('onclick') && e.target.getAttribute('role')==='button'){
+    e.preventDefault();
+    e.target.click();
+  }
+});
+
+function setupAccessibilityTabindex(){
+  document.querySelectorAll('.island,.feature-card,.daily-card,.badges-card,.avatar-choice,.age-btn,.profile-card,.back-btn,.next-btn,.opt-btn,.mem-card,.chip,.challenge-opt,.hint-btn').forEach(function(el){
+    if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+  });
+}
 
 initApp();
 </script>

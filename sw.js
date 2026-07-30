@@ -1,6 +1,7 @@
-const CACHE = 'avent-du-savoir-v52';
+const CACHE = 'avent-du-savoir-v60';
 const STATIC = [
   './',
+  './index.html',
   './manifest.json',
   './sw.js',
   'https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Quicksand:wght@500;600;700&display=swap'
@@ -73,10 +74,16 @@ async function cacheFirst(req) {
 async function fontStrategy(req) {
   const hit = await caches.match(req);
   if (hit) return hit;
-  const res = await fetch(req);
-  if (res.ok) {
-    const copy = res.clone();
-    caches.open(CACHE).then((c) => c.put(req, copy));
+  try {
+    const res = await fetch(req);
+    if (res.ok) {
+      const copy = res.clone();
+      caches.open(CACHE).then((c) => c.put(req, copy));
+    }
+    return res;
+  } catch {
+    const fallback = await caches.match('/');
+    if (fallback) return fallback;
+    return new Response('Hors-ligne', { status: 503 });
   }
-  return res;
 }
