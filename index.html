@@ -7045,6 +7045,7 @@ function renderClockQuestion(){
   document.getElementById('clockProgressFill').style.width = Math.round((_clockQIndex/_clockList.length)*100)+'%';
   document.getElementById('clockQuestion').textContent = q.q;
   renderClockSvg(q.h, q.m);
+  speak('Quelle heure est-il ?');
   var box = document.getElementById('clockOptionsBox');
   box.innerHTML = '';
   q.opts.forEach(function(o,i){
