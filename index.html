@@ -1788,14 +1788,11 @@
           <option value="native">Voix du téléphone</option>
         </select>
         <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;">
-          1. Crée un compte sur <strong>elevenlabs.io</strong> · 2. Copie ta clé API (onglet "API Keys") · 3. Colle-la ci-dessous
+          🎤 Voix gratuite — aucune clé API requise
         </div>
         <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <input type="password" id="settingsApiKey" placeholder="Clé API ElevenLabs (ex: sk_...)" style="flex:1;min-width:120px;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-size:13px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
-          <button onclick="saveApiKey()" style="background:var(--grass);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">💾</button>
-          <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Test</button>
+          <button onclick="testVoice()" style="background:var(--sky);color:#fff;border:none;border-radius:12px;padding:8px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;font-size:0.8rem;">🔊 Tester la voix</button>
         </div>
-        <span id="voiceKeyStatus" style="font-size:0.75rem;font-weight:700;margin-top:4px;display:block;"></span>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
         <span>⏱️ Minuteur</span>
@@ -1807,10 +1804,6 @@
           <input type="range" id="settingsTimerSlider" min="5" max="30" value="15" oninput="updateTimerDuration(this.value)" style="width:100px;">
           <span id="settingsTimerValue">15s</span>
         </div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.9rem;padding:4px 0;">
-        <span>🖥️ Serveur proxy TTS</span>
-        <input type="url" id="proxyUrlInput" placeholder="https://ton-serveur.com" value="" onchange="saveProxyUrl(this.value)" style="width:160px;padding:5px 8px;border:2px solid var(--plum);border-radius:10px;font-size:12px;font-family:'Quicksand',sans-serif;background:var(--cream);color:var(--plum);">
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:0.95rem;padding:4px 0;">
         <span>🌙 Mode sombre</span>
@@ -3784,75 +3777,33 @@ function initVoices(){
     window.speechSynthesis.onvoiceschanged = check;
   }
 }
-/* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
-let voiceApiKey = '';
+/* ---------------- VOIX IA ---------------- */
 let voiceModel = 'tiktok-fr2';
-let proxyUrl = '';
 const audioCache = new Map();
 let isSpeaking = false;
 
-function detectProxy(){
-  // Auto-détection du serveur proxy : même origine ou config localStorage
-  const saved = localStorage.getItem('tts_proxy_url');
-  if(saved){ proxyUrl = saved; return; }
-  // Essayer le proxy Render par défaut si déployé
-  proxyUrl = '';
-}
-
 function loadVoiceSettings(){
   try{
-    voiceApiKey = localStorage.getItem('voice_api_key') || '';
     voiceModel = localStorage.getItem('voice_model') || 'tiktok-fr2';
-    detectProxy();
-    const inp = document.getElementById('settingsApiKey');
-    if(inp && voiceApiKey) inp.value = voiceApiKey;
-    const sel = document.getElementById('voiceModelSelect');
-    if(sel) sel.value = voiceModel;
-    const proxyInp = document.getElementById('proxyUrlInput');
-    if(proxyInp && proxyUrl) proxyInp.value = proxyUrl;
-    const label = document.getElementById('voiceStatusLabel');
+    var sel = document.getElementById('voiceModelSelect');
+    if(sel && voiceModel) sel.value = voiceModel;
+    var label = document.getElementById('voiceStatusLabel');
     if(label) label.textContent = getVoiceLabel(voiceModel);
   }catch(e){}
 }
 
 function getVoiceLabel(m){
-  const labels = { 'edge-tts':'Edge TTS (gratuit)','elevenlabs':'ElevenLabs Multilingual v2','openai-alloy':'OpenAI Alloy','openai-echo':'OpenAI Echo','openai-fable':'OpenAI Fable','openai-nova':'OpenAI Nova','openai-shimmer':'OpenAI Shimmer','openai-coral':'OpenAI Coral','native':'Voix native' };
-  return labels[m] || 'ElevenLabs v2';
+  var labels = { 'tiktok-fr2':'TikTok — Voix féminine','tiktok-fr1':'TikTok — Voix masculine','google-tts':'Google — Standard','native':'Voix du téléphone' };
+  return labels[m] || 'TikTok';
 }
 
 function changeVoiceModel(val){
   voiceModel = val;
   try{ localStorage.setItem('voice_model', val); }catch(e){}
-  const label = document.getElementById('voiceStatusLabel');
+  var label = document.getElementById('voiceStatusLabel');
   if(label) label.textContent = getVoiceLabel(val);
-  const inp = document.getElementById('settingsApiKey');
-  if(!inp) return;
-  if(val === 'native'){
-    inp.placeholder = 'Non nécessaire en mode natif';
-    inp.disabled = true;
-  } else {
-    inp.placeholder = val === 'elevenlabs' ? 'Clé API ElevenLabs (sk_...)' : 'Clé API OpenAI (sk-...)';
-    inp.disabled = false;
-  }
-}
-
-function saveApiKey(){
-  const inp = document.getElementById('settingsApiKey');
-  const key = inp ? inp.value.trim() : '';
-  voiceApiKey = key;
-  try{ localStorage.setItem('voice_api_key', key); }catch(e){}
-  const st = document.getElementById('voiceKeyStatus');
-  if(!st) return;
-  if(key){
-    st.textContent = '✅ Clé enregistrée — la voix IA est active !';
-    st.style.color = 'var(--grass)';
-    // Test auto silencieux
-    testVoice(true);
-  } else {
-    st.textContent = '⚠️ Colle ta clé API pour activer la voix naturelle';
-    st.style.color = 'var(--coral)';
-  }
-  setTimeout(()=>{ if(st) st.textContent = ''; }, 4000);
+  var vs = document.getElementById('voiceModelSelect');
+  if(vs && vs.value !== val) vs.value = val;
 }
 
 function saveGithubToken(){
@@ -3975,138 +3926,16 @@ function speak(text){
   }, _IS_ANDROID ? 5 : 20);
 }
 
-async function speakViaProxy(text, lang, cacheKey){
-  try{
-    const endpoint = proxyUrl + '/tts/elevenlabs';
-    const resp = await fetch(endpoint, {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ text, lang: lang || 'fr-FR' })
-    });
-    if(!resp.ok) return false;
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-    audioCache.set(cacheKey, url);
-    if(audioCache.size > 80){
-      const first = audioCache.keys().next().value;
-      const old = audioCache.get(first);
-      if(old) URL.revokeObjectURL(old);
-      audioCache.delete(first);
-    }
-    window.speechSynthesis.cancel();
-    return await safeAudioPlay(url);
-  }catch(e){ return false; }
-}
-
 async function speakTikTokTTS(text,lang,cacheKey){try{const voice=voiceModel==='tiktok-fr1'?'fr_001':'fr_002';const resp=await fetch('https://tiktok-tts.weilnet.workers.dev/api/generation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text.substring(0,300),voice:voice})});if(!resp.ok)return false;const data=await resp.json();if(!data||!data.data)return false;const audioUrl='data:audio/mpeg;base64,'+data.data;audioCache.set(cacheKey,audioUrl);if(audioCache.size>80){const first=audioCache.keys().next().value;const old=audioCache.get(first);if(old)URL.revokeObjectURL(old);audioCache.delete(first);}window.speechSynthesis.cancel();return await safeAudioPlay(audioUrl);}catch(e){return false;}}
 async function speakGoogleTTS(text,lang,cacheKey){try{const code=(lang||'fr-FR').split('-')[0];const q=encodeURIComponent(text.substring(0,200));const resp=await fetch('https://translate.google.com/translate_tts?ie=UTF-8&q='+q+'&tl='+code+'&client=tw-ob',{headers:{'User-Agent':'Mozilla/5.0'}});if(!resp.ok)return false;const blob=await resp.blob();if(blob.size<500)return false;const u=URL.createObjectURL(blob);audioCache.set(cacheKey,u);if(audioCache.size>80){const f=audioCache.keys().next().value;const o=audioCache.get(f);if(o)URL.revokeObjectURL(o);audioCache.delete(f);}window.speechSynthesis.cancel();return await safeAudioPlay(u);}catch(e){return false;}}
 
-const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4';
-async function speakEdgeTTS(text,lang,cacheKey){try{const prefix=(lang||'fr-FR').split('-')[0];const voiceName=prefix==='fr'?'fr-FR-DeniseNeural':'en-US-AriaNeural';const ssml='<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="'+(lang||'fr-FR')+'"><voice name="'+voiceName+'"><prosody rate="'+(prefix==='fr'?'-10%':'+0%')+'" pitch="+0%">'+text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</prosody></voice></speak>';const resp=await fetch('https://speech.platform.bing.com/consumer/speech/synthesize/readaloud?trustedclienttoken='+EDGE_TOKEN,{method:'POST',headers:{'Content-Type':'application/ssml+xml','X-Microsoft-OutputFormat':'audio-24khz-96kbitrate-mono-mp3'},body:ssml});if(!resp.ok)return false;const blob=await resp.blob();const url=URL.createObjectURL(blob);audioCache.set(cacheKey,url);if(audioCache.size>80){const first=audioCache.keys().next().value;const old=audioCache.get(first);if(old)URL.revokeObjectURL(old);audioCache.delete(first);}window.speechSynthesis.cancel();return await safeAudioPlay(url);}catch(e){return false;}}
 
-async function speakElevenLabs(text, lang, cacheKey){
-  try{
-    // Voix ElevenLabs natives françaises pour un rendu ultra-naturel
-    const voiceMap = {
-      'fr': 'ThT5KcBeYPX3keUQqHPh',  // Thomas — voix française expressive
-      'en': '21m00Tcm4TlvDq8ikWAM'   // Rachel — voix anglaise naturelle
-    };
-    const voiceId = voiceMap[lang.split('-')[0]] || 'ThT5KcBeYPX3keUQqHPh';
-    
-    const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId, {
-      method:'POST',
-      headers:{
-        'Authorization':'Bearer '+voiceApiKey,
-        'Content-Type':'application/json',
-        'xi-audio-format':'mp3_44100_128'
-      },
-      body: JSON.stringify({
-        text,
-        model_id:'eleven_multilingual_v2',
-        voice_settings: {
-          stability: 0.15,        // Très bas → intonations expressives
-          similarity_boost: 0.85, // Fidélité à la voix originale
-          style: 0.35,           // Légère stylisation
-          use_speaker_boost: true
-        }
-      })
-    });
-    if(!resp.ok){
-      const errText = await resp.text();
-      return false;
-    }
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-    audioCache.set(cacheKey, url);
-    if(audioCache.size > 80){
-      const first = audioCache.keys().next().value;
-      const old = audioCache.get(first);
-      if(old) URL.revokeObjectURL(old);
-      audioCache.delete(first);
-    }
-    window.speechSynthesis.cancel();
-    const played = await safeAudioPlay(url);
-    if(!played) return false;
-    testSilent = false;
-    return true;
-  }catch(e){ return false; }
-}
 
-async function speakOpenAI(text, lang, cacheKey){
-  try{
-    const voice = voiceModel.replace('openai-','');
-    const resp = await fetch('https://api.openai.com/v1/audio/speech', {
-      method:'POST',
-      headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json' },
-      body: JSON.stringify({
-        model:'tts-1-hd',
-        voice,
-        input:text,
-        response_format:'mp3',
-        speed: 1.0
-      })
-    });
-    if(!resp.ok) return false;
-    const blob = await resp.blob();
-    const url = URL.createObjectURL(blob);
-    audioCache.set(cacheKey, url);
-    if(audioCache.size > 80){
-      const first = audioCache.keys().next().value;
-      const old = audioCache.get(first);
-      if(old) URL.revokeObjectURL(old);
-      audioCache.delete(first);
-    }
-    window.speechSynthesis.cancel();
-    return await safeAudioPlay(url);
-  }catch(e){ return false; }
-}
 
-function preloadVoice(text){
-  const cleanText = prepareTextForSpeech(text);
-  if(!cleanText || !voiceApiKey) return;
-  const lang = detectLanguage(cleanText, state.current ? state.current.subject : null);
-  const cacheKey = voiceModel + '|' + lang + '|' + cleanText;
-  if(audioCache.has(cacheKey)) return;
-  // Préchargement silencieux sans lecture
-  const doPreload = async () => {
-    try{
-      if(voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
-        const voiceId = lang.startsWith('fr') ? 'ThT5KcBeYPX3keUQqHPh' : '21m00Tcm4TlvDq8ikWAM';
-        const resp = await fetch('https://api.elevenlabs.io/v1/text-to-speech/'+voiceId, {
-          method:'POST',
-          headers:{ 'Authorization':'Bearer '+voiceApiKey, 'Content-Type':'application/json','xi-audio-format':'mp3_44100_128' },
-          body: JSON.stringify({ text:cleanText, model_id:'eleven_multilingual_v2', voice_settings:{ stability:0.15, similarity_boost:0.85, style:0.35, use_speaker_boost:true } })
-        });
-        if(resp.ok){
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          audioCache.set(cacheKey, url);
-        }
-      }
-    }catch(e){}
-  };
-  doPreload();
-}
+
+
+
+
 
 function toggleVoice(){
   voiceEnabled = !voiceEnabled;
@@ -4120,11 +3949,6 @@ function toggleVoice(){
 }
 
 function readAloud(text){ speak(text); }
-
-function saveProxyUrl(url){
-  proxyUrl = url.trim();
-  try{ localStorage.setItem('tts_proxy_url', proxyUrl); }catch(e){}
-}
 
 /* ---------------- OWL ---------------- */
 function owlSay(text, duration, skipSpeak){
