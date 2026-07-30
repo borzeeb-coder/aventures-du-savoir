@@ -63,9 +63,11 @@
     --plum-l:#e9dfff;
     --cream:#FFFFFF;
     --gold:#FFC800;
-    --bg:#F7F9FC;
-    --shadow: rgba(30,30,40,0.14);
-  }
+  --bg:#F7F9FC;
+  --shadow: rgba(30,30,40,0.14);
+  --card:#FFFFFF;
+  --text:#3C3C3C;
+}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -77,12 +79,6 @@
     position:relative;
   }
   h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
-
-  .confetti-dot{position:fixed; border-radius:50%; z-index:0; pointer-events:none; opacity:0.35; animation:dotFloat 9s ease-in-out infinite;}
-  @keyframes dotFloat{ 0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-16px) rotate(20deg);} }
-
-  .cloud{display:none;}
-  .hills{display:none;}
 
   #app{position:relative; z-index:1; max-width:960px; margin:0 auto; padding:18px 16px 90px;}
 
@@ -1113,7 +1109,6 @@
   .dark-mode #statsScreen .stats-bar-label{color:var(--plum)}
   .dark-mode #statsScreen .stats-bar-value{color:var(--plum)}
   .dark-mode #statsScreen .stats-bar-track{background:#3d3d55;border-color:#4d4d66}
-  .dark-mode #settingsScreen .settings-row span{color:var(--plum)}
   .dark-mode #statsScreen .stats-recent-item{color:var(--text-muted);border-bottom-color:#3d3d55}
   .dark-mode #settingsScreen .back-btn{color:var(--plum)}
 
@@ -1158,9 +1153,6 @@
   .toggle input:checked + .slider{background:#1CB0F6}
   .toggle input:checked + .slider::before{transform:translateX(18px)}
 
-  /* Settings & Stats */
-  .settings-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:85;animation:fadeIn .2s ease}
-  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
   .stats-bar-chart{display:flex;flex-direction:column;gap:10px;margin-top:6px}
   .stats-bar-row{display:grid;grid-template-columns:100px 1fr 40px;align-items:center;gap:10px}
   .stats-bar-label{font-weight:700;font-size:0.85rem;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1204,7 +1196,7 @@
 </style>
 </head>
 <body>
-<a href="#mainContent" class="skip-link" style="position:absolute;top:-100px;left:8px;background:var(--plum);color:#fff;padding:8px 16px;border-radius:0 0 8px 8px;z-index:9999;font-weight:700;text-decoration:none;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Aller au contenu principal</a>
+<a href="#app" class="skip-link" style="position:absolute;top:-100px;left:8px;background:var(--plum);color:#fff;padding:8px 16px;border-radius:0 0 8px 8px;z-index:9999;font-weight:700;text-decoration:none;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Aller au contenu principal</a>
 <div id="highContrastToggle" onclick="toggleHighContrast()" style="position:fixed;bottom:8px;right:8px;z-index:999;background:var(--surface);border:2px solid var(--plum);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;opacity:0.7;" title="Activer le contraste élevé" aria-label="Activer/désactiver le contraste élevé">🔲</div>
 
 <div id="app">
@@ -4031,6 +4023,12 @@ function toggleVoice(){
     btn.classList.toggle('muted', !voiceEnabled);
   }
   if(!voiceEnabled && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(!voiceEnabled && audioCache){
+    audioCache.forEach(function(url,key){
+      try{ URL.revokeObjectURL(url); }catch(e){}
+    });
+    audioCache.clear();
+  }
   soundClick();
 }
 
@@ -4201,6 +4199,7 @@ function getAudioCtx(){
 
 // Lecture audio sécurisée (gère le blocage autoplay Android)
 function safeAudioPlay(url){
+  if(!voiceEnabled) return;
   return new Promise((resolve) => {
     const a = new Audio(url);
     a.onended = () => { resolve(true); };
