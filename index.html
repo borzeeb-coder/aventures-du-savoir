@@ -7039,6 +7039,7 @@ var CLOCK_QUESTIONS = [];
 var _clockQIndex = 0;
 var _clockScore = 0;
 var _clockList = [];
+var _clockTimeout = null;
 
 function generateClockQuestions(){
   CLOCK_QUESTIONS = [];
@@ -7090,6 +7091,14 @@ function renderClockQuestion(){
     box.appendChild(btn);
   });
   document.getElementById('clockFeedbackBox').innerHTML = '';
+  if(_clockTimeout) clearTimeout(_clockTimeout);
+  _clockTimeout = setTimeout(function(){
+    stopQuestionTimer();
+    var btns = document.querySelectorAll('#clockOptionsBox .opt-btn');
+    if(btns.length){ btns.forEach(function(b){b.disabled=true;}); btns[_clockList[_clockQIndex].a].classList.add('correct'); }
+    document.getElementById('clockFeedbackBox').innerHTML = '<div class="msg pop-in">⏰ Temps écoulé !</div>';
+    setTimeout(function(){ nextClockQuestion(); }, 1200);
+  }, 21000);
   startQuestionTimer(20, 'clockTimerFill', 'clockTimerText', '#clockScreen .timer-row');
 }
 
@@ -7102,6 +7111,7 @@ function renderClockSvg(h,m){
 
 function answerClock(i,q,btnEl){
   stopQuestionTimer();
+  if(_clockTimeout){ clearTimeout(_clockTimeout); _clockTimeout = null; }
   var btns = document.querySelectorAll('#clockOptionsBox .opt-btn');
   btns.forEach(function(b){b.disabled=true;});
   var correct = i===q.a;
@@ -7120,12 +7130,12 @@ function answerClock(i,q,btnEl){
     screenFlash('wrong');
   }
   document.getElementById('clockFeedbackBox').innerHTML = 
-    '<div class="msg pop-in">'+(correct?'Bravo ! ✅':'Presque ! Regarde bien les aiguilles 🕐')+'</div>'+
-    '<button class="next-btn" onclick="nextClockQuestion()">'+
-    (_clockQIndex===_clockList.length-1?'Voir résultat 🏁':'Suivante ➡️')+'</button>';
+    '<div class="msg pop-in">'+(correct?'Bravo ! ✅':'Presque ! Regarde bien les aiguilles 🕐')+'</div>';
+  setTimeout(function(){ nextClockQuestion(); }, correct ? 900 : 1700);
 }
 
 function nextClockQuestion(){
+  if(_clockTimeout){ clearTimeout(_clockTimeout); _clockTimeout = null; }
   _clockQIndex++;
   renderClockQuestion();
 }
