@@ -3845,6 +3845,7 @@ function prepareTextForSpeech(text){
 let speakTimer = 0;
 let speakQueue = [];
 let isPlaying = false;
+const _IS_ANDROID = /android/i.test(navigator.userAgent);
 
 function speak(text){
   if(!voiceEnabled) return;
@@ -3876,19 +3877,19 @@ function speak(text){
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
       const utter = new SpeechSynthesisUtterance(cleanText);
       utter.lang = lang;
-      utter.rate = IS_ANDROID ? 0.88 : (/iPhone|iPad|iPod/i.test(navigator.userAgent)?0.95:0.82);
+      utter.rate = _IS_ANDROID ? 0.88 : (/iPhone|iPad|iPod/i.test(navigator.userAgent)?0.95:0.82);
       utter.pitch = 1.0;
       utter.volume = 1;
       if(voice) utter.voice = voice;
       // Android: delai obligatoire entre cancel() et speak()
       window.speechSynthesis.cancel();
-      if(IS_ANDROID){
+      if(_IS_ANDROID){
         setTimeout(()=>window.speechSynthesis.speak(utter), 60);
       } else {
         window.speechSynthesis.speak(utter);
       }
     }catch(e){}
-  }, IS_ANDROID ? 5 : 20);
+  }, _IS_ANDROID ? 5 : 20);
 }
 
 async function speakViaProxy(text, lang, cacheKey){
@@ -4183,7 +4184,7 @@ function unlockAudio(){
 }
 
 // Détection Android
-const IS_ANDROID = /android/i.test(navigator.userAgent);
+const IS_ANDROID = _IS_ANDROID;
 
 // Débloque l'audio au premier geste utilisateur (Android)
 if(IS_ANDROID){
