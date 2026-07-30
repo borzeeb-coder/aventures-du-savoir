@@ -1710,18 +1710,13 @@
       <div style="font-weight:600;font-size:0.95rem;padding:4px 0;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <span>🎤 Voix IA</span>
-          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">ElevenLabs Multilingual v2</span>
+          <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">TikTok — Voix féminine</span>
         </div>
         <select id="voiceModelSelect" onchange="changeVoiceModel(this.value)" style="width:100%;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:6px;background:var(--cream);color:var(--plum);">
-          <option value="edge-tts">Edge TTS — Gratuit (recommandé)</option>
-          <option value="elevenlabs">ElevenLabs Multilingual v2 (recommandé)</option>
-          <option value="openai-alloy">OpenAI Alloy</option>
-          <option value="openai-nova">OpenAI Nova</option>
-          <option value="openai-echo">OpenAI Echo</option>
-          <option value="openai-fable">OpenAI Fable</option>
-          <option value="openai-shimmer">OpenAI Shimmer</option>
-          <option value="openai-coral">OpenAI Coral</option>
-          <option value="native">Voix du téléphone (native)</option>
+          <option value="tiktok-fr2">TikTok — Voix féminine</option>
+          <option value="tiktok-fr1">TikTok — Voix masculine</option>
+          <option value="google-tts">Google — Standard</option>
+          <option value="native">Voix du téléphone</option>
         </select>
         <div style="font-size:0.8rem;opacity:0.75;margin-bottom:6px;padding:6px 8px;background:var(--bg);border-radius:8px;">
           1. Crée un compte sur <strong>elevenlabs.io</strong> · 2. Copie ta clé API (onglet "API Keys") · 3. Colle-la ci-dessous
@@ -3708,7 +3703,7 @@ function initVoices(){
 }
 /* ---------------- VOIX IA — ElevenLabs + OpenAI (qualité studio) ---------------- */
 let voiceApiKey = '';
-let voiceModel = 'edge-tts';
+let voiceModel = 'tiktok-fr2';
 let proxyUrl = '';
 const audioCache = new Map();
 let isSpeaking = false;
@@ -3724,7 +3719,7 @@ function detectProxy(){
 function loadVoiceSettings(){
   try{
     voiceApiKey = localStorage.getItem('voice_api_key') || '';
-    voiceModel = localStorage.getItem('voice_model') || 'edge-tts';
+    voiceModel = localStorage.getItem('voice_model') || 'tiktok-fr2';
     detectProxy();
     const inp = document.getElementById('settingsApiKey');
     if(inp && voiceApiKey) inp.value = voiceApiKey;
@@ -3869,26 +3864,10 @@ function speak(text){
       }
 
       let played = false;
-      // 1) Proxy serveur (zero config utilisateur si deploye)
-      if(proxyUrl && proxyUrl.startsWith('http') && 'fetch' in window){
-        played = await speakViaProxy(cleanText, lang, cacheKey);
-      }
-      // 2) Edge TTS gratuit
-      if(!played){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
-      // 3) ElevenLabs direct (cle API dans localStorage)
-      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.length > 5){
-        played = await speakElevenLabs(cleanText, lang, cacheKey);
-      }
-      // 4) OpenAI direct
-      if(!played && voiceModel.startsWith('openai-') && voiceApiKey.startsWith('sk-')){
-        played = await speakOpenAI(cleanText, lang, cacheKey);
-      }
-      // 5) Fallback automatique ElevenLabs vers OpenAI
-      if(!played && voiceModel === 'elevenlabs' && voiceApiKey.startsWith('sk-') && voiceApiKey.length > 10){
-        played = await speakOpenAI(cleanText, lang, cacheKey);
-      }
-      // 6) Edge TTS fallback final
-      if(!played && voiceModel !== 'native'){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
+      // 1) TikTok TTS (femme, gratuit)
+      if(voiceModel.startsWith('tiktok-')){ played = await speakTikTokTTS(cleanText, lang, cacheKey); }
+      // 2) Google TTS fallback
+      if(!played){ played = await speakGoogleTTS(cleanText, lang, cacheKey); }
       if(played) return;
 
       // 7) Dernier recours : synthese native du navigateur
@@ -3934,6 +3913,9 @@ async function speakViaProxy(text, lang, cacheKey){
     return await safeAudioPlay(url);
   }catch(e){ return false; }
 }
+
+async function speakTikTokTTS(text,lang,cacheKey){try{const voice=voiceModel==='tiktok-fr1'?'fr_001':'fr_002';const resp=await fetch('https://tiktok-tts.weilnet.workers.dev/api/generation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text.substring(0,300),voice:voice})});if(!resp.ok)return false;const data=await resp.json();if(!data||!data.data)return false;const audioUrl='data:audio/mpeg;base64,'+data.data;audioCache.set(cacheKey,audioUrl);if(audioCache.size>80){const first=audioCache.keys().next().value;const old=audioCache.get(first);if(old)URL.revokeObjectURL(old);audioCache.delete(first);}window.speechSynthesis.cancel();return await safeAudioPlay(audioUrl);}catch(e){return false;}}
+async function speakGoogleTTS(text,lang,cacheKey){try{const code=(lang||'fr-FR').split('-')[0];const q=encodeURIComponent(text.substring(0,200));const resp=await fetch('https://translate.google.com/translate_tts?ie=UTF-8&q='+q+'&tl='+code+'&client=tw-ob',{headers:{'User-Agent':'Mozilla/5.0'}});if(!resp.ok)return false;const blob=await resp.blob();if(blob.size<500)return false;const u=URL.createObjectURL(blob);audioCache.set(cacheKey,u);if(audioCache.size>80){const f=audioCache.keys().next().value;const o=audioCache.get(f);if(o)URL.revokeObjectURL(o);audioCache.delete(f);}window.speechSynthesis.cancel();return await safeAudioPlay(u);}catch(e){return false;}}
 
 const EDGE_TOKEN='6A5AA1D4EAFF4E9FB37E23D68491D6F4';
 async function speakEdgeTTS(text,lang,cacheKey){try{const prefix=(lang||'fr-FR').split('-')[0];const voiceName=prefix==='fr'?'fr-FR-DeniseNeural':'en-US-AriaNeural';const ssml='<speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="'+(lang||'fr-FR')+'"><voice name="'+voiceName+'"><prosody rate="'+(prefix==='fr'?'-10%':'+0%')+'" pitch="+0%">'+text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</prosody></voice></speak>';const resp=await fetch('https://speech.platform.bing.com/consumer/speech/synthesize/readaloud?trustedclienttoken='+EDGE_TOKEN,{method:'POST',headers:{'Content-Type':'application/ssml+xml','X-Microsoft-OutputFormat':'audio-24khz-96kbitrate-mono-mp3'},body:ssml});if(!resp.ok)return false;const blob=await resp.blob();const url=URL.createObjectURL(blob);audioCache.set(cacheKey,url);if(audioCache.size>80){const first=audioCache.keys().next().value;const old=audioCache.get(first);if(old)URL.revokeObjectURL(old);audioCache.delete(first);}window.speechSynthesis.cancel();return await safeAudioPlay(url);}catch(e){return false;}}
