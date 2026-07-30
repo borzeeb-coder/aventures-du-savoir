@@ -3402,7 +3402,6 @@ function owlComboCheck(){
   if(comboCount === 3){
     owlSay("3 bonnes réponses d'affilée ! Tu gères ! 🔥🔥🔥", 3500, true);
     soundCorrect();
-    playClockChime();
     owlHappy();
   } else if(comboCount === 5){
     owlSay("5 SUR 5 ! C'est du grand art ! 👏👏👏", 4000, true);
@@ -7133,6 +7132,7 @@ function answerClock(i,q,btnEl){
     _clockScore++;
     addPoints(8);
     soundCorrect();
+    playClockChime();
     owlHappy();
     screenFlash('correct');
   } else {
