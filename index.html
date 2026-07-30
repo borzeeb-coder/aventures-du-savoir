@@ -1786,6 +1786,8 @@
           <span style="font-size:0.8rem;opacity:0.7;" id="voiceStatusLabel">TikTok — Voix féminine</span>
         </div>
         <select id="voiceModelSelect" onchange="changeVoiceModel(this.value)" style="width:100%;padding:8px 10px;border:2px solid var(--plum);border-radius:12px;font-family:'Quicksand',sans-serif;font-weight:600;font-size:0.85rem;margin-bottom:6px;background:var(--cream);color:var(--plum);">
+          <option value="edge-female">Edge — Voix féminine (Denise)</option>
+          <option value="edge-male">Edge — Voix masculine (Henri)</option>
           <option value="tiktok-fr2">TikTok — Voix féminine</option>
           <option value="tiktok-fr1">TikTok — Voix masculine</option>
           <option value="google-tts">Google — Standard</option>
@@ -3768,12 +3770,12 @@ function detectLanguage(text, subject){
 }
 
 /* ---------------- VOIX IA ---------------- */
-let voiceModel = 'tiktok-fr2';
+let voiceModel = 'edge-female';
 const audioCache = new Map();
 
 function loadVoiceSettings(){
   try{
-    voiceModel = localStorage.getItem('voice_model') || 'tiktok-fr2';
+    voiceModel = localStorage.getItem('voice_model') || 'edge-female';
     var sel = document.getElementById('voiceModelSelect');
     if(sel && voiceModel) sel.value = voiceModel;
     var label = document.getElementById('voiceStatusLabel');
@@ -3782,8 +3784,8 @@ function loadVoiceSettings(){
 }
 
 function getVoiceLabel(m){
-  var labels = { 'tiktok-fr2':'TikTok — Voix féminine','tiktok-fr1':'TikTok — Voix masculine','google-tts':'Google — Standard','native':'Voix du téléphone' };
-  return labels[m] || 'TikTok';
+  var labels = { 'edge-female':'Edge — Voix féminine (Denise)','edge-male':'Edge — Voix masculine (Henri)','tiktok-fr2':'TikTok — Voix féminine','tiktok-fr1':'TikTok — Voix masculine','google-tts':'Google — Standard','native':'Voix du téléphone' };
+  return labels[m] || 'Edge';
 }
 
 function changeVoiceModel(val){
@@ -3906,13 +3908,15 @@ function speak(text){
       }
 
       let played = false;
-      // 1) TikTok TTS (femme, gratuit)
-      if(voiceModel.startsWith('tiktok-')){ played = await speakTikTokTTS(cleanText, lang, cacheKey); }
-      // 2) Google TTS fallback
+      // 1) Edge TTS (neural voices, free)
+      if(voiceModel.startsWith('edge-')){ played = await speakEdgeTTS(cleanText, lang, cacheKey); }
+      // 2) TikTok TTS fallback
+      if(!played && voiceModel.startsWith('tiktok-')){ played = await speakTikTokTTS(cleanText, lang, cacheKey); }
+      // 3) Google TTS fallback
       if(!played){ played = await speakGoogleTTS(cleanText, lang, cacheKey); }
       if(played) return;
 
-      // 7) Dernier recours : synthese native du navigateur
+      // 4) Dernier recours : synthese native du navigateur
       if(!('speechSynthesis' in window)) return;
       const voice = pickVoice(lang);
       const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -3935,6 +3939,8 @@ function speak(text){
 
 async function speakTikTokTTS(text,lang,cacheKey){try{const voice=voiceModel==='tiktok-fr1'?'fr_001':'fr_002';const resp=await fetch('https://tiktok-tts.weilnet.workers.dev/api/generation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:text.substring(0,300),voice:voice})});if(!resp.ok)return false;const data=await resp.json();if(!data||!data.data)return false;const audioUrl='data:audio/mpeg;base64,'+data.data;audioCache.set(cacheKey,audioUrl);if(audioCache.size>80){const first=audioCache.keys().next().value;const old=audioCache.get(first);if(old)URL.revokeObjectURL(old);audioCache.delete(first);}window.speechSynthesis.cancel();return await safeAudioPlay(audioUrl);}catch(e){return false;}}
 async function speakGoogleTTS(text,lang,cacheKey){try{const code=(lang||'fr-FR').split('-')[0];const q=encodeURIComponent(text.substring(0,200));const resp=await fetch('https://translate.google.com/translate_tts?ie=UTF-8&q='+q+'&tl='+code+'&client=tw-ob',{headers:{'User-Agent':'Mozilla/5.0'}});if(!resp.ok)return false;const blob=await resp.blob();if(blob.size<500)return false;const u=URL.createObjectURL(blob);audioCache.set(cacheKey,u);if(audioCache.size>80){const f=audioCache.keys().next().value;const o=audioCache.get(f);if(o)URL.revokeObjectURL(o);audioCache.delete(f);}window.speechSynthesis.cancel();return await safeAudioPlay(u);}catch(e){return false;}}
+
+async function speakEdgeTTS(text,lang,cacheKey){try{const uuid=crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){const r=Math.random()*16|0;return(c==='x'?r:r&0x3|0x8).toString(16);});const voiceName=voiceModel==='edge-male'?'fr-FR-HenriNeural':'fr-FR-DeniseNeural';const safeText=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');const ssml='<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="fr-FR"><voice name="'+voiceName+'"><prosody rate="+0%" pitch="+5%">'+safeText+'</prosody></voice></speak>';return new Promise(function(resolve){const ws=new WebSocket('wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=6A5AA1D4EAFF4E9FB37E23D68491D6F4&ConnectionId='+uuid);ws.binaryType='arraybuffer';const chunks=[];let finished=false;ws.onopen=function(){ws.send('Content-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n{"context":{"synthesis":{"audio":{"metadataoptions":{"sentenceBoundaryEnabled":false,"wordBoundaryEnabled":true},"outputFormat":"audio-24khz-48kbitrate-mono-mp3"}}}}');ws.send('X-RequestId:'+uuid+'\r\nContent-Type:application/ssml+xml\r\nX-Timestamp:'+new Date().toISOString()+'\r\nPath:ssml\r\n\r\n'+ssml);};ws.onmessage=function(e){if(finished)return;if(typeof e.data==='string'){if(e.data.indexOf('Path:turn.end')!==-1)finish();return;}const arr=new Uint8Array(e.data);let start=0;for(var i=0;i<arr.length-3;i++){if(arr[i]===13&&arr[i+1]===10&&arr[i+2]===13&&arr[i+3]===10){start=i+4;break;}}if(start>0&&start<arr.length)chunks.push(arr.slice(start));};ws.onerror=function(){if(!finished){finished=true;ws.close();resolve(false);}};ws.onclose=function(){if(!finished)finish();};function finish(){if(finished)return;finished=true;if(chunks.length===0){resolve(false);return;}const blob=new Blob(chunks,{type:'audio/mpeg'});const url=URL.createObjectURL(blob);audioCache.set(cacheKey,url);if(audioCache.size>80){const f=audioCache.keys().next().value;const o=audioCache.get(f);if(o)URL.revokeObjectURL(o);audioCache.delete(f);}window.speechSynthesis.cancel();safeAudioPlay(url).then(resolve);}});}catch(e){return false;}}
 
 
 
