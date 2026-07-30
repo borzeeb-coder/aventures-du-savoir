@@ -363,7 +363,6 @@
   /* OWL WIDGET */
   #owlWidget{
     position:fixed; right:16px; bottom:16px; z-index:50; display:flex; flex-direction:column; align-items:flex-end; gap:2px;
-    cursor:pointer; perspective:600px;
   }
   #owlBubble{
     max-width:230px; background:#fff; border:3px solid var(--plum); border-radius:18px 18px 4px 18px;
@@ -1861,10 +1860,10 @@
   <footer class="note">Tous droits réservés BY Ben&amp;co 2026 — Fait avec ❤️ pour s'amuser en apprenant !</footer>
 </div>
 
-<div id="owlWidget" onclick="owlTip()">
+<div id="owlWidget">
   <div id="owlEmoji">🎉</div>
   <div id="owlBubble">Clique sur moi si tu as besoin d'un conseil !</div>
-  <div class="owl-3d-wrap">
+  <div class="owl-3d-wrap" onclick="owlTip()">
     <svg class="owl-avatar" id="owlSvg" width="120" height="120" viewBox="0 0 100 100">
       <defs>
         <radialGradient id="owlBodyGrad" cx="35%" cy="28%" r="75%">
