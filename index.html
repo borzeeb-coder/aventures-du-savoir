@@ -1484,6 +1484,7 @@
       <button class="next-btn hidden" id="nextExerciseBtn" onclick="nextExercise()">🔄 Essai suivant</button>
       <button class="btn-secondary hidden" id="reviewBtn" onclick="openReview()">📝 Revoir mes erreurs</button>
       <button class="btn-secondary" onclick="shareResult()">📤 Partager</button>
+      <button class="btn-secondary" onclick="shareFacebook()" style="background:#1877F2;color:#fff;border-color:#1877F2;">📘 Facebook</button>
       <button class="btn-secondary" onclick="goHome()">🗺️ Retour à la carte</button>
     </div>
   </div>
@@ -1696,6 +1697,7 @@
           <text x="20" y="79" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">9</text>
           <text x="26" y="48" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">10</text>
           <text x="47" y="28" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">11</text>
+          <line x1="75" y1="11" x2="75" y2="14" stroke="#999" stroke-width="1.5"/><line x1="99" y1="14" x2="97" y2="17" stroke="#999" stroke-width="1.5"/><line x1="118" y1="23" x2="115" y2="25" stroke="#999" stroke-width="1.5"/><line x1="131" y1="38" x2="128" y2="39" stroke="#999" stroke-width="1.5"/><line x1="137" y1="57" x2="134" y2="57" stroke="#999" stroke-width="1.5"/><line x1="131" y1="76" x2="128" y2="76" stroke="#999" stroke-width="1.5"/><line x1="137" y1="95" x2="134" y2="94" stroke="#999" stroke-width="1.5"/><line x1="131" y1="113" x2="128" y2="112" stroke="#999" stroke-width="1.5"/><line x1="118" y1="128" x2="115" y2="126" stroke="#999" stroke-width="1.5"/><line x1="99" y1="137" x2="97" y2="134" stroke="#999" stroke-width="1.5"/><line x1="75" y1="140" x2="75" y2="137" stroke="#999" stroke-width="1.5"/><line x1="51" y1="137" x2="53" y2="134" stroke="#999" stroke-width="1.5"/><line x1="32" y1="128" x2="35" y2="126" stroke="#999" stroke-width="1.5"/><line x1="19" y1="113" x2="22" y2="112" stroke="#999" stroke-width="1.5"/><line x1="13" y1="95" x2="16" y2="94" stroke="#999" stroke-width="1.5"/><line x1="19" y1="76" x2="22" y2="76" stroke="#999" stroke-width="1.5"/><line x1="13" y1="57" x2="16" y2="57" stroke="#999" stroke-width="1.5"/><line x1="19" y1="38" x2="22" y2="39" stroke="#999" stroke-width="1.5"/><line x1="32" y1="23" x2="35" y2="25" stroke="#999" stroke-width="1.5"/><line x1="51" y1="14" x2="53" y2="17" stroke="#999" stroke-width="1.5"/>
         </svg>
       </div>
     </div>
@@ -3399,7 +3401,9 @@ function owlComboCheck(){
   comboCount++;
   if(comboCount === 3){
     owlSay("3 bonnes réponses d'affilée ! Tu gères ! 🔥🔥🔥", 3500, true);
-    soundCorrect(); owlHappy();
+    soundCorrect();
+    playClockChime();
+    owlHappy();
   } else if(comboCount === 5){
     owlSay("5 SUR 5 ! C'est du grand art ! 👏👏👏", 4000, true);
     soundCorrect(); owlHappy(); launchFireworks(document.getElementById('owlWidget'));
@@ -4320,6 +4324,7 @@ function toggleSound(){
   if(state.soundEnabled) soundClick();
 }
 function soundClick(){ if(!state.soundEnabled) return; playTone(800,0.04,'sine',0,0.08); playTone(1200,0.03,'sine',0.01,0.04); }
+function playClockChime(){ playTone(880,0.15,'triangle',0,0.08); setTimeout(function(){ playTone(660,0.2,'triangle',0,0.08); }, 200); }
 function soundCorrect(){ if(!state.soundEnabled) return; [523.25,659.25,783.99].forEach((f,i)=>playTone(f,0.15,'sine',i*0.09,0.10)); playTone(1046.5,0.3,'triangle',0.27,0.08); }
 function soundWrong(){ if(!state.soundEnabled) return; playTone(400,0.1,'sine',0,0.08); playTone(300,0.12,'sine',0.08,0.08); playTone(250,0.15,'triangle',0.16,0.06); }
 function soundLevelUp(){ if(!state.soundEnabled) return; [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>playTone(f,0.18,'triangle',i*0.1,0.10)); }
@@ -5169,6 +5174,13 @@ function finishQuiz(){
   if(stars === 3) lastSessionMsg = `Parfait sur ${subj} ! Tu es un(e) champion(ne) absolu(e) ! 🏆🎉`;
   else if(stars >= 2) lastSessionMsg = `Bien joué sur ${subj} ! Continue comme ça, tu gères ! 💪✨`;
   else lastSessionMsg = `Bon effort sur ${subj} ! La prochaine sera encore meilleure, j'en suis sûr ! 🌱`;
+}
+
+function shareFacebook(){
+  var score = state.current ? state.current.score : 0;
+  var total = state.current ? state.current.questionList.length : 0;
+  var text = encodeURIComponent('J\'ai obtenu '+score+'/'+total+' ⭐ aux Aventures du Savoir ! Viens jouer ! https://aventure-du-savoir.be');
+  window.open('https://www.facebook.com/sharer/sharer.php?u=https://aventure-du-savoir.be&quote='+text, '_blank');
 }
 
 function shareResult(){
