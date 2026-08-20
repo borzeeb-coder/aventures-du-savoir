@@ -60,12 +60,12 @@
     font-family:'Quicksand', sans-serif;
     color:var(--plum);
     min-height:100vh;
-    background:linear-gradient(180deg,#D6F0FF 0%,#EAF7FF 30%,var(--bg) 100%);
+    background:linear-gradient(180deg,#0B0B2E 0%,#1A0B3B 45%,#2A0E4F 100%);
     background-attachment:fixed;
     overflow-x:hidden;
     position:relative;
   }
-  body.dark-mode{background:linear-gradient(180deg,#13132a,#1a1a2e 45%);}
+  body.dark-mode{background:linear-gradient(180deg,#07071f,#0d0d24 45%,#150a2e 100%);}
   h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
 
   #app{position:relative; z-index:1; max-width:960px; margin:0 auto; padding:18px 16px 90px;}
@@ -1302,37 +1302,56 @@
   .owl-hunger-label{font-size:0.66rem; font-weight:800; color:#2D2D3A; letter-spacing:0.3px;}
   .owl-hunger-hearts{font-size:0.85rem; letter-spacing:1px;}
 
-  /* ===== TITRE ARC-EN-CIEL ===== */
+  /* ===== TITRE ARC-EN-CIEL NÉON ===== */
   .brand h1{
     background:linear-gradient(90deg,#FF6F59,#FFC800,#43C463,#22B8B0,#8B6FD9,#F4408C,#FF6F59);
     background-size:300% 100%;
     -webkit-background-clip:text; background-clip:text;
     -webkit-text-fill-color:transparent; color:transparent;
     animation:rainbowSlide 6s linear infinite;
+    filter:drop-shadow(0 0 9px rgba(244,64,140,0.5)) drop-shadow(0 0 20px rgba(139,111,217,0.3));
   }
   @keyframes rainbowSlide{ to{ background-position:300% 0; } }
 
-  /* ===== CIEL ANIMÉ + HALOS COLORÉS ===== */
-  body{background-size:100% 150%; animation:skyShift 18s ease-in-out infinite alternate;}
-  @keyframes skyShift{ from{background-position:0 0;} to{background-position:0 25%;} }
+  /* ===== CIEL COSMOS : ÉTOILES + HALOS NÉON ===== */
+  body::after{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(1.5px 1.5px at 22% 18%, #fff, transparent 50%),
+      radial-gradient(1px 1px at 55% 28%, #E8F4FF, transparent 50%),
+      radial-gradient(1.5px 1.5px at 78% 12%, #fff, transparent 50%),
+      radial-gradient(1px 1px at 38% 58%, #C9B8FF, transparent 50%),
+      radial-gradient(1.5px 1.5px at 70% 74%, #fff, transparent 50%),
+      radial-gradient(1px 1px at 14% 82%, #FFD1EC, transparent 50%),
+      radial-gradient(1.5px 1.5px at 90% 48%, #fff, transparent 50%),
+      radial-gradient(1px 1px at 48% 90%, #BFF3FF, transparent 50%),
+      radial-gradient(1.5px 1.5px at 64% 40%, #fff, transparent 50%);
+    animation:starsTwinkle 4s ease-in-out infinite alternate;
+  }
+  @keyframes starsTwinkle{ from{opacity:.55;} to{opacity:1;} }
   body::before{
     content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
     background:
-      radial-gradient(420px 320px at 12% 18%, rgba(255,150,80,0.30), transparent 70%),
-      radial-gradient(380px 300px at 85% 12%, rgba(120,200,255,0.32), transparent 70%),
-      radial-gradient(460px 340px at 78% 78%, rgba(255,120,220,0.24), transparent 70%),
-      radial-gradient(400px 300px at 15% 82%, rgba(140,220,120,0.26), transparent 70%);
+      radial-gradient(420px 320px at 12% 18%, rgba(244,64,140,0.40), transparent 70%),
+      radial-gradient(380px 300px at 85% 12%, rgba(34,184,176,0.38), transparent 70%),
+      radial-gradient(460px 340px at 78% 78%, rgba(139,111,217,0.42), transparent 70%),
+      radial-gradient(400px 300px at 15% 82%, rgba(255,159,28,0.32), transparent 70%);
     animation:glowDrift 16s ease-in-out infinite alternate;
   }
-  @keyframes glowDrift{ from{opacity:.65; transform:scale(1);} to{opacity:1; transform:scale(1.05);} }
+  @keyframes glowDrift{ from{opacity:.6; transform:scale(1);} to{opacity:1; transform:scale(1.05);} }
 
   /* ===== ÉMOJIS FLOTTANTS EN FOND ===== */
   .bg-deco{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
   .bg-deco span{position:absolute; opacity:0.45; animation:decoFloat 7s ease-in-out infinite;}
   @keyframes decoFloat{ 0%,100%{transform:translateY(0) rotate(-8deg);} 50%{transform:translateY(-18px) rotate(10deg);} }
+  .bg-deco .planet{opacity:0.6; animation:decoFloat 9s ease-in-out infinite, planetTilt 5s ease-in-out infinite;}
+  @keyframes planetTilt{ 0%,100%{transform:rotate(-14deg);} 50%{transform:rotate(14deg);} }
+  .bg-deco .shooting{opacity:0; animation:shoot 5.5s ease-in-out infinite; animation-delay:2s;}
+  @keyframes shoot{ 0%{transform:translate(0,0); opacity:0;} 6%{opacity:1;} 28%{transform:translate(-34vw,20vh); opacity:0;} 100%{transform:translate(-34vw,20vh); opacity:0;} }
 
   /* ===== BOUTONS PLUS COLORÉS ===== */
   .opt-btn{background:linear-gradient(180deg,#ffffff,#f3efff);}
+  .opt-btn:hover{box-shadow:0 3px 0 #D9B3FF, 0 8px 16px rgba(20,10,40,0.15), 0 0 16px rgba(139,111,217,0.4);}
   .next-btn{background:linear-gradient(180deg,#FFD54F,#FF9F1C);}
   .next-btn:hover{box-shadow:0 7px 0 #c99a1f, 0 10px 18px rgba(20,10,40,0.28), 0 0 20px rgba(255,180,0,0.5);}
 
@@ -1358,6 +1377,7 @@
   .island.horloge{background:linear-gradient(135deg,#26C6DA,#00838F);}
   .island:hover{box-shadow:0 12px 0 rgba(0,0,0,0.18), 0 20px 30px rgba(20,10,40,0.4), 0 0 24px rgba(255,120,220,0.55), inset 0 2px 0 rgba(255,255,255,0.5);}
   .island .icon{box-shadow:inset 0 2px 4px rgba(255,255,255,0.7), 0 4px 12px rgba(0,0,0,0.18), 0 0 0 3px rgba(255,255,255,0.35);}
+  .island{box-shadow:0 4px 0 rgba(0,0,0,0.28), 0 0 0 3px rgba(139,111,217,0.22), 0 8px 18px rgba(20,10,40,0.28), 0 0 16px rgba(139,111,217,0.2);}
 
   /* ===== CARTE TAMAGOTCHI ===== */
   .tamagotchi-card{
@@ -1404,8 +1424,13 @@
   .bg-deco span{animation:decoFloat 7s ease-in-out infinite, twinkle 2.6s ease-in-out infinite;}
   @keyframes twinkle{ 0%,100%{opacity:.15; transform:scale(.7);} 50%{opacity:.85; transform:scale(1.2);} }
 
-  /* ===== TOPBAR : liseré arc-en-ciel + fond plus chaud ===== */
-  .topbar{position:relative; background:linear-gradient(135deg,#ffffff,#f4ecff 55%,#e8f6ff);}
+  /* ===== TOPBAR : verre sombre + liseré arc-en-ciel néon ===== */
+  .topbar{
+    position:relative;
+    background:linear-gradient(135deg,rgba(22,12,54,0.92),rgba(46,18,92,0.95));
+    border:2px solid rgba(139,111,217,0.4);
+    box-shadow:0 4px 0 #0B0B2E, 0 8px 20px rgba(0,0,0,0.4), 0 0 22px rgba(139,111,217,0.35);
+  }
   .topbar::after{
     content:""; position:absolute; left:14px; right:14px; bottom:-6px; height:6px; border-radius:6px;
     background:linear-gradient(90deg,#FF6F59,#FFC800,#43C463,#22B8B0,#8B6FD9,#F4408C,#FF6F59);
@@ -1414,14 +1439,23 @@
   .brand .sub{
     background:linear-gradient(90deg,#8B6FD9,#F4408C,#FF9F1C);
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 6px rgba(139,111,217,0.5));
   }
 
-  /* ===== CARTES PLUS RICHES ===== */
+  /* ===== CARTES : panneaux lumineux + entrée rebondie ===== */
   .card-screen{
-    background:linear-gradient(180deg,#ffffff,#fcf7ff);
-    border:2px solid #EFE3FF;
-    box-shadow:0 4px 0 #E5E7EB, 0 10px 24px rgba(30,30,40,0.08), 0 0 22px rgba(139,111,217,0.14);
+    background:linear-gradient(180deg,#ffffff,#fbf6ff);
+    border:2px solid rgba(139,111,217,0.28);
+    border-radius:28px;
+    box-shadow:0 8px 0 #0B0B2E, 0 14px 30px rgba(0,0,0,0.35), 0 0 26px rgba(139,111,217,0.3);
+    animation:cardEnter .45s cubic-bezier(.34,1.56,.64,1);
   }
+  @keyframes cardEnter{ from{transform:scale(.94) translateY(16px); opacity:0;} to{transform:scale(1) translateY(0); opacity:1;} }
+
+  /* ===== SÉLECTEUR DE NIVEAU : pilule sombre néon ===== */
+  .level-toggle{background:linear-gradient(135deg,#17104A,#2A1560); border:2px solid rgba(139,111,217,0.4); box-shadow:0 4px 0 #0B0B2E, 0 0 18px rgba(139,111,217,0.3);}
+  .level-toggle button{color:#C9BDF0;}
+  .level-toggle button:hover{color:#fff;}
 
   /* ===== TROPHÉES EN DÉGRADÉ ===== */
   .points-trophy{background:linear-gradient(180deg,#FFD54F,#FF9F00); box-shadow:0 3px 0 #D98A00, 0 5px 10px rgba(0,0,0,0.12);}
@@ -1449,6 +1483,9 @@
   <span style="left:28%;top:82%;font-size:1.5rem;animation-delay:1.7s;">🎈</span>
   <span style="left:66%;top:88%;font-size:1.4rem;animation-delay:2.6s;">🌈</span>
   <span style="left:48%;top:6%;font-size:1.3rem;animation-delay:3.1s;">☁️</span>
+  <span class="planet" style="left:88%;top:4%;font-size:2.7rem;">🪐</span>
+  <span class="planet" style="left:3%;top:82%;font-size:2.3rem;animation-delay:1.4s;">🌙</span>
+  <span class="shooting" style="left:92%;top:36%;font-size:1.8rem;">☄️</span>
 </div>
 <div id="app">
   <div class="topbar">
