@@ -60,7 +60,7 @@
     font-family:'Quicksand', sans-serif;
     color:var(--plum);
     min-height:100vh;
-    background:linear-gradient(180deg,#0B0B2E 0%,#1A0B3B 45%,#2A0E4F 100%);
+    background:linear-gradient(180deg,#38B6FF 0%,#6EC9FF 40%,#A6E3FF 75%,#D6F6FF 100%);
     background-attachment:fixed;
     overflow-x:hidden;
     position:relative;
@@ -1329,13 +1329,14 @@
     animation:starsTwinkle 4s ease-in-out infinite alternate;
   }
   @keyframes starsTwinkle{ from{opacity:.55;} to{opacity:1;} }
+  body:not(.dark-mode)::after{display:none;}
   body::before{
     content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
     background:
-      radial-gradient(420px 320px at 12% 18%, rgba(244,64,140,0.40), transparent 70%),
-      radial-gradient(380px 300px at 85% 12%, rgba(34,184,176,0.38), transparent 70%),
-      radial-gradient(460px 340px at 78% 78%, rgba(139,111,217,0.42), transparent 70%),
-      radial-gradient(400px 300px at 15% 82%, rgba(255,159,28,0.32), transparent 70%);
+      radial-gradient(420px 320px at 12% 18%, rgba(255,255,255,0.55), transparent 70%),
+      radial-gradient(380px 300px at 85% 12%, rgba(255,255,255,0.5), transparent 70%),
+      radial-gradient(460px 340px at 78% 78%, rgba(140,230,140,0.35), transparent 70%),
+      radial-gradient(400px 300px at 15% 82%, rgba(170,240,170,0.4), transparent 70%);
     animation:glowDrift 16s ease-in-out infinite alternate;
   }
   @keyframes glowDrift{ from{opacity:.6; transform:scale(1);} to{opacity:1; transform:scale(1.05);} }
@@ -1466,6 +1467,101 @@
   /* ===== ÉTOILES DE RÉSULTAT QUI BRILLENT ===== */
   .result .big-stars{filter:drop-shadow(0 0 10px rgba(255,200,0,0.6));}
 
+  /* ============================================================
+     MONDE CARTOON ARCADE : contours noirs épais + ombres dures
+     ============================================================ */
+  .bg-deco .sun{font-size:3.2rem; opacity:0.95; animation:sunSpin 16s linear infinite;}
+  @keyframes sunSpin{ to{transform:rotate(360deg);} }
+  .bg-deco .cloud{font-size:2.4rem; opacity:0.85; animation:cloudDrift 30s linear infinite;}
+  @keyframes cloudDrift{ from{transform:translateX(-18vw);} to{transform:translateX(22vw);} }
+  .bg-deco span{opacity:0.8;}
+
+  .topbar{
+    background:linear-gradient(135deg,#FFD54F,#FFB300);
+    border:4px solid #1B1B2F;
+    border-radius:24px;
+    box-shadow:0 7px 0 #1B1B2F, 0 12px 20px rgba(0,0,0,0.22);
+  }
+  .brand h1{
+    color:#fff; -webkit-text-fill-color:#fff;
+    text-shadow:3px 3px 0 #1B1B2F, -2px -2px 0 #1B1B2F, 2px -2px 0 #1B1B2F, -2px 2px 0 #1B1B2F, 0 4px 0 #1B1B2F;
+    filter:none;
+  }
+  .brand .sub{color:#1B1B2F; -webkit-text-fill-color:#1B1B2F; background:none; filter:none; text-shadow:none; font-size:0.8rem;}
+  .dark-mode .brand .sub{color:#C9BDF0; -webkit-text-fill-color:#C9BDF0;}
+  .points-trophy,.streak-trophy,.trophy,.ai-trophy{
+    border:3px solid #1B1B2F;
+    box-shadow:0 3px 0 #1B1B2F, 0 5px 10px rgba(0,0,0,0.15);
+  }
+  .avatar-badge{border:3px solid #1B1B2F;}
+
+  .card-screen{
+    background:linear-gradient(180deg,#ffffff,#FFF9E8);
+    border:4px solid #1B1B2F;
+    border-radius:30px;
+    box-shadow:0 10px 0 #1B1B2F, 0 20px 32px rgba(0,0,0,0.28);
+    animation:cardEnter .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .level-toggle{
+    background:#fff;
+    border:4px solid #1B1B2F;
+    border-radius:26px;
+    box-shadow:0 5px 0 #1B1B2F, 0 8px 14px rgba(0,0,0,0.15);
+  }
+  .level-toggle button{color:#8A8FA3; font-weight:800;}
+  .level-toggle button:hover{color:#1B1B2F;}
+  .level-toggle button.active{color:#fff; text-shadow:0 2px 0 rgba(0,0,0,0.25);}
+
+  .island{
+    border:4px solid #1B1B2F;
+    border-radius:26px;
+    box-shadow:0 7px 0 #1B1B2F, 0 12px 20px rgba(0,0,0,0.25);
+  }
+  .island:hover{transform:translateY(-5px) rotate(-1deg); box-shadow:0 11px 0 #1B1B2F, 0 18px 26px rgba(0,0,0,0.3);}
+  .island .icon{box-shadow:0 0 0 3px #1B1B2F, inset 0 2px 4px rgba(255,255,255,0.6);}
+  .island h3{color:#fff; text-shadow:0 3px 0 rgba(0,0,0,0.3);}
+  .island.horloge h3, .island.formes h3{color:var(--plum); text-shadow:0 1px 0 rgba(255,255,255,0.35);}
+  .level-badge{border:3px solid #1B1B2F; box-shadow:0 2px 0 #1B1B2F;}
+
+  .opt-btn{
+    border:3px solid #1B1B2F;
+    border-radius:18px;
+    box-shadow:0 5px 0 #1B1B2F, 0 8px 14px rgba(0,0,0,0.15);
+    font-weight:800;
+  }
+  .opt-btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 #1B1B2F, 0 12px 18px rgba(0,0,0,0.2);}
+  .opt-btn:active{transform:translateY(2px); box-shadow:0 2px 0 #1B1B2F;}
+  .opt-btn.correct{box-shadow:0 5px 0 #1B1B2F !important;}
+  .opt-btn.wrong{box-shadow:0 5px 0 #1B1B2F !important;}
+
+  .next-btn{
+    background:linear-gradient(180deg,#FFC800,#FF8F00);
+    border:3px solid #1B1B2F;
+    border-radius:20px;
+    color:#fff;
+    text-shadow:0 2px 0 rgba(0,0,0,0.25);
+    box-shadow:0 6px 0 #1B1B2F, 0 10px 16px rgba(0,0,0,0.22);
+  }
+  .next-btn:hover{transform:translateY(-2px); box-shadow:0 8px 0 #1B1B2F, 0 14px 20px rgba(0,0,0,0.25), 0 0 18px rgba(255,180,0,0.5);}
+  .next-btn:active{transform:translateY(2px); box-shadow:0 3px 0 #1B1B2F;}
+
+  .feed-btn{border:3px solid #1B1B2F; box-shadow:0 4px 0 #1B1B2F, 0 6px 12px rgba(0,0,0,0.18);}
+  .daily-card{border:4px solid #1B1B2F;}
+  .daily-card.done{border:4px solid #1B1B2F;}
+  .egg-card{border:4px solid #1B1B2F; box-shadow:0 6px 0 #1B1B2F, 0 10px 16px rgba(0,0,0,0.2);}
+  .owl-widget{border:4px solid #1B1B2F; box-shadow:0 6px 0 #1B1B2F, 0 10px 16px rgba(0,0,0,0.2);}
+  .tamagotchi-card{border:4px solid #1B1B2F; box-shadow:0 6px 0 #1B1B2F, 0 12px 20px rgba(0,0,0,0.3);}
+  .tg-btn{border:3px solid #1B1B2F; box-shadow:4px 4px 0 #1B1B2F;}
+
+  .profile-card{border:3px solid #1B1B2F; box-shadow:0 5px 0 #1B1B2F, 0 8px 14px rgba(0,0,0,0.15);}
+  .profile-card.active{border:4px solid var(--grass); box-shadow:0 5px 0 #1B1B2F;}
+  .quiz-progress-fill,.progress-fill,.stats-bar-fill{
+    background:linear-gradient(90deg,#FF6F59,#FFC800,#43C463,#22B8B0,#8B6FD9,#F4408C,#FF6F59) !important;
+    background-size:300% 100% !important;
+    animation:rainbowSlide 4s linear infinite;
+    box-shadow:0 0 10px rgba(255,180,0,0.5);
+  }
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
   }
@@ -1476,16 +1572,16 @@
 <div id="highContrastToggle" onclick="toggleHighContrast()" style="position:fixed;bottom:8px;right:8px;z-index:999;background:var(--surface);border:2px solid var(--plum);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;opacity:0.7;" title="Activer le contraste élevé" aria-label="Activer/désactiver le contraste élevé">🔲</div>
 
 <div class="bg-deco" aria-hidden="true">
-  <span style="left:6%;top:12%;font-size:1.7rem;">🎈</span>
-  <span style="left:88%;top:20%;font-size:1.5rem;animation-delay:1.2s;">⭐</span>
-  <span style="left:12%;top:55%;font-size:1.4rem;animation-delay:2.1s;">🦋</span>
-  <span style="left:84%;top:58%;font-size:1.6rem;animation-delay:0.8s;">✨</span>
-  <span style="left:28%;top:82%;font-size:1.5rem;animation-delay:1.7s;">🎈</span>
-  <span style="left:66%;top:88%;font-size:1.4rem;animation-delay:2.6s;">🌈</span>
-  <span style="left:48%;top:6%;font-size:1.3rem;animation-delay:3.1s;">☁️</span>
-  <span class="planet" style="left:88%;top:4%;font-size:2.7rem;">🪐</span>
-  <span class="planet" style="left:3%;top:82%;font-size:2.3rem;animation-delay:1.4s;">🌙</span>
-  <span class="shooting" style="left:92%;top:36%;font-size:1.8rem;">☄️</span>
+  <span class="sun" style="left:86%;top:4%;">☀️</span>
+  <span class="cloud" style="left:8%;top:10%;animation-duration:34s;">☁️</span>
+  <span class="cloud" style="left:55%;top:16%;animation-duration:28s;animation-delay:3s;">☁️</span>
+  <span style="left:12%;top:55%;font-size:1.6rem;">🦋</span>
+  <span style="left:84%;top:58%;font-size:1.7rem;">🎈</span>
+  <span style="left:28%;top:82%;font-size:1.6rem;">🌼</span>
+  <span style="left:66%;top:88%;font-size:1.6rem;">🌷</span>
+  <span style="left:48%;top:8%;font-size:2rem;">🌈</span>
+  <span style="left:90%;top:78%;font-size:1.5rem;">🎈</span>
+  <span style="left:6%;top:30%;font-size:1.5rem;">🦋</span>
 </div>
 <div id="app">
   <div class="topbar">
@@ -7754,7 +7850,7 @@ function showSplash(){
   localStorage.setItem('av_splash_done','1');
   var s = document.createElement('div');
   s.id = 'avSplash';
-  s.style.cssText = 'position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#7B2FF7,#F107A3 55%,#FF6F59);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Baloo 2",sans-serif;color:#fff;animation:splashOut .5s ease 2s forwards;';
+  s.style.cssText = 'position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#FF8F00,#FFC800 45%,#F4408C);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Baloo 2",sans-serif;color:#fff;animation:splashOut .5s ease 2s forwards;';
   s.innerHTML = '<div style="font-size:4rem;animation:splashFly 1.5s ease-in-out infinite;">🦉</div>' +
     '<h1 style="font-size:2rem;margin:10px 0 0;text-shadow:2px 2px 0 rgba(0,0,0,0.2);">' +
     'Les Aventures du Savoir'.split('').map((ch,i)=> ch===' ' ? ' ' : '<span style="display:inline-block;animation:splashLetter 1.2s ease-in-out infinite;animation-delay:'+(i*0.05)+'s">'+ch+'</span>').join('') +
