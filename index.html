@@ -24,21 +24,7 @@
 <script>
   if(window.Capacitor){ document.documentElement.classList.add('capacitor'); }
   if('serviceWorker' in navigator){
-    var _isAndroid = /android/i.test(navigator.userAgent);
-    navigator.serviceWorker.register('sw.js?v=' + Date.now(), { updateViaCache: 'none', scope: './' });
-    if(_isAndroid){
-      navigator.serviceWorker.ready.then(function(reg){
-        reg.update().then(function(){
-          if(reg.active && reg.active.state === 'activated'){
-            caches.keys().then(function(keys){
-              keys.forEach(function(k){
-                if(k.indexOf('avent-du-savoir-v59') >= 0) caches.delete(k);
-              });
-            });
-          }
-        });
-      });
-    }
+    navigator.serviceWorker.register('sw.js', { updateViaCache: 'none', scope: './' });
   }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1173,7 +1159,6 @@
   .dark-mode .onboarding-screen h2{color:var(--plum)}
   .dark-mode .profile-card.active{border-color:var(--grass)}
   .dark-mode .parent-link:hover{background:var(--surface)}
-  .dark-mode .open-stats-btn{color:var(--plum)}
   .dark-mode #statsScreen .stat-card{background:var(--surface);color:var(--plum)}
   .dark-mode #statsScreen .chart-wrap{background:var(--surface)}
   .dark-mode #statsScreen .chart-wrap h3{color:var(--plum)}
@@ -3815,6 +3800,12 @@ function setLevel(lvl){
 let lastSessionMsg = '';
 function goHome(){
   stopQuestionTimer();
+  clearTimeout(autoAdvanceTimer);
+  clearTimeout(autoAdvanceWordTimer);
+  clearTimeout(autoAdvanceLetterTimer);
+  clearInterval(taTimer);
+  clearTimeout(taNextTimer);
+  clearTimeout(memFlipTimer);
   show('homeScreen');
   renderStars();
   renderAvatars();
@@ -4329,6 +4320,7 @@ function renderEgg(){
     card.classList.remove('done');
     document.getElementById('eggTitle').textContent = '🥚 Œuf Surprise';
     document.getElementById('eggText').textContent = 'Tape dessus, il cache un trésor !';
+    document.getElementById('eggIcon').textContent = '🥚';
   }
 }
 
@@ -4410,6 +4402,8 @@ function feedOwl(){
 /* --- Surprise 5 : le code secret HIBOU --- */
 let _secretBuffer = '';
 window.addEventListener('keydown', function(e){
+  const t = e.target;
+  if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
   if(e.key && e.key.length === 1){
     _secretBuffer = (_secretBuffer + e.key.toLowerCase()).slice(-5);
     if(_secretBuffer === 'hibou'){ _secretBuffer = ''; secretUnlock(); }
@@ -4900,6 +4894,7 @@ function finishWords(){
   scheduleSave();
 
   show('resultScreen');
+  document.getElementById('nextExerciseBtn').classList.add('hidden');
   document.getElementById('retryBtn').setAttribute('onclick','openWords()');
   document.getElementById('retryBtn').textContent = "🔁 Recommencer";
   document.getElementById('reviewBtn').classList.add('hidden');
@@ -5039,6 +5034,7 @@ function finishLetters(){
   scheduleSave();
 
   show('resultScreen');
+  document.getElementById('nextExerciseBtn').classList.add('hidden');
   document.getElementById('retryBtn').setAttribute('onclick','openLetters()');
   document.getElementById('retryBtn').textContent = "🔁 Recommencer";
   document.getElementById('reviewBtn').classList.add('hidden');
@@ -5124,6 +5120,7 @@ function renderQuestion(){
   optsBox.innerHTML = '';
   document.getElementById('feedbackBox').innerHTML = '';
   document.getElementById('hintBtn').style.display = '';
+  document.getElementById('hintBtn').onclick = useHint;
   if(q.type === 'dictation'){
     const inputWrap = document.createElement('div');
     inputWrap.style.cssText = 'display:flex;flex-direction:column;gap:12px;align-items:center;';
@@ -5234,7 +5231,8 @@ function useHint(){
   soundClick();
   const q = state.current.questionList[state.current.qIndex];
   const buttons = document.querySelectorAll('#optionsBox .opt-btn');
-  const wrongIdx = [...buttons.keys()].filter(i => i !== q.a && !buttons[i].disabled);
+  const correctPos = [...buttons].findIndex(b => parseInt(b.dataset.origIdx,10) === q.a);
+  const wrongIdx = [...buttons.keys()].filter(i => i !== correctPos && !buttons[i].disabled);
   if(wrongIdx.length === 0) return;
   const pick = wrongIdx[Math.floor(Math.random()*wrongIdx.length)];
   buttons[pick].disabled = true;
@@ -5271,7 +5269,8 @@ function answerQuiz(i, q, btnEl){
     }
   } else {
     btnEl.classList.add('wrong');
-    buttons[q.a].classList.add('correct');
+    const correctBtn = [...buttons].find(b => parseInt(b.dataset.origIdx,10) === q.a);
+    if(correctBtn) correctBtn.classList.add('correct');
     soundWrong();
     screenFlash('wrong');
     owlComfort();
@@ -5297,10 +5296,32 @@ function answerQuiz(i, q, btnEl){
 function quizTimeout(){
   const q = state.current.questionList[state.current.qIndex];
   const buttons = document.querySelectorAll('#optionsBox .opt-btn');
-  if(buttons.length === 0 || buttons[0].disabled) return;
+  if(buttons.length === 0){
+    const input = document.getElementById('dictationInput');
+    if(!input || input.disabled) return;
+    input.disabled = true;
+    document.querySelectorAll('#optionsBox button').forEach(b=>b.disabled=true);
+    document.getElementById('hintBtn').disabled = true;
+    soundWrong();
+    registerAnswer(false);
+    if(!state.current.isReview) state.current.missed.push(q);
+    owlSay("Le temps est écoulé, pas grave, on continue !");
+    const expected = q.accept[0];
+    const feedback = document.createElement('div');
+    feedback.style.cssText = 'margin-top:8px;color:var(--coral);font-size:0.95rem;';
+    feedback.textContent = '⏰ Temps écoulé ! Réponse attendue : ' + expected;
+    document.getElementById('optionsBox').appendChild(feedback);
+    const isLast = state.current.qIndex === state.current.questionList.length - 1;
+    document.getElementById('feedbackBox').innerHTML = `<button class="next-btn" onclick="nextQuestion(true)">${isLast ? "Voir mon résultat 🏁" : "Question suivante ➡️"}</button>`;
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = setTimeout(()=>nextQuestion(false), 1900);
+    return;
+  }
+  if(buttons[0].disabled) return;
   buttons.forEach(b=>b.disabled = true);
   document.getElementById('hintBtn').disabled = true;
-  buttons[q.a].classList.add('correct');
+  const correctBtn = [...buttons].find(b => parseInt(b.dataset.origIdx,10) === q.a);
+  if(correctBtn) correctBtn.classList.add('correct');
   soundWrong();
   registerAnswer(false);
   if(!state.current.isReview) state.current.missed.push(q);
@@ -5503,6 +5524,7 @@ const MEM_SETS = {
   D: ["🦄","🐝","🐙","🦀","🐬","🐉","🐨","🦒","🐘","🦛","🐿️","🦔"],
   E: ["🦊","🐼","🐧","🦉","🐢","🦋","🐺","🦁","🐝","🦄","🐙","🦀"]
 };
+let memFlipTimer = null;
 let mem = { cards:[], flipped:[], moves:0, found:0, lock:false, elements:[] };
 
 function openMemory(){
@@ -5552,7 +5574,7 @@ function flipMemCard(idx){
     document.getElementById('memMoves').textContent = mem.moves;
     const [i1, i2] = mem.flipped;
     const c1 = mem.cards[i1], c2 = mem.cards[i2];
-    setTimeout(()=>{
+    memFlipTimer = setTimeout(()=>{
       if(c1.sym === c2.sym){
         c1.matched = true; c2.matched = true;
         mem.elements[i1].classList.add('matched');
@@ -5569,7 +5591,7 @@ function flipMemCard(idx){
       mem.flipped = [];
       mem.lock = false;
       if(mem.found === mem.cards.length/2){
-        setTimeout(showMemoryResult, 400);
+        memFlipTimer = setTimeout(showMemoryResult, 400);
       }
     }, 700);
   }
@@ -5583,6 +5605,7 @@ function showMemoryResult(){
   else stars = 1;
 
   show('resultScreen');
+  document.getElementById('nextExerciseBtn').classList.add('hidden');
   document.getElementById('resultMascot').textContent = "🦉🧩";
   document.getElementById('resultTitle').textContent = "Jeu de mémoire terminé !";
   document.getElementById('resultText').textContent = `Tu as trouvé toutes les paires en ${mem.moves} coups.`;
@@ -5913,7 +5936,7 @@ function startQuestionTimer(onTimeout, fillId, textId, rowSelector){
   QUESTION_TIME_LIMIT = state.timerEnabled ? (state.timerDuration || 15) : 9999;
   questionTimeLeft = QUESTION_TIME_LIMIT;
   updateTimerUI(fillId, textId, rowSelector);
-  if(!state.timerEnabled){ updateTimerUI(fillId, textId, rowSelector); return; }
+  if(!state.timerEnabled) return;
   questionTimer = setInterval(()=>{
     questionTimeLeft--;
     updateTimerUI(fillId, textId, rowSelector);
@@ -6480,9 +6503,9 @@ function openDaily(){
   speak('Défi du jour ! Une question surprise pour toi.');
   const types=['quiz','hangman','timeattack','memory'];
   const type=types[new Date().getDate()%types.length];
-  if(type==='hangman'){show('hangmanScreen');pickHangmanWord();return;}
-  if(type==='timeattack'){openTimeAttack();return;}
-  if(type==='memory'){openMemory();return;}
+  if(type==='hangman'){state.lastDailyDate=todayStr();state.history.push({date:todayStr(),subject:'daily',score:0,total:1,stars:0});updateStreak();scheduleSave();show('hangmanScreen');pickHangmanWord();return;}
+  if(type==='timeattack'){state.lastDailyDate=todayStr();state.history.push({date:todayStr(),subject:'daily',score:0,total:1,stars:0});updateStreak();scheduleSave();openTimeAttack();return;}
+  if(type==='memory'){state.lastDailyDate=todayStr();state.history.push({date:todayStr(),subject:'daily',score:0,total:1,stars:0});updateStreak();scheduleSave();openMemory();return;}
   const subjects = ['maths','multiplication','francais','sciences','monde','anglais'];
   const s = subjects[Math.floor(Math.random()*subjects.length)];
   const list = QUESTIONS[state.level][s];
@@ -6781,6 +6804,7 @@ function renderWardrobe(){
 
 /* ---------------- TIME ATTACK ---------------- */
 let taTimer = null;
+let taNextTimer = null;
 let taTimeLeft = 15;
 let taScore = 0;
 let taQuestions = [];
@@ -6855,7 +6879,7 @@ function taTimeout(){
     btn.forEach(b=>b.disabled=true);
     btn[taQuestions[taIndex].a].classList.add('correct');
     document.getElementById('taFeedbackBox').innerHTML = `<div class="msg pop-in">⏰ Temps écoulé !</div>`;
-    setTimeout(()=>nextTA(), 1200);
+    taNextTimer = setTimeout(()=>nextTA(), 1200);
   }
 }
 
@@ -6874,7 +6898,7 @@ function answerTA(i,q,btnEl){
     soundWrong();
   }
   document.getElementById('taFeedbackBox').innerHTML = `<div class="msg pop-in">${correct ? 'Bravo ! +'+(10+taTimeLeft)+' pts ⚡' : 'Oups !'}</div>`;
-  setTimeout(()=>nextTA(), 1000);
+  taNextTimer = setTimeout(()=>nextTA(), 1000);
 }
 
 function nextTA(){
@@ -7221,6 +7245,7 @@ function updateStreak(){
       state.points += bonus[i];
       owlSay(`🔥 Série de ${state.streak} jours ! Bonus de ${bonus[i]} points ! 🎉`, 4000);
       launchConfetti();
+      renderStars();
     }
   }
   renderStreak();
@@ -7426,7 +7451,7 @@ function answerClock(i,q,btnEl){
     playClockChime();
     owlHappy();
     screenFlash('correct');
-  } else {
+} else {
     btnEl.classList.add('wrong');
     btns[q.a].classList.add('correct');
     soundWrong();
