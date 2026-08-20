@@ -74,10 +74,12 @@
     font-family:'Quicksand', sans-serif;
     color:var(--plum);
     min-height:100vh;
-    background:var(--bg);
+    background:linear-gradient(180deg,#D6F0FF 0%,#EAF7FF 30%,var(--bg) 100%);
+    background-attachment:fixed;
     overflow-x:hidden;
     position:relative;
   }
+  body.dark-mode{background:linear-gradient(180deg,#13132a,#1a1a2e 45%);}
   h1,h2,h3,.display{font-family:'Baloo 2', sans-serif;}
 
   #app{position:relative; z-index:1; max-width:960px; margin:0 auto; padding:18px 16px 90px;}
@@ -146,13 +148,24 @@
       0 8px 0 rgba(0,0,0,0.18),
       0 14px 24px rgba(20,10,40,0.35),
       inset 0 2px 0 rgba(255,255,255,0.5);
-    transition:transform .12s ease, box-shadow .12s ease;
+    transition:transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .12s ease;
     display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; min-height:150px; justify-content:center;
-    overflow:hidden;
+    animation:islandBob 5s ease-in-out infinite;
+    animation-delay:calc(var(--i,0)*0.35s);
   }
-  .island::before{content:""; position:absolute; top:0; left:0; right:0; height:46%; background:linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0)); pointer-events:none;}
-  .island::after{content:""; position:absolute; top:-36px; right:-36px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.2);}
-  .island:hover{transform:translateY(-6px) scale(1.02); box-shadow:0 12px 0 rgba(0,0,0,0.18), 0 20px 30px rgba(20,10,40,0.4), inset 0 2px 0 rgba(255,255,255,0.5);}
+  @keyframes islandBob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  .island:hover, .island.pop-appear:hover{animation:none;}
+  .island::before{content:""; position:absolute; top:0; left:0; right:0; height:46%; border-radius:inherit; background:linear-gradient(180deg, rgba(255,255,255,0.45), rgba(255,255,255,0)); pointer-events:none;}
+  .island::after{content:""; position:absolute; bottom:0; left:0; right:0; height:14px; pointer-events:none;
+    background:
+      radial-gradient(ellipse 14px 7px at 12px 0, rgba(255,255,255,0.5) 55%, transparent 60%),
+      radial-gradient(ellipse 12px 6px at 40px 0, rgba(255,255,255,0.5) 55%, transparent 60%),
+      radial-gradient(ellipse 16px 8px at 72px 0, rgba(255,255,255,0.5) 55%, transparent 60%);
+    background-size:92px 14px; background-repeat:repeat-x;
+    animation:waveGlide 2.4s linear infinite;
+  }
+  @keyframes waveGlide{ to{ background-position:92px 0; } }
+  .island:hover{transform:perspective(700px) translateY(-8px) rotateX(4deg) rotateY(-5deg) scale(1.03); box-shadow:0 12px 0 rgba(0,0,0,0.18), 0 20px 30px rgba(20,10,40,0.4), inset 0 2px 0 rgba(255,255,255,0.5);}
   .island:active{transform:translateY(2px) scale(0.99); box-shadow:0 3px 0 rgba(0,0,0,0.18), 0 6px 14px rgba(20,10,40,0.3), inset 0 2px 0 rgba(255,255,255,0.5);}
   .island .icon{
     position:relative; width:90px; height:90px; border-radius:24px; background:rgba(255,255,255,0.35);
@@ -185,11 +198,12 @@
   .island.game .sub-txt{color:white; font-weight:600;}
   .island.game .icon{font-size:2.5rem; width:64px; height:64px;}
 
-  .island.pop-appear{animation:islandAppear .5s cubic-bezier(.34,1.56,.64,1) backwards;}
+  .island.pop-appear{animation:islandAppear .5s cubic-bezier(.34,1.56,.64,1) backwards, islandBob 5s ease-in-out infinite; animation-delay:calc(var(--i,0)*0.07s), calc(var(--i,0)*0.35s + 0.6s);}
   @keyframes islandAppear{ from{opacity:0; transform:translateY(24px) scale(0.85);} to{opacity:1; transform:translateY(0) scale(1);} }
 
 @keyframes splashFly{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-15px) rotate(5deg);}}
 @keyframes splashOut{0%{opacity:1;}100%{opacity:0;visibility:hidden;}}
+@keyframes splashLetter{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
 
   /* CARD SCREENS */
   .card-screen{
@@ -210,6 +224,19 @@
   .quiz-progress-label{font-family:'Baloo 2'; font-weight:700; font-size:0.92rem; margin-bottom:6px; text-align:center;}
   .quiz-progress-track{background:#efe6d6; border:2.5px solid var(--plum); border-radius:12px; height:16px; overflow:hidden;}
   .quiz-progress-fill{background:linear-gradient(90deg, var(--grass), var(--ocean)); height:100%; border-radius:12px; transition:width .35s ease;}
+  .quiz-progress-fill,.progress-fill,.stats-bar-fill{
+    background-image:linear-gradient(90deg,var(--grass),var(--ocean)), linear-gradient(45deg,rgba(255,255,255,.28) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.28) 50%,rgba(255,255,255,.28) 75%,transparent 75%);
+    background-size:100% 100%, 26px 26px;
+    animation:stripeSlide 1s linear infinite;
+  }
+  @keyframes stripeSlide{ to{ background-position:0 0, 26px 0; } }
+  .island-num{
+    position:absolute; top:-14px; left:-10px; width:38px; height:38px;
+    background:var(--sun); color:#fff; font-family:'Baloo 2'; font-weight:800; font-size:1.05rem;
+    border:3px solid #2D2D3A; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:3px 3px 0 #2D2D3A; transform:rotate(-8deg); z-index:3;
+  }
 
   .timer-row{display:flex; align-items:center; gap:8px; margin-bottom:16px;}
   .timer-icon{font-size:1.1rem;}
@@ -265,6 +292,10 @@
     box-shadow:0 5px 0 #c99a1f, 0 8px 16px rgba(20,10,40,0.25); transition:transform .1s ease, box-shadow .1s ease;
   }
   .next-btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 #c99a1f, 0 10px 18px rgba(20,10,40,0.28);}
+  .next-btn:hover{animation:btnWiggle .4s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes btnWiggle{ 0%{transform:translateY(-2px) rotate(0) scale(1);} 25%{transform:translateY(-3px) rotate(-3deg) scale(1.06);} 75%{transform:translateY(-3px) rotate(3deg) scale(1.04);} 100%{transform:translateY(-2px) rotate(0) scale(1);} }
+  .opt-btn,.next-btn,.back-btn,.hint-btn,.level-toggle button,.age-btn,.mem-card,.chip,.challenge-opt,.daily-card,.island{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .opt-btn:focus-visible,.next-btn:focus-visible,.back-btn:focus-visible,.hint-btn:focus-visible{outline:4px solid var(--sky);outline-offset:3px;}
   .next-btn:active{transform:translateY(3px); box-shadow:0 2px 0 #c99a1f, 0 4px 10px rgba(20,10,40,0.22);}
 
   /* RESULT */
@@ -281,11 +312,20 @@
   .memory-grid{display:grid; gap:10px; justify-content:center;}
   .mem-card{
     width:64px; height:64px; border-radius:14px; background:var(--purple); border:3px solid var(--plum);
-    display:flex; align-items:center; justify-content:center; font-size:1.8rem; cursor:pointer; user-select:none;
-    box-shadow:3px 3px 0 var(--shadow); transition:transform .12s ease;
+    font-size:1.8rem;
+    position:relative; cursor:pointer; user-select:none;
+    box-shadow:3px 3px 0 var(--shadow); perspective:600px;
+    transform-style:preserve-3d; transition:transform .4s cubic-bezier(.34,1.56,.64,1);
   }
-  .mem-card.flipped, .mem-card.matched{background:#fff;}
-  .mem-card.matched{opacity:0.5; cursor:default;}
+  .mem-card .mem-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    display:flex; align-items:center; justify-content:center; font-size:inherit;
+    border-radius:14px; overflow:hidden;
+  }
+  .mem-card .mem-front{background:var(--purple);}
+  .mem-card .mem-back{background:#fff; transform:rotateY(180deg);}
+  .mem-card.flipped, .mem-card.matched{transform:rotateY(180deg);}
+  .mem-card.matched{opacity:0.55; cursor:default;}
   @media (max-width:480px){ .mem-card{width:52px; height:52px; font-size:1.4rem;} }
 
   .hidden{display:none !important;}
@@ -446,8 +486,9 @@
   .flash-overlay.wrong{background:radial-gradient(circle,rgba(255,75,75,0.07),transparent 60%);}
 
   /* Animated result stars */
-  .result-star{display:inline-block;font-size:2.6rem;animation:starPop .45s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0;transform:scale(0) rotate(-30deg);}
+  .result-star{display:inline-block;font-size:2.6rem;animation:starPop .45s cubic-bezier(.34,1.56,.64,1) forwards, starGlow .9s ease-out .5s 2;opacity:0;transform:scale(0) rotate(-30deg);}
   @keyframes starPop{0%{opacity:0;transform:scale(0) rotate(-30deg);}100%{opacity:1;transform:scale(1) rotate(0deg);}}
+  @keyframes starGlow{ 0%,100%{filter:drop-shadow(0 0 6px rgba(255,200,0,.9));} 50%{filter:drop-shadow(0 0 18px rgba(255,200,0,1));} }
 
   /* Owl widget styling — plus haut, plus grand, plus drôle */
   #owlWidget{
@@ -488,7 +529,9 @@
     width:100px;
     height:100px;
     filter:drop-shadow(0 8px 10px rgba(0,0,0,0.25));
+    animation:owlIdleBob 2.8s ease-in-out infinite;
   }
+  @keyframes owlIdleBob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
   @keyframes owlBounce{
     0%,100%{transform:translateY(0) scale(1);}
     30%{transform:translateY(-10px) scale(1.04,0.96);}
@@ -558,7 +601,9 @@
   #owlBubble.show{
     opacity:1;
     transform:translateY(0) scale(1);
+    animation:bubbleWobble .5s cubic-bezier(.34,1.56,.64,1);
   }
+  @keyframes bubbleWobble{ 0%{transform:scale(.7) rotate(-3deg);} 60%{transform:scale(1.06) rotate(1deg);} 100%{transform:scale(1);} }
   #owlEmoji{
     position:absolute;
     top:-22px;
@@ -574,8 +619,12 @@
   #owlEmoji.show{
     opacity:1;
     transform:scale(1) rotate(10deg);
+    animation:emojiHop 1s ease;
   }
+  @keyframes emojiHop{ 0%{transform:scale(.3) translateY(10px);} 50%{transform:scale(1.3) translateY(-14px);} 100%{transform:scale(1);} }
   /* animations expressives du hibou */
+  #owlSvg .owl-pupil{animation:owlBlink 5.6s ease-in-out infinite; transform-origin:center;}
+  @keyframes owlBlink{ 0%,92.5%,100%{transform:scaleY(1);} 95%,97.5%{transform:scaleY(0.08);} }
   #owlSvg.happy #owlBrowL{transform:rotate(-18deg) translateY(-3px) scaleX(1.1);}
   #owlSvg.happy #owlBrowR{transform:rotate(18deg) translateY(-3px) scaleX(1.1);}
   #owlSvg.happy .owl-pupil{animation:pupilHappy 0.5s ease infinite alternate;}
@@ -960,6 +1009,28 @@
     background-size:120px 120px;
     background-position:0 0, 60px 60px, 30px 30px, 90px 90px, 15px 45px, 75px 15px, 105px 75px, 45px 105px;
   }
+
+  /* Nuages flottants (utilisés par addClouds()) */
+  .cloud{
+    position:fixed; z-index:0; pointer-events:none; border-radius:50%;
+    background:radial-gradient(ellipse 55% 55% at 40% 45%, rgba(255,255,255,0.95) 55%, rgba(255,255,255,0.7) 72%, transparent 75%);
+    opacity:0.5;
+    animation:cloudDrift 55s linear infinite alternate;
+  }
+  @keyframes cloudDrift{ from{transform:translateX(0);} to{transform:translateX(130px);} }
+  body.dark-mode .cloud{opacity:0.12;}
+
+  /* Petits points flottants (utilisés par addDecor()) */
+  .confetti-dot{
+    position:fixed; z-index:0; pointer-events:none; border-radius:50%;
+    animation:dotFloat 8s ease-in-out infinite;
+  }
+  @keyframes dotFloat{
+    0%,100%{transform:translateY(0) rotate(0deg);}
+    33%{transform:translateY(-14px) rotate(8deg);}
+    66%{transform:translateY(6px) rotate(-5deg);}
+  }
+  body.dark-mode .confetti-dot{opacity:0.25;}
   /* Polka dots on the daily card background */
   .daily-card{
     position:relative;
@@ -1070,7 +1141,7 @@
   .dark-mode .timer-track{background:#3d3d55}
   .dark-mode .progress-track{background:#3d3d55}
   .dark-mode .timer-text{color:var(--plum)}
-  .dark-mode .mem-card.flipped,.dark-mode .mem-card.matched{background:var(--surface)}
+  .dark-mode .mem-card .mem-back{background:var(--surface)}
   .dark-mode .mem-card{box-shadow:4px 4px 0 #2a2a3e}
   .dark-mode .feedback .msg{color:var(--plum)}
   .dark-mode .chat-messages .msg-bubble{color:var(--plum)}
@@ -1111,6 +1182,14 @@
   .dark-mode #statsScreen .stats-bar-track{background:#3d3d55;border-color:#4d4d66}
   .dark-mode #statsScreen .stats-recent-item{color:var(--text-muted);border-bottom-color:#3d3d55}
   .dark-mode #settingsScreen .back-btn{color:var(--plum)}
+  body.dark-mode .cartoon-ground{background:linear-gradient(180deg,#2d5230,#1f3a22);border-top-color:#3d3d55;}
+  body.dark-mode .cartoon-hill.left,body.dark-mode .cartoon-hill.right{filter:brightness(.55) saturate(.7);}
+  body.dark-mode .cartoon-tree .foliage{filter:brightness(.5);}
+  body.dark-mode .cartoon-flower{opacity:.4;}
+  body.dark-mode .float-deco{opacity:.12;}
+  body.dark-mode .grass-blade{filter:brightness(.6);}
+  body.dark-mode .polka-bg{opacity:.02;}
+  body.dark-mode .island::after{opacity:.3;}
 
   /* Feature cards */
   .feature-row{display:flex;gap:12px;margin:14px 0 10px;flex-wrap:wrap}
@@ -1193,6 +1272,9 @@
   .mascot-evolution .evo-icon{font-size:4rem;margin-bottom:8px;animation:bannerShake .6s ease 4}
   .mascot-evolution .evo-title{font-family:'Baloo 2',sans-serif;font-size:1.5rem;color:var(--plum);}
   .mascot-evolution .evo-desc{font-size:0.95rem;color:var(--text-muted,#888);margin:6px 0 14px}
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
+  }
 </style>
 </head>
 <body>
@@ -5139,13 +5221,13 @@ const MEM_SETS = {
   D: ["🦄","🐝","🐙","🦀","🐬","🐉","🐨","🦒","🐘","🦛","🐿️","🦔"],
   E: ["🦊","🐼","🐧","🦉","🐢","🦋","🐺","🦁","🐝","🦄","🐙","🦀"]
 };
-let mem = { cards:[], flipped:[], moves:0, found:0, lock:false };
+let mem = { cards:[], flipped:[], moves:0, found:0, lock:false, elements:[] };
 
 function openMemory(){
   stopAutoEncourage();
   const symbols = MEM_SETS[state.level];
   let deck = shuffleArray([...symbols, ...symbols]);
-  mem = { cards: deck.map(sym=>({sym, flipped:false, matched:false})), flipped:[], moves:0, found:0, lock:false };
+  mem = { cards: deck.map(sym=>({sym, flipped:false, matched:false})), flipped:[], moves:0, found:0, lock:false, elements:[] };
 
   document.getElementById('memTotal').textContent = symbols.length;
   document.getElementById('memMoves').textContent = 0;
@@ -5162,11 +5244,13 @@ function openMemory(){
 function renderMemoryGrid(){
   const grid = document.getElementById('memoryGrid');
   grid.innerHTML = '';
+  mem.elements = [];
   mem.cards.forEach((c, idx)=>{
     const el = document.createElement('div');
-    el.className = 'mem-card' + (c.flipped||c.matched ? ' flipped' : '') + (c.matched ? ' matched' : '');
-    el.textContent = (c.flipped || c.matched) ? c.sym : '❓';
+    el.className = 'mem-card' + ((c.flipped||c.matched) ? ' flipped' : '') + (c.matched ? ' matched' : '');
+    el.innerHTML = `<div class="mem-face mem-front">❓</div><div class="mem-face mem-back">${c.sym}</div>`;
     el.onclick = ()=>flipMemCard(idx);
+    mem.elements.push(el);
     grid.appendChild(el);
   });
 }
@@ -5178,7 +5262,7 @@ function flipMemCard(idx){
   c.flipped = true;
   soundClick();
   mem.flipped.push(idx);
-  renderMemoryGrid();
+  mem.elements[idx].classList.add('flipped');
 
   if(mem.flipped.length === 2){
     mem.lock = true;
@@ -5189,16 +5273,19 @@ function flipMemCard(idx){
     setTimeout(()=>{
       if(c1.sym === c2.sym){
         c1.matched = true; c2.matched = true;
+        mem.elements[i1].classList.add('matched');
+        mem.elements[i2].classList.add('matched');
         mem.found++;
         document.getElementById('memFound').textContent = mem.found;
         soundCorrect();
       } else {
         c1.flipped = false; c2.flipped = false;
+        mem.elements[i1].classList.remove('flipped');
+        mem.elements[i2].classList.remove('flipped');
         soundWrong();
       }
       mem.flipped = [];
       mem.lock = false;
-      renderMemoryGrid();
       if(mem.found === mem.cards.length/2){
         setTimeout(showMemoryResult, 400);
       }
@@ -6704,7 +6791,13 @@ function staggerIslands(){
   document.querySelectorAll('.island').forEach((el, i)=>{
     el.classList.remove('pop-appear');
     void el.offsetWidth;
-    el.style.animationDelay = (i*0.07)+'s';
+    el.style.setProperty('--i', i);
+    if(!el.querySelector('.island-num') && !el.classList.contains('game') && !el.classList.contains('ia')){
+      const num = document.createElement('span');
+      num.className = 'island-num';
+      num.textContent = String(i+1).padStart(2,'0');
+      el.insertAdjacentElement('afterbegin', num);
+    }
     el.classList.add('pop-appear');
   });
 }
@@ -7072,7 +7165,10 @@ function showSplash(){
   var s = document.createElement('div');
   s.id = 'avSplash';
   s.style.cssText = 'position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1CB0F6,#8B6FD9);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Baloo 2",sans-serif;color:#fff;animation:splashOut .5s ease 2s forwards;';
-  s.innerHTML = '<div style="font-size:4rem;animation:splashFly 1.5s ease-in-out infinite;">🦉</div><h1 style="font-size:2rem;margin:10px 0 0;text-shadow:2px 2px 0 rgba(0,0,0,0.2);">Les Aventures du Savoir</h1><p style="font-size:1rem;opacity:0.8;margin-top:4px;">Apprendre en s\'amusant !</p>';
+  s.innerHTML = '<div style="font-size:4rem;animation:splashFly 1.5s ease-in-out infinite;">🦉</div>' +
+    '<h1 style="font-size:2rem;margin:10px 0 0;text-shadow:2px 2px 0 rgba(0,0,0,0.2);">' +
+    'Les Aventures du Savoir'.split('').map((ch,i)=> ch===' ' ? ' ' : '<span style="display:inline-block;animation:splashLetter 1.2s ease-in-out infinite;animation-delay:'+(i*0.05)+'s">'+ch+'</span>').join('') +
+    '</h1><p style="font-size:1rem;opacity:0.8;margin-top:4px;">Apprendre en s\'amusant !</p>';
   document.body.appendChild(s);
   setTimeout(function(){ s.remove(); }, 2600);
 }
