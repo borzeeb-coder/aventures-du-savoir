@@ -1272,6 +1272,42 @@
   .mascot-evolution .evo-icon{font-size:4rem;margin-bottom:8px;animation:bannerShake .6s ease 4}
   .mascot-evolution .evo-title{font-family:'Baloo 2',sans-serif;font-size:1.5rem;color:var(--plum);}
   .mascot-evolution .evo-desc{font-size:0.95rem;color:var(--text-muted,#888);margin:6px 0 14px}
+  /* ===== SURPRISES ===== */
+  .egg-card{
+    position:relative; background:linear-gradient(135deg,#FF86D0,#8B6FD9); border:4px solid #2D2D3A; border-radius:24px; color:#fff;
+    padding:14px 18px; margin:14px 0; display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+    box-shadow:0 5px 0 #2D2D3A, 0 10px 18px rgba(20,10,40,0.25); transition:transform .12s ease;
+  }
+  .egg-card:hover{transform:translateY(-3px);}
+  .egg-card:active{transform:translateY(2px);}
+  .egg-card .egg-icon{font-size:2.6rem; display:inline-block; animation:eggWiggle 2s ease-in-out infinite; filter:drop-shadow(0 3px 3px rgba(0,0,0,0.2));}
+  .egg-card .egg-icon.cracking{animation:eggCrack .4s ease 3;}
+  .egg-card h3{margin:0 0 2px; font-size:1.05rem;}
+  .egg-card.done{background:linear-gradient(135deg,#8b8b9c,#6d6d80);}
+  .egg-card.done .egg-icon{animation:none;}
+  @keyframes eggWiggle{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
+  @keyframes eggCrack{0%,100%{transform:rotate(0) scale(1);}50%{transform:rotate(-18deg) scale(1.15);}}
+
+  .feed-btn{
+    margin-top:6px; background:var(--sun); border:3px solid #2D2D3A; border-radius:14px; padding:6px 12px;
+    font-family:'Baloo 2'; font-weight:700; font-size:0.8rem; cursor:pointer; box-shadow:3px 3px 0 #2D2D3A;
+    animation:feedPulse 1.6s ease-in-out infinite;
+  }
+  .feed-btn:hover{transform:translateY(-2px);}
+  @keyframes feedPulse{0%,100%{box-shadow:3px 3px 0 #2D2D3A;}50%{box-shadow:3px 3px 0 #2D2D3A, 0 0 12px rgba(255,150,0,0.7);}}
+
+  #owlWidget.dancing .owl-3d-wrap{animation:owlDanceMove .45s ease-in-out infinite;}
+  #owlWidget.dancing .owl-avatar{animation:owlDanceSpin .45s ease-in-out infinite;}
+  @keyframes owlDanceMove{0%,100%{transform:rotate(-8deg) translateY(0);}50%{transform:rotate(8deg) translateY(-10px);}}
+  @keyframes owlDanceSpin{0%,100%{transform:scale(1) rotate(-4deg);}50%{transform:scale(1.12) rotate(4deg);}}
+  #owlWidget.dancing .owl-shadow{animation:shadowSquish .45s ease-in-out infinite;}
+  .dance-note{position:fixed;z-index:86;pointer-events:none;animation:danceNoteUp 1.8s ease-out forwards;opacity:0;}
+  @keyframes danceNoteUp{0%{opacity:0;transform:translateY(0) scale(.5);}20%{opacity:1;}100%{opacity:0;transform:translateY(-130px) rotate(25deg) scale(1.4);}}
+
+  #owlSvg.hungry #owlBrowL{transform:rotate(22deg) translateY(2px) scaleX(1);}
+  #owlSvg.hungry #owlBrowR{transform:rotate(-22deg) translateY(2px) scaleX(1);}
+  .dark-mode .egg-card{box-shadow:0 5px 0 #1a1a2e;}
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
   }
@@ -1347,6 +1383,13 @@
   </div>
 
   <div id="homeScreen" class="hidden">
+    <div class="egg-card" id="eggCard" onclick="openEgg()">
+      <div>
+        <h3 id="eggTitle">🥚 Œuf Surprise</h3>
+        <div class="sub-txt" id="eggText" style="font-size:0.82rem;opacity:0.92;">Tape dessus, il cache un trésor !</div>
+      </div>
+      <span class="egg-icon" id="eggIcon">🥚</span>
+    </div>
     <div class="daily-card" id="dailyCard" onclick="openDaily()">
       <div>
         <h3 id="dailyCardTitle">🌟 Défi du Jour</h3>
@@ -1992,6 +2035,7 @@
     </svg>
   </div>
   <div class="owl-shadow"></div>
+  <button class="feed-btn" id="feedBtn" onclick="feedOwl()" style="display:none;">🍗 Nourrir (10 🪙)</button>
 </div>
 
 <div class="levelup-banner" id="levelupBanner">🎉 Niveau supérieur !</div>
@@ -3532,6 +3576,12 @@ let state = {
   mastery: {},
   achievements: {},
   mascotStage: 0,
+  eggDate: null,
+  owlFullDate: null,
+  owlHunger: 100,
+  secretFound: false,
+  shakeDay: null,
+  shakeCount: 0,
 };
 let owlTimeout = null;
 
@@ -3577,6 +3627,7 @@ function renderStars(){
   const badge2 = document.getElementById('aiScoreBadge');
   if(badge2) badge2.textContent = state.aiScore;
   renderDailyCard();
+  renderEgg();
   renderBadges();
   const unlockedStories = Object.keys(state.stories).length;
   const storiesCard = document.getElementById('storiesCardText');
@@ -3767,6 +3818,7 @@ function goHome(){
   show('homeScreen');
   renderStars();
   renderAvatars();
+  renderOwlHunger();
   staggerIslands();
   startAutoEncourage();
   setTimeout(()=>{
@@ -4161,7 +4213,9 @@ function startIdleAntics(){
     const hs = document.getElementById('homeScreen');
     if(!hs || hs.classList.contains('hidden')) return;
     const r = Math.random();
-    if(r < 0.15){
+    if(r < 0.02 && !state.secretFound){
+      owlSay('Psst... tape HIBOU quelque part... 🤫✨', 3000, true);
+    } else if(r < 0.15){
       owlFunny();
     } else if(r < 0.3){
       const svg = document.getElementById('owlSvg');
@@ -4235,6 +4289,218 @@ function owlHappy(){
   setTimeout(()=>svg.classList.remove('happy'), 1800);
 }
 
+/* ================ SURPRISES ================ */
+
+/* --- Surprise 2 : le hibou danse ! --- */
+function owlDance(){
+  const w = document.getElementById('owlWidget');
+  if(!w) return;
+  w.classList.add('dancing');
+  if(state.soundEnabled){
+    [523.25,659.25,783.99,659.25,880,783.99,1046.5,880].forEach((f,i)=>playTone(f,0.14,'sine',i*0.16,0.12));
+  }
+  const notes = ['🎵','🎶','💃','🕺','✨','🎉'];
+  for(let i=0;i<14;i++){
+    setTimeout(()=>{
+      const n = document.createElement('div');
+      n.className = 'dance-note';
+      n.textContent = notes[Math.floor(Math.random()*notes.length)];
+      n.style.left = (15+Math.random()*70)+'%';
+      n.style.bottom = (30+Math.random()*30)+'%';
+      n.style.fontSize = (14+Math.random()*16)+'px';
+      n.style.animationDelay = (Math.random()*0.3)+'s';
+      document.body.appendChild(n);
+      setTimeout(()=>n.remove(), 2200);
+    }, i*180);
+  }
+  launchConfetti();
+  setTimeout(()=>w.classList.remove('dancing'), 3600);
+}
+
+/* --- Surprise 3 : l'œuf surprise quotidien --- */
+function renderEgg(){
+  const card = document.getElementById('eggCard');
+  if(!card) return;
+  if(state.eggDate === todayStr()){
+    card.classList.add('done');
+    document.getElementById('eggTitle').textContent = '🐣 Œuf cassé';
+    document.getElementById('eggText').textContent = 'Reviens demain pour un nouveau trésor !';
+  } else {
+    card.classList.remove('done');
+    document.getElementById('eggTitle').textContent = '🥚 Œuf Surprise';
+    document.getElementById('eggText').textContent = 'Tape dessus, il cache un trésor !';
+  }
+}
+
+function openEgg(){
+  stopAutoEncourage();
+  if(state.eggDate === todayStr()){ owlSay('Œuf déjà cassé ! Reviens demain pour un nouveau trésor. 🐣', 3000, true); return; }
+  state.eggDate = todayStr();
+  const egg = document.getElementById('eggIcon');
+  egg.classList.add('cracking');
+  setTimeout(()=>{
+    egg.classList.remove('cracking');
+    egg.textContent = '🐣';
+    soundCorrect();
+    owlHappy();
+    launchFireworks(document.getElementById('eggCard'));
+    const r = Math.floor(Math.random()*10);
+    let msg = '';
+    if(r < 4){
+      state.coins = (state.coins||0) + 15;
+      renderCoins();
+      msg = '🎉 +15 pièces ! Le hibou est riche !';
+    } else if(r < 7){
+      state.points = (state.points||0) + 50;
+      msg = '🎉 +50 points !';
+    } else if(r < 9){
+      const avail = Object.keys(state.stars).filter(s => state.stars[s] < 3);
+      if(avail.length){
+        const s = avail[Math.floor(Math.random()*avail.length)];
+        state.stars[s] = Math.min(3, state.stars[s]+1);
+        msg = '⭐ +1 étoile en ' + (SUBJECT_META[s]?.title || s) + ' !';
+      } else {
+        state.points = (state.points||0) + 100;
+        msg = '🎉 +100 points bonus !';
+      }
+    } else {
+      state.coins = (state.coins||0) + 25;
+      renderCoins();
+      msg = '✨ C\'est la fête : +25 pièces !';
+    }
+    renderEgg();
+    renderStars();
+    scheduleSave();
+    owlSay(msg, 4200, true);
+  }, 900);
+}
+
+/* --- Surprise 4 : le hibou Tamagotchi --- */
+function computeHunger(){
+  if(!state.owlFullDate){ state.owlHunger = 100; return state.owlHunger; }
+  const days = Math.floor((Date.now() - new Date(state.owlFullDate).getTime()) / 86400000);
+  state.owlHunger = Math.max(0, 100 - days*25);
+  return state.owlHunger;
+}
+function renderOwlHunger(){
+  const fb = document.getElementById('feedBtn');
+  const svg = document.getElementById('owlSvg');
+  if(!fb || !svg) return;
+  computeHunger();
+  const hungry = state.owlHunger < 60;
+  fb.style.display = hungry ? 'inline-block' : 'none';
+  svg.classList.toggle('hungry', hungry);
+}
+function feedOwl(){
+  stopAutoEncourage();
+  computeHunger();
+  if((state.coins||0) < 10){ owlSay('Il me faut 10 pièces pour manger ! Gagne des pièces dans les quiz ! 🪙', 3500, true); return; }
+  state.coins -= 10;
+  state.owlFullDate = Date.now();
+  state.owlHunger = 100;
+  renderCoins();
+  renderOwlHunger();
+  scheduleSave();
+  owlSay('Miam ! Merci pour le gâteau ! Je suis plein d\'énergie pour t\'aider ! 🍗😋', 3500, true);
+  soundCorrect();
+  owlHappy();
+  launchConfetti();
+}
+
+/* --- Surprise 5 : le code secret HIBOU --- */
+let _secretBuffer = '';
+window.addEventListener('keydown', function(e){
+  if(e.key && e.key.length === 1){
+    _secretBuffer = (_secretBuffer + e.key.toLowerCase()).slice(-5);
+    if(_secretBuffer === 'hibou'){ _secretBuffer = ''; secretUnlock(); }
+  }
+});
+function secretUnlock(){
+  if(state.secretFound){
+    owlSay('Déjà trouvé ! Le code magique reste secret 🤫', 2500, true);
+    return;
+  }
+  state.secretFound = true;
+  state.points = (state.points||0) + 100;
+  state.coins = (state.coins||0) + 20;
+  renderCoins();
+  renderStars();
+  scheduleSave();
+  launchBigFireworks();
+  owlDance();
+  setTimeout(()=>owlSay('🤫✨ HIBOU ! Tu as trouvé le code magique ! +100 points et +20 pièces ! Tu es un vrai aventurier !', 5000, true), 600);
+}
+
+/* --- Surprise 6 : secouer le téléphone = confettis --- */
+let _lastShake = 0;
+function setupShake(){
+  if(!window.DeviceMotionEvent) return;
+  window.addEventListener('devicemotion', function(e){
+    const a = e.accelerationIncludingGravity;
+    if(!a) return;
+    const mag = Math.abs(a.x||0) + Math.abs(a.y||0) + Math.abs(a.z||0);
+    const now = Date.now();
+    if(mag > 28 && now - _lastShake > 5000){
+      _lastShake = now;
+      shakeParty();
+    }
+  });
+}
+function shakeParty(){
+  const hs = document.getElementById('homeScreen');
+  if(!hs || hs.classList.contains('hidden')) return;
+  if(navigator.vibrate){ try{ navigator.vibrate([80,40,120]); }catch(e){} }
+  launchConfetti();
+  screenFlash('correct');
+  owlHappy();
+  const day = todayStr();
+  if(state.shakeDay !== day){ state.shakeDay = day; state.shakeCount = 0; }
+  if((state.shakeCount||0) < 3){
+    state.shakeCount = (state.shakeCount||0) + 1;
+    state.coins = (state.coins||0) + 3;
+    renderCoins();
+    scheduleSave();
+    owlSay('Secoué ! +3 pièces magiques 🪙✨', 2500, true);
+  } else {
+    owlSay('Ouh là, la secousse magique est épuisée pour aujourd\'hui ! 😵‍💫', 2500, true);
+  }
+}
+
+/* --- Surprise 1 : répondre à voix haute (quiz) --- */
+function startQuizVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const status = document.getElementById('quizVoiceStatus');
+  if(!SR){ if(status) status.textContent = '❌ Micro non supporté — utilise Chrome.'; return; }
+  const answered = [...document.querySelectorAll('#optionsBox .opt-btn')].some(b=>b.classList.contains('correct')||b.classList.contains('wrong'));
+  if(answered) return;
+  const q = state.current.questionList[state.current.qIndex];
+  const correctOpt = q.opts[q.a];
+  const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'').trim();
+  const rec = new SR();
+  rec.lang = 'fr-FR';
+  rec.interimResults = false;
+  rec.maxAlternatives = 1;
+  if(status) status.textContent = '🎙️ Je t\'écoute... dis ta réponse !';
+  soundClick();
+  rec.onresult = function(e){
+    const spoken = e.results[0][0].transcript.toLowerCase().trim();
+    if(status) status.textContent = '✅ Tu as dit : ' + spoken;
+    const ok = norm(spoken) === norm(correctOpt) ||
+      norm(correctOpt).split(' ').some(w => w.length > 3 && norm(spoken).includes(w));
+    if(ok){
+      const btn = [...document.querySelectorAll('#optionsBox .opt-btn')].find(b=>parseInt(b.dataset.origIdx,10) === q.a);
+      if(btn){ soundClick(); answerQuiz(q.a, q, btn); }
+    } else {
+      if(status) status.textContent = '❌ Essaie encore : ' + correctOpt;
+      owlComfort();
+    }
+  };
+  rec.onerror = function(){
+    if(status) status.textContent = '❌ Micro inaccessible — réessaie.';
+  };
+  try{ rec.start(); }catch(err){ if(status) status.textContent = '❌ Impossible de démarrer le micro.'; }
+}
+
 /* ---------------- SONS (Web Audio, compatible Android) ---------------- */
 let audioCtx = null;
 let audioUnlocked = false;
@@ -4253,6 +4519,10 @@ function unlockAudio(){
   if('speechSynthesis' in window){
     if(typeof speechSynthesis.resume === 'function') speechSynthesis.resume();
     try{const s=new SpeechSynthesisUtterance('');s.volume=0;speechSynthesis.speak(s);}catch(e){}
+  }
+  // iOS 13+ : demander la permission des capteurs de mouvement (secousses magiques)
+  if(window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function'){
+    try{ DeviceMotionEvent.requestPermission().catch(()=>{}); }catch(e){}
   }
 }
 
@@ -4639,7 +4909,7 @@ function finishWords(){
   document.getElementById('resultText').textContent = `Tu as trouvé ${score} mot(s) sur ${total}.`;
   renderAnimatedStars('resultStars', stars);
   renderStars();
-  if(stars === 3){ launchConfetti(); bannerSparkles(12); }
+  if(stars === 3){ launchConfetti(); bannerSparkles(12); setTimeout(owlDance, 600); }
   if(leveledUp) setTimeout(()=>showLevelUpBanner(state.subjectLevel.mots), 500);
   lastSessionMsg = stars >= 2 ? "Super session de mots ! Reviens quand tu veux t'entraîner encore ! 🎯" : "Continue à t'entraîner, tu progresses à chaque fois ! 💪";
 }
@@ -4778,7 +5048,7 @@ function finishLetters(){
   document.getElementById('resultText').textContent = `Tu as trouvé ${score} bon(s) mot(s) sur ${total}.`;
   renderAnimatedStars('resultStars', stars);
   renderStars();
-  if(stars === 3){ launchConfetti(); bannerSparkles(12); }
+  if(stars === 3){ launchConfetti(); bannerSparkles(12); setTimeout(owlDance, 600); }
   if(leveledUp) setTimeout(()=>showLevelUpBanner(state.subjectLevel.lettres), 500);
   lastSessionMsg = stars >= 2 ? "Génial avec les lettres ! À très vite pour la suite ! 🔤✨" : "Bon travail ! Chaque lettre compte, continue comme ça ! 📖";
 }
@@ -4900,6 +5170,18 @@ function renderQuestion(){
     btn.setAttribute('role', 'button');
     optsBox.appendChild(btn);
   });
+  const voiceWrap = document.createElement('div');
+  voiceWrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:12px;';
+  const micBtn = document.createElement('button');
+  micBtn.className = 'listen-btn pop-in';
+  micBtn.innerHTML = '🎤 Répondre à voix haute';
+  micBtn.onclick = startQuizVoice;
+  const vs = document.createElement('span');
+  vs.id = 'quizVoiceStatus';
+  vs.style.cssText = 'font-size:0.85rem;min-height:18px;color:var(--plum);';
+  voiceWrap.appendChild(micBtn);
+  voiceWrap.appendChild(vs);
+  optsBox.appendChild(voiceWrap);
   startQuestionTimer(quizTimeout, 'quizTimerFill', 'quizTimerText', '#quizScreen .timer-row');
   if(state.level === 'A') setTimeout(()=>speak(q.q), 450);
 }
@@ -5164,7 +5446,7 @@ function finishQuiz(){
 
   checkMascotEvolution();
 
-  if(stars === 3){ launchConfetti(); bannerSparkles(12); }
+  if(stars === 3){ launchConfetti(); bannerSparkles(12); setTimeout(owlDance, 600); }
   if(leveledUp) setTimeout(()=>showLevelUpBanner(state.subjectLevel[subject]), 500);
   const subj = SUBJECT_META[subject]?.title || subject;
   if(stars === 3) lastSessionMsg = `Parfait sur ${subj} ! Tu es un(e) champion(ne) absolu(e) ! 🏆🎉`;
@@ -5900,7 +6182,9 @@ async function saveAppData(){
       soundEnabled: state.soundEnabled, timerEnabled: state.timerEnabled, timerDuration: state.timerDuration,
       history: state.history,
       mastery: state.mastery, achievements: state.achievements,
-      mascotStage: state.mascotStage
+      mascotStage: state.mascotStage,
+      eggDate: state.eggDate, owlFullDate: state.owlFullDate, owlHunger: state.owlHunger,
+      secretFound: state.secretFound, shakeDay: state.shakeDay, shakeCount: state.shakeCount
     }), false);
     syncProfileToCloud();
   }catch(e){ /* sauvegarde impossible pour le moment, pas grave */ }
@@ -5939,6 +6223,12 @@ async function loadAppData(profileId){
       if(d.mastery) state.mastery = d.mastery;
       if(d.achievements) state.achievements = d.achievements;
       if(d.mascotStage !== undefined) state.mascotStage = d.mascotStage;
+      if(d.eggDate) state.eggDate = d.eggDate;
+      if(d.owlFullDate) state.owlFullDate = d.owlFullDate;
+      if(d.owlHunger !== undefined) state.owlHunger = d.owlHunger;
+      if(d.secretFound) state.secretFound = true;
+      if(d.shakeDay) state.shakeDay = d.shakeDay;
+      if(d.shakeCount) state.shakeCount = d.shakeCount;
     }
   }catch(e){ /* profil vide ou première visite */ }
 }
@@ -5993,6 +6283,12 @@ function resetStateDefaults(){
   state.mastery = {};
   state.achievements = {};
   state.mascotStage = 0;
+  state.eggDate = null;
+  state.owlFullDate = null;
+  state.owlHunger = 100;
+  state.secretFound = false;
+  state.shakeDay = null;
+  state.shakeCount = 0;
 }
 
 async function openProfileSwitcher(){
@@ -7183,6 +7479,7 @@ async function initApp(){
   loadParentDarkMode();
   loadHighContrast();
   loadTheme();
+  setupShake();
   renderStreak();
   const activeId = await getActiveProfileId();
   if(activeId){
@@ -7196,6 +7493,7 @@ async function initApp(){
   document.getElementById('btnLevelE').classList.toggle('active', state.level==='E');
   renderAvatars();
   renderStars();
+  renderOwlHunger();
   if('speechSynthesis' in window){
     speechSynthesis.getVoices();
     speechSynthesis.onvoiceschanged = function(){ speechSynthesis.getVoices(); };
