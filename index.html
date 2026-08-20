@@ -1562,6 +1562,51 @@
     box-shadow:0 0 10px rgba(255,180,0,0.5);
   }
 
+  /* ===== BARRE DE NAVIGATION SUPER APP ===== */
+  .tab-bar{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:14px; z-index:70;
+    display:flex; gap:4px; padding:8px 10px; border-radius:30px;
+    background:linear-gradient(135deg,#17104A,#2A1560);
+    border:4px solid #1B1B2F;
+    box-shadow:0 7px 0 #1B1B2F, 0 14px 26px rgba(0,0,0,0.35);
+    max-width:calc(100vw - 20px);
+  }
+  .tab-btn{
+    border:none; background:transparent; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:6px 12px; border-radius:20px; min-width:62px;
+    font-family:'Baloo 2'; font-weight:700; font-size:0.7rem; color:#C9BDF0;
+    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .tab-btn .tab-ico{font-size:1.3rem; filter:grayscale(0.5); opacity:0.85; transition:all .15s ease;}
+  .tab-btn .tab-lbl{white-space:nowrap;}
+  .tab-btn:hover{transform:translateY(-2px);}
+  .tab-btn:active{transform:translateY(1px);}
+  .tab-btn.active{
+    background:linear-gradient(180deg,#FFD54F,#FF9F00); color:#1B1B2F;
+    box-shadow:0 3px 0 #1B1B2F, inset 0 1px 0 rgba(255,255,255,0.5);
+    transform:translateY(-4px);
+  }
+  .tab-btn.active .tab-ico{filter:none; opacity:1; transform:scale(1.2);}
+  @media (max-width:420px){
+    .tab-btn{min-width:0; padding:6px 8px;}
+    .tab-btn .tab-lbl{font-size:0.6rem;}
+  }
+
+  /* ===== CARTE CONTINUER L'AVENTURE ===== */
+  .continue-card{
+    position:relative; margin:14px 0; border-radius:24px; padding:16px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer;
+    background:linear-gradient(135deg,#4FC3F7,#0288D1);
+    color:#fff; border:4px solid #1B1B2F; box-shadow:0 6px 0 #1B1B2F, 0 10px 18px rgba(0,0,0,0.25);
+    animation:tgGlow 3s ease-in-out infinite;
+  }
+  .continue-card h3{margin:0 0 2px; font-size:1.1rem; text-shadow:0 2px 0 rgba(0,0,0,0.25);}
+  .continue-card .sub-txt{font-size:0.82rem; opacity:0.92;}
+  .continue-card .icon{font-size:2rem; animation:iconBounce 2s ease-in-out infinite;}
+  .continue-card:hover{transform:translateY(-3px);}
+  #app{padding-bottom:135px;}
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
   }
@@ -1600,7 +1645,7 @@
       <div class="ai-trophy">🎯 <span id="aiScoreBadgeHome">0</span></div>
       <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()" title="Activer/couper la voix de Professeur Hibou" role="button" tabindex="0">🔊</div>
       <div class="voice-toggle" id="leaderboardBtn" onclick="openLiveLeaderboard()" title="Voir le classement des enfants" style="background:#FFC800;color:#fff;" role="button" tabindex="0">🏆</div>
-      <div class="voice-toggle" onclick="openProfileSwitcher()" title="Changer d'enfant / ajouter un profil" role="button" tabindex="0">👪</div>
+      <div class="voice-toggle" onclick="switchTab('profile')" title="Changer d'enfant / ajouter un profil" role="button" tabindex="0">👪</div>
       <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre" role="button" tabindex="0">🌙</div>
       <div class="voice-toggle" onclick="openSettings()" title="Paramètres" role="button" tabindex="0">⚙️</div>
     </div>
@@ -1714,6 +1759,16 @@
       <a href="https://www.amazon.fr/s?k=livres+enfants+éducatifs&tag=benjamin031-21" target="_blank" rel="sponsored noopener noreferrer" style="background:#FFC800;color:#3C3C3C;padding:8px 18px;border-radius:16px;font-weight:800;text-decoration:none;font-size:0.9rem;border:2px solid #3C3C3C;box-shadow:2px 2px 0 #3C3C3C;">Voir sur Amazon ➤</a>
     </div>
 
+    <div class="continue-card" onclick="switchTab('games')">
+      <div>
+        <h3>🚀 Continuer l'aventure</h3>
+        <div class="sub-txt">Tes îles t'attendent, aventurier !</div>
+      </div>
+      <span class="icon">➡️</span>
+    </div>
+  </div>
+
+  <div id="gamesScreen" class="card-screen hidden">
     <div class="level-toggle">
       <button id="btnLevelA" class="active" onclick="setLevel('A')">🐣 A</button>
       <button id="btnLevelB" onclick="setLevel('B')">🦁 B</button>
@@ -2338,6 +2393,15 @@
   <div class="evo-title" id="mascotEvoTitle">Évolution !</div>
   <div class="evo-desc" id="mascotEvoDesc">Professeur Hibou monte en puissance !</div>
 </div>
+
+<!-- BARRE DE NAVIGATION SUPER APP -->
+<nav class="tab-bar hidden" id="tabBar" aria-label="Navigation principale">
+  <button class="tab-btn" data-tab="home" onclick="switchTab('home')" role="button" tabindex="0"><span class="tab-ico">🏠</span><span class="tab-lbl">Accueil</span></button>
+  <button class="tab-btn" data-tab="games" onclick="switchTab('games')" role="button" tabindex="0"><span class="tab-ico">🧩</span><span class="tab-lbl">Apprendre</span></button>
+  <button class="tab-btn" data-tab="chat" onclick="switchTab('chat')" role="button" tabindex="0"><span class="tab-ico">🤖</span><span class="tab-lbl">Chat</span></button>
+  <button class="tab-btn" data-tab="stats" onclick="switchTab('stats')" role="button" tabindex="0"><span class="tab-ico">⭐</span><span class="tab-lbl">Progrès</span></button>
+  <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')" role="button" tabindex="0"><span class="tab-ico">👤</span><span class="tab-lbl">Profil</span></button>
+</nav>
 
 <!-- CARTOON DECORATIONS -->
 <div class="polka-bg"></div>
@@ -4107,7 +4171,7 @@ function goHome(){
   clearInterval(taTimer);
   clearTimeout(taNextTimer);
   clearTimeout(memFlipTimer);
-  show('homeScreen');
+  switchTab(lastTab);
   renderStars();
   renderAvatars();
   renderOwlHunger();
@@ -4132,9 +4196,27 @@ function goHome(){
   }, 1200);
 }
 function show(id){
-  ['onboardingScreen','homeScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','clockScreen','hangmanScreen','settingsScreen','statsScreen','liveLeaderboardScreen'].forEach(s=>{
+  const nav = document.getElementById('tabBar');
+  if(nav) nav.classList.toggle('hidden', ['homeScreen','gamesScreen','chatScreen','statsScreen','profileScreen'].indexOf(id) === -1);
+  ['onboardingScreen','homeScreen','gamesScreen','quizScreen','resultScreen','memoryScreen','chatScreen','dailyScreen','parentGateScreen','parentScreen','lettersScreen','avatarChangeScreen','wordsScreen','profileScreen','badgesScreen','storiesScreen','storyReaderScreen','wardrobeScreen','timeAttackScreen','clockScreen','hangmanScreen','settingsScreen','statsScreen','liveLeaderboardScreen'].forEach(s=>{
     document.getElementById(s).classList.toggle('hidden', s!==id);
   });
+}
+
+let lastTab = 'home';
+function switchTab(tab){
+  lastTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.tab === tab));
+  const nav = document.getElementById('tabBar');
+  if(nav) nav.classList.remove('hidden');
+  if(tab === 'chat'){ openChat(); return; }
+  if(tab === 'stats'){ openStatsScreen(); return; }
+  if(tab === 'profile'){ openProfileSwitcher(); return; }
+  show(tab === 'games' ? 'gamesScreen' : 'homeScreen');
+  renderStars();
+  renderAvatars();
+  renderOwlHunger();
+  staggerIslands();
 }
 
 /* ---------------- VOIX (synthèse vocale) ---------------- */
@@ -6812,7 +6894,7 @@ async function finishOnboarding(){
   updatePersonalizedTexts();
   renderAvatars();
   soundLevelUp();
-  show('homeScreen');
+  switchTab('home');
   renderStars();
   setTimeout(()=>owlSay(`C'est parti ${state.firstName} ! J'ai choisi le niveau qui te correspond. Amuse-toi bien !`, 5000), 400);
 }
@@ -7895,7 +7977,7 @@ async function initApp(){
   }
   if(state.profileId && state.firstName && state.age){
     updatePersonalizedTexts();
-    show('homeScreen');
+    switchTab('home');
     showSplash();
     staggerIslands();
     setTimeout(()=>{
