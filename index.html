@@ -5431,6 +5431,24 @@ function announceSelection(selectedText, isCorrect){
   const verdict = isCorrect ? "C'est juste !" : "Ce n'est pas ça.";
   speak(`${selectedText}. ${verdict}`, true);
 }
+function announceFrench(text){
+  if(!voiceEnabled) return;
+  if(!('speechSynthesis' in window)) return;
+  try{
+    var cleanText = prepareTextForSpeech(text);
+    if(!cleanText) return;
+    var voice = pickVoice('fr-FR');
+    var utter = new SpeechSynthesisUtterance(cleanText);
+    utter.lang = 'fr-FR';
+    utter.rate = _IS_ANDROID ? 1.0 : 0.95;
+    utter.pitch = 1.2;
+    utter.volume = 1;
+    if(voice) utter.voice = voice;
+    window.speechSynthesis.cancel();
+    if(_IS_ANDROID){ setTimeout(function(){window.speechSynthesis.speak(utter);}, 60); }
+    else { window.speechSynthesis.speak(utter); }
+  }catch(e){}
+}
 
 function owlTip(){
   owlSay(_owlWithName(OWL_TIPS[Math.floor(Math.random()*OWL_TIPS.length)]));
@@ -6047,7 +6065,7 @@ function buildWordOptions(word, blankIndex){
 
 function openWords(){
   stopAutoEncourage();
-  speak('Les mots cachés ! Trouve la lettre qui manque.');
+  announceFrench('Les mots cachés ! Trouve la lettre qui manque.');
   state.wordsSession = shuffleArray(WORDS_DATA);
   state.wordsIndex = 0;
   state.wordsScore = 0;
@@ -6080,7 +6098,10 @@ function renderWordRound(){
     box.appendChild(btn);
   });
   startQuestionTimer(wordsTimeout, 'wordsTimerFill', 'wordsTimerText', '#wordsScreen .timer-row');
-  if(state.level === 'A') setTimeout(()=>speak('Il manque une lettre dans le mot ' + item.word.split('').map((ch,i)=> i===item.blank ? 'blanc' : ch).join(' ')), 450);
+  if(state.level === 'A'){
+    var hint = 'Il manque une lettre dans le mot ' + item.word.split('').map((ch,i)=> i===item.blank ? 'blanc' : ch).join(' ');
+    setTimeout(function(){announceFrench(hint);}, 450);
+  }
 }
 
 let autoAdvanceWordTimer = null;
@@ -6092,7 +6113,8 @@ function answerWord(letter, btnEl, item){
   const isCorrect = letter === item.word[item.blank];
   registerAnswer(isCorrect);
   const attemptedWord = item.word.split('').map((ch,i)=> i===item.blank ? letter : ch).join('');
-  announceSelection(attemptedWord, isCorrect);
+  var verdict = isCorrect ? "C'est juste !" : "Ce n'est pas ça.";
+  announceFrench(attemptedWord + '. ' + verdict);
   if(isCorrect){
     btnEl.classList.add('correct');
     state.wordsScore++;
@@ -6128,6 +6150,7 @@ function wordsTimeout(){
   soundWrong();
   registerAnswer(false);
   document.getElementById('wordDisplay').textContent = item.word;
+  announceFrench('Temps écoulé ! Le mot était ' + item.word + '.');
   const isLast = state.wordsIndex === state.wordsSession.length - 1;
   document.getElementById('wordsFeedbackBox').innerHTML = `
     <div class="msg pop-in">⏰ Temps écoulé ! Le mot était "${item.word}".</div>
