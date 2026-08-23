@@ -2196,55 +2196,25 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
   --color-success:#5CE882;--color-danger:#FF6B6B;--color-warning:#FFD874;--color-info:#4DC9F6;--color-accent:#9B8AFF;
 }
 
-/* ===== MUSIC PLAYER WIDGET ===== */
-.music-widget{
-  position:fixed; bottom:80px; left:50%; transform:translateX(-50%); z-index:75;
-  display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:28px;
-  background:linear-gradient(135deg,rgba(23,16,74,0.82),rgba(42,21,96,0.82));
-  backdrop-filter:blur(20px) saturate(1.8); -webkit-backdrop-filter:blur(20px) saturate(1.8);
-  border:2px solid rgba(255,255,255,0.15);
-  box-shadow:0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
-  max-width:calc(100vw - 24px);
+/* ===== MUSIC PLAYER IN HEADER ===== */
+.music-header-controls{
+  display:flex; align-items:center; gap:4px;
 }
-.music-widget.hidden-music{transform:translateX(-50%) translateY(120px); opacity:0; pointer-events:none;}
-.music-btn{
-  border:none; background:transparent; cursor:pointer; color:#C9BDF0;
-  font-size:1.1rem; width:34px; height:34px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  transition:all .15s cubic-bezier(.34,1.56,.64,1);
+.music-h-btn{
+  font-size:0.85rem !important; width:28px !important; height:28px !important;
+  transition:all .15s cubic-bezier(.34,1.56,.64,1) !important;
 }
-.music-btn:hover{background:rgba(255,255,255,0.12); color:#fff; transform:scale(1.15);}
-.music-btn:active{transform:scale(0.85);}
-.music-btn.play-btn{
-  width:40px; height:40px; font-size:1.3rem;
-  background:linear-gradient(135deg,#FFD54F,#FF9F00); color:#1B1B2F;
-  box-shadow:0 3px 0 #D98A00, 0 0 12px rgba(255,215,79,0.35);
+.music-h-btn:hover{transform:scale(1.2) !important; background:rgba(255,255,255,0.15) !important;}
+.music-h-play{
+  background:linear-gradient(135deg,#FFD54F,#FF9F00) !important; color:#1B1B2F !important;
+  box-shadow:0 2px 0 #D98A00, 0 0 8px rgba(255,215,79,0.3) !important;
 }
-.music-btn.play-btn:hover{box-shadow:0 3px 0 #D98A00, 0 0 20px rgba(255,215,79,0.55);}
-.music-btn.muted{opacity:0.4; text-decoration:line-through;}
-.music-title{
-  font-family:'Baloo 2'; font-size:0.65rem; color:#C9BDF0; max-width:80px;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-align:center;
+.music-h-play.playing{animation:musicPulse 2s ease-in-out infinite;}
+.music-h-mute.muted{opacity:0.4 !important;}
+@keyframes musicPulse{0%,100%{box-shadow:0 2px 0 #D98A00, 0 0 8px rgba(255,215,79,0.3);}50%{box-shadow:0 2px 0 #D98A00, 0 0 16px rgba(255,215,79,0.5);}}
+@media(max-width:700px){
+  .music-header-controls{display:none !important;}
 }
-.music-vol{
-  display:flex; align-items:center; gap:2px; margin-left:2px;
-  font-size:0.7rem; color:#C9BDF0; font-family:'Baloo 2'; font-weight:700;
-}
-.music-toggle{
-  position:fixed; bottom:80px; left:12px; z-index:74;
-  border:none; cursor:pointer; width:42px; height:42px; border-radius:50%;
-  background:linear-gradient(135deg,rgba(23,16,74,0.8),rgba(42,21,96,0.8));
-  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-  border:2px solid rgba(255,255,255,0.15); color:#C9BDF0; font-size:1.3rem;
-  box-shadow:0 4px 16px rgba(0,0,0,0.3);
-  transition:all .2s cubic-bezier(.34,1.56,.64,1);
-  display:flex; align-items:center; justify-content:center;
-}
-.music-toggle:hover{transform:scale(1.12); color:#FFD54F;}
-.music-toggle:active{transform:scale(0.9);}
-.music-toggle.has-music{color:#FFD54F; animation:musicPulse 2s ease-in-out infinite;}
-@keyframes musicPulse{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,0.3);}50%{box-shadow:0 4px 16px rgba(0,0,0,0.3), 0 0 14px rgba(255,213,79,0.3);}}
 
 </style>
 </head>
@@ -2284,6 +2254,13 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
       <div class="voice-toggle" onclick="switchTab('profile')" title="Changer d'enfant / ajouter un profil" role="button" tabindex="0">👪</div>
       <div class="voice-toggle" id="darkModeToggleBtn" onclick="toggleDarkMode()" title="Mode sombre" role="button" tabindex="0">🌙</div>
       <div class="voice-toggle" onclick="openSettings()" title="Paramètres" role="button" tabindex="0">⚙️</div>
+      <div class="music-header-controls" id="musicHeaderControls">
+        <div class="voice-toggle music-h-btn" onclick="musicPrev()" title="Chanson précédente" role="button" tabindex="0">⏮</div>
+        <div class="voice-toggle music-h-btn music-h-play" id="musicPlayBtn" onclick="musicTogglePlay()" title="Play / Pause" role="button" tabindex="0">▶</div>
+        <div class="voice-toggle music-h-btn" onclick="musicNext()" title="Chanson suivante" role="button" tabindex="0">⏭</div>
+        <div class="voice-toggle music-h-btn music-h-mute" id="musicMuteBtn" onclick="musicMute()" title="Couler la musique" role="button" tabindex="0">🔊</div>
+        <div id="musicTitleHeader" style="font-size:0.6rem;color:#fff;font-family:'Baloo 2';max-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;opacity:0.85;">🎵</div>
+      </div>
     </div>
   </div>
 
@@ -11572,6 +11549,7 @@ var MUSIC_SONGS=[
 
 function _musicInit(){
   if(!_musicCtx){try{_musicCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){return;}}
+  if(_musicCtx.state==='suspended'){_musicCtx.resume();}
   if(!_musicGain){_musicGain=_musicCtx.createGain();_musicGain.gain.value=_musicVol*0.5;_musicGain.connect(_musicCtx.destination);}
 }
 
@@ -11592,9 +11570,9 @@ function _musicPlaySong(idx){
   var song=MUSIC_SONGS[_musicIdx];
   if(!song)return;
   _musicPlaying=true;_musicStep=0;
-  document.getElementById('musicTitle').textContent=song.icon+' '+song.name;
+  document.getElementById('musicTitleHeader').textContent=song.icon+' '+song.name;
   document.getElementById('musicPlayBtn').textContent='⏸';
-  document.getElementById('musicToggle').classList.add('has-music');
+  document.getElementById('musicPlayBtn').classList.add('playing');
   var t=0;
   song.melody.forEach(function(n){_musicPlayNote(n.f,n.d,song.wave,t);t+=n.d;});
   _musicTimer=setTimeout(function(){if(_musicPlaying)_musicPlaySong((_musicIdx+1)%MUSIC_SONGS.length);},t*1000+200);
@@ -11603,7 +11581,7 @@ function _musicPlaySong(idx){
 function _musicStop(){
   _musicPlaying=false;clearTimeout(_musicTimer);
   document.getElementById('musicPlayBtn').textContent='▶';
-  document.getElementById('musicToggle').classList.remove('has-music');
+  document.getElementById('musicPlayBtn').classList.remove('playing');
 }
 
 function musicTogglePlay(){
@@ -11623,16 +11601,16 @@ function musicPrev(){
 }
 
 function musicVolUp(){
+  _musicInit();
   _musicVol=Math.min(1,Math.round((_musicVol+0.1)*10)/10);
-  document.getElementById('musicVolLabel').textContent=Math.round(_musicVol*100)+'%';
-  if(_musicGain)_musicGain.gain.value=_musicVol*0.5;
+  if(_musicGain)_musicGain.gain.value=_musicMuted?0:_musicVol*0.5;
   _musicUpdateMuteIcon();
 }
 
 function musicVolDown(){
+  _musicInit();
   _musicVol=Math.max(0,Math.round((_musicVol-0.1)*10)/10);
-  document.getElementById('musicVolLabel').textContent=Math.round(_musicVol*100)+'%';
-  if(_musicGain)_musicGain.gain.value=_musicVol*0.5;
+  if(_musicGain)_musicGain.gain.value=_musicMuted?0:_musicVol*0.5;
   _musicUpdateMuteIcon();
 }
 
@@ -11648,11 +11626,6 @@ function _musicUpdateMuteIcon(){
   if(_musicMuted||_musicVol===0){btn.textContent='🔇';btn.classList.add('muted');}
   else if(_musicVol<0.5){btn.textContent='🔉';btn.classList.remove('muted');}
   else{btn.textContent='🔊';btn.classList.remove('muted');}
-}
-
-function toggleMusicWidget(){
-  var w=document.getElementById('musicWidget');
-  w.classList.toggle('hidden-music');
 }
 
 /* ============ IMPROVEMENT 4: ACCESSIBILITY ============ */
@@ -11954,19 +11927,5 @@ function showLogoQuizResult(){
 }
 
 </script>
-<!-- MUSIC PLAYER -->
-<button class="music-toggle" id="musicToggle" onclick="toggleMusicWidget()" aria-label="Musique">🎵</button>
-<div class="music-widget hidden-music" id="musicWidget">
-  <button class="music-btn" onclick="musicPrev()" aria-label="Précédent">⏮</button>
-  <button class="music-btn play-btn" id="musicPlayBtn" onclick="musicTogglePlay()" aria-label="Play/Pause">▶</button>
-  <button class="music-btn" onclick="musicNext()" aria-label="Suivant">⏭</button>
-  <div class="music-title" id="musicTitle">Aucune</div>
-  <div class="music-vol">
-    <button class="music-btn" onclick="musicVolDown()" aria-label="Volume -" style="font-size:0.85rem">🔉</button>
-    <span id="musicVolLabel">80%</span>
-    <button class="music-btn" onclick="musicVolUp()" aria-label="Volume +" style="font-size:0.85rem">🔊</button>
-    <button class="music-btn" id="musicMuteBtn" onclick="musicMute()" aria-label="Mute" style="font-size:0.85rem">🔊</button>
-  </div>
-</div>
 <div id="toast" class="toast"></div>`n<div id="dailyRewardBanner" class="daily-reward-banner"><div class="daily-reward-title">\uD83C\uDF1F R�compense Quotidienne !</div><div class="daily-reward-subtitle" id="dailyRewardDay">Jour 1</div><div style="font-size:2rem;margin:8px 0;" id="dailyRewardAmount">+5 \uD83E\uDE99</div><button class="daily-reward-claim" onclick="closeDailyReward()">Super !</button></div>`n<div id="toast" class="toast"></div><div id="dailyRewardBanner" class="daily-reward-banner"><div class="daily-reward-title">? R�compense Quotidienne !</div><div class="daily-reward-subtitle" id="dailyRewardDay">Jour 1</div><div style="font-size:2rem;margin:8px 0;" id="dailyRewardAmount">+5 ??</div><button class="daily-reward-claim" onclick="closeDailyReward()">Super !</button></div></body>
 </html>
