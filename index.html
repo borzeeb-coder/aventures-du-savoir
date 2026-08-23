@@ -6366,17 +6366,20 @@ function openQuiz(subject){
   state.current.qIndex = 0;
   state.current.score = 0;
   state.current.lazyOffset = 0;
-  const src = (QUESTIONS[state.level]||{})[subject];
-  if(!src || !src.length){ owlSay("Oups, ce niveau n'est pas encore disponible pour cette matière ! Essaie un autre niveau."); goHome(); return; }
-  const indexed = shuffleArray(src.map((q,i)=>({...q, idx:i})));
-  const prefix = state.level + '_' + subject + '_';
-  const mastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) >= 3);
-  const nonMastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) < 3);
-  const kept = nonMastered.length >= 3 ? nonMastered : indexed;
-  state.current.questionList = kept.slice(0, 15);
-  state.current.allQuestions = kept;
-  state.current.masteredCount = mastered.length;
-  state.current.totalQuestionCount = kept.length;
+  const isSpeedMode = state.current._speedMode;
+  if(!isSpeedMode){
+    const src = (QUESTIONS[state.level]||{})[subject];
+    if(!src || !src.length){ owlSay("Oups, ce niveau n'est pas encore disponible pour cette matière ! Essaie un autre niveau."); goHome(); return; }
+    const indexed = shuffleArray(src.map((q,i)=>({...q, idx:i})));
+    const prefix = state.level + '_' + subject + '_';
+    const mastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) >= 3);
+    const nonMastered = indexed.filter(q => (state.mastery[prefix + q.idx] || 0) < 3);
+    const kept = nonMastered.length >= 3 ? nonMastered : indexed;
+    state.current.questionList = kept.slice(0, 15);
+    state.current.allQuestions = kept;
+    state.current.masteredCount = mastered.length;
+    state.current.totalQuestionCount = kept.length;
+  }
   state.current.missed = [];
   state.current.isReview = false;
   const meta = SUBJECT_META[subject];
@@ -11746,6 +11749,9 @@ function setupAccessibility(){
 function getQuestions(subject){
   return ((QUESTIONS[state.level]||{})[subject]||[]).slice();
 }
+function randInt(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
 
 /* ============ IMPROVEMENT 5: NEW GAME MODES ============ */
 function startSpeedQuiz(){
@@ -11753,7 +11759,7 @@ function startSpeedQuiz(){
   var subj=subjects[Math.floor(Math.random()*subjects.length)];
   var questions=getQuestions(subj);var qs=shuffleArray(questions).slice(0,10);
   if(qs.length<4){owlSay('Pas assez de questions pour ce mode !',3000);return}
-  state.current={subject:subj,score:0,total:qs.length,questionList:qs,qIndex:0,missed:[],isReview:false,startTime:Date.now(),timeLimit:30};
+  state.current={subject:subj,score:0,total:qs.length,questionList:qs,qIndex:0,missed:[],isReview:false,startTime:Date.now(),timeLimit:30,_speedMode:true};
   owlSay('\u26A1 Contre-la-montre : 30 secondes !',2500);
   openQuiz(subj);
 }
