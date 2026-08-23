@@ -3092,6 +3092,7 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
 <nav class="tab-bar hidden" id="tabBar" aria-label="Navigation principale">
   <button class="tab-btn" data-tab="home" onclick="switchTab('home')" role="button" tabindex="0"><span class="tab-ico">🏠</span><span class="tab-lbl">Accueil</span></button>
   <button class="tab-btn" data-tab="world" onclick="switchTab('world')" role="button" tabindex="0"><span class="tab-ico">🌍</span><span class="tab-lbl">Monde</span></button>
+  <button class="tab-btn" data-tab="learn" onclick="switchTab('learn')" role="button" tabindex="0"><span class="tab-ico">📚</span><span class="tab-lbl">Apprendre</span></button>
   <button class="tab-btn" data-tab="games" onclick="switchTab('games')" role="button" tabindex="0"><span class="tab-ico">🎮</span><span class="tab-lbl">Jeux</span></button>
   <button class="tab-btn" data-tab="stats" onclick="switchTab('stats')" role="button" tabindex="0"><span class="tab-ico">⭐</span><span class="tab-lbl">Progrès</span></button>
   <button class="tab-btn" data-tab="profile" onclick="switchTab('profile')" role="button" tabindex="0"><span class="tab-ico">👤</span><span class="tab-lbl">Profil</span></button>
@@ -4937,7 +4938,9 @@ function switchTab(tab){
   if(tab === 'world'){ openWorldMap(); return; }
   if(tab === 'stats'){ openStatsScreen(); return; }
   if(tab === 'profile'){ openProfileSwitcher(); return; }
-  show(tab === 'games' ? 'gamesMenuScreen' : 'homeScreen');
+  if(tab === 'learn'){ show('gamesScreen'); renderStars(); renderAvatars(); renderOwlHunger(); staggerIslands(); return; }
+  if(tab === 'games'){ show('gamesMenuScreen'); return; }
+  show('homeScreen');
   renderStars();
   renderAvatars();
   renderOwlHunger();
