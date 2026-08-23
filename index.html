@@ -2213,14 +2213,14 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
 .music-h-mute.muted{opacity:0.4 !important;}
 @keyframes musicPulse{0%,100%{box-shadow:0 2px 0 #D98A00, 0 0 8px rgba(255,215,79,0.3);}50%{box-shadow:0 2px 0 #D98A00, 0 0 16px rgba(255,215,79,0.5);}}
 @media(max-width:700px){
-  .music-header-controls{display:none !important;}
+  .music-h-btn{width:24px !important;height:24px !important;font-size:0.75rem !important;}
+  #musicTitleHeader{display:none !important;}
 }
 
 </style>
 </head>
 <body>
 <a href="#app" class="skip-link" style="position:absolute;top:-100px;left:8px;background:var(--plum);color:#fff;padding:8px 16px;border-radius:0 0 8px 8px;z-index:9999;font-weight:700;text-decoration:none;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Aller au contenu principal</a>
-<div id="highContrastToggle" onclick="toggleHighContrast()" style="position:fixed;bottom:8px;right:8px;z-index:999;background:var(--surface);border:2px solid var(--plum);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;opacity:0.7;display:none;" title="Activer le contraste élevé" aria-label="Activer/désactiver le contraste élevé">🔲</div>
 
 <div class="bg-deco" aria-hidden="true">
   <span class="sun" style="left:86%;top:4%;">☀️</span>
@@ -5335,8 +5335,24 @@ function owlSay(text, duration, skipSpeak){
     svg.classList.remove('talking');
   }, dur);
 }
+
+function _owlGetName(){
+  try{ var n = (typeof state!=='undefined' && state && (state.pseudo || state.firstName)); return n || null; }catch(e){ return null; }
+}
+function _owlWithName(msg){
+  var name = _owlGetName();
+  if(name && Math.random() < 0.4){
+    var inserts = [name+' ! ', name+', ', ' '+name+' !', ', '+name+'...'];
+    var ins = inserts[Math.floor(Math.random()*inserts.length)];
+    var words = msg.split(' ');
+    if(Math.random()<0.5){ return ins + msg; }
+    else{ return msg.replace(/!?\s*$/, ins); }
+  }
+  return msg;
+}
+
 function owlEncourage(specific){
-  const msg = specific || OWL_ENCOURAGE[Math.floor(Math.random()*OWL_ENCOURAGE.length)];
+  const msg = specific || _owlWithName(OWL_ENCOURAGE[Math.floor(Math.random()*OWL_ENCOURAGE.length)]);
   owlSay(msg, 3500, true);
   soundCorrect();
   owlHappy();
@@ -5392,7 +5408,7 @@ function startIdleAntics(){
         setTimeout(()=>emoji.classList.remove('show'), 1200);
       }
     } else {
-      owlSay(OWL_ENCOURAGE[Math.floor(Math.random()*OWL_ENCOURAGE.length)], 2800, true);
+      owlSay(_owlWithName(OWL_ENCOURAGE[Math.floor(Math.random()*OWL_ENCOURAGE.length)]), 2800, true);
     }
   }, 12000);
 }
@@ -5400,7 +5416,7 @@ function stopIdleAntics(){
   if(idleAnticsTimer){ clearInterval(idleAnticsTimer); idleAnticsTimer = null; }
 }
 function owlComfort(specific){
-  const msg = specific || OWL_COMFORT[Math.floor(Math.random()*OWL_COMFORT.length)];
+  const msg = specific || _owlWithName(OWL_COMFORT[Math.floor(Math.random()*OWL_COMFORT.length)]);
   owlSay(msg, 3200, true);
   soundWrong();
 }
@@ -5410,7 +5426,7 @@ function announceSelection(selectedText, isCorrect){
 }
 
 function owlTip(){
-  owlSay(OWL_TIPS[Math.floor(Math.random()*OWL_TIPS.length)]);
+  owlSay(_owlWithName(OWL_TIPS[Math.floor(Math.random()*OWL_TIPS.length)]));
 }
 function owlConfetti(n){
   const c = ['#FFC800','#FF4B4B','#CE82FF','#58CC02','#2EC4B6','#FF86D0'];
@@ -9165,7 +9181,7 @@ function startAutoEncourage(){
     if(!hs2 || hs2.classList.contains('hidden')) return;
     const r = Math.random();
     if(r < 0.4) owlTip();
-    else if(r < 0.7) owlSay(OWL_ENCOURAGE[Math.floor(Math.random()*OWL_ENCOURAGE.length)], 3500, true);
+    else if(r < 0.7) owlSay(_owlWithName(OWL_ENCOURAGE[Math.floor(Math.random()*OWL_ENCOURAGE.length)]), 3500, true);
     else owlFunny();
   }, 18000);
   startIdleAntics();
