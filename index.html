@@ -2141,8 +2141,13 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
 .splash-orb-1{width:200px;height:200px;background:#FF6B9D;top:10%;left:10%;animation-delay:0s}
 .splash-orb-2{width:160px;height:160px;background:#7B68EE;top:60%;right:10%;animation-delay:1s}
 .splash-orb-3{width:120px;height:120px;background:#00D4AA;bottom:10%;left:30%;animation-delay:2s}
-.splash-owl{font-size:5rem;position:relative;z-index:1;animation:splashOwlBounce 1.5s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3))}
-@keyframes splashOwlBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}}
+.splash-owl{font-size:5rem;position:relative;z-index:1;animation:splashOwlSpin 2s cubic-bezier(.4,0,.2,1) infinite,splashOwlGlow 1.5s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(255,200,0,.6));will-change:transform}
+@keyframes splashOwlSpin{0%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-25px) rotate(90deg) scale(1.15)}50%{transform:translateY(-10px) rotate(180deg) scale(1)}75%{transform:translateY(-30px) rotate(270deg) scale(1.1)}100%{transform:translateY(0) rotate(360deg) scale(1)}}
+@keyframes splashOwlGlow{0%{filter:drop-shadow(0 0 12px rgba(255,200,0,.4)) drop-shadow(0 0 30px rgba(255,100,200,.3))}100%{filter:drop-shadow(0 0 25px rgba(255,200,0,.8)) drop-shadow(0 0 50px rgba(255,100,200,.5))}}
+.splash-owl::before,.splash-owl-ring{content:'✦';position:absolute;top:-10px;right:-10px;font-size:1.2rem;color:#FFD54F;animation:owlStar1 1.2s ease-in-out infinite;z-index:2}
+.splash-owl::after,.splash-owl-star{content:'⭐';position:absolute;bottom:-5px;left:-12px;font-size:.9rem;animation:owlStar2 1.8s ease-in-out infinite;z-index:2}
+@keyframes owlStar1{0%,100%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}50%{transform:translateY(-15px) rotate(180deg) scale(1.4);opacity:.6}}
+@keyframes owlStar2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.8}50%{transform:translateY(10px) rotate(-120deg);opacity:.4}}
 .splash-title{font-size:clamp(1.8rem,5vw,2.5rem);font-weight:800;margin:16px 0 0;text-shadow:3px 3px 0 rgba(0,0,0,.2);position:relative;z-index:1;text-align:center;padding:0 16px}
 .splash-title span{display:inline-block;animation:splashLetterBounce 1.2s ease-in-out infinite}
 @keyframes splashLetterBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -8950,8 +8955,13 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
 .splash-orb-1{width:200px;height:200px;background:#FF6B9D;top:10%;left:10%;animation-delay:0s}
 .splash-orb-2{width:160px;height:160px;background:#7B68EE;top:60%;right:10%;animation-delay:1s}
 .splash-orb-3{width:120px;height:120px;background:#00D4AA;bottom:10%;left:30%;animation-delay:2s}
-.splash-owl{font-size:5rem;position:relative;z-index:1;animation:splashOwlBounce 1.5s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3))}
-@keyframes splashOwlBounce{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-18px) rotate(3deg)}}
+.splash-owl{font-size:5rem;position:relative;z-index:1;animation:splashOwlSpin 2s cubic-bezier(.4,0,.2,1) infinite,splashOwlGlow 1.5s ease-in-out infinite alternate;filter:drop-shadow(0 0 20px rgba(255,200,0,.6));will-change:transform}
+@keyframes splashOwlSpin{0%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-25px) rotate(90deg) scale(1.15)}50%{transform:translateY(-10px) rotate(180deg) scale(1)}75%{transform:translateY(-30px) rotate(270deg) scale(1.1)}100%{transform:translateY(0) rotate(360deg) scale(1)}}
+@keyframes splashOwlGlow{0%{filter:drop-shadow(0 0 12px rgba(255,200,0,.4)) drop-shadow(0 0 30px rgba(255,100,200,.3))}100%{filter:drop-shadow(0 0 25px rgba(255,200,0,.8)) drop-shadow(0 0 50px rgba(255,100,200,.5))}}
+.splash-owl::before,.splash-owl-ring{content:'✦';position:absolute;top:-10px;right:-10px;font-size:1.2rem;color:#FFD54F;animation:owlStar1 1.2s ease-in-out infinite;z-index:2}
+.splash-owl::after,.splash-owl-star{content:'⭐';position:absolute;bottom:-5px;left:-12px;font-size:.9rem;animation:owlStar2 1.8s ease-in-out infinite;z-index:2}
+@keyframes owlStar1{0%,100%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}50%{transform:translateY(-15px) rotate(180deg) scale(1.4);opacity:.6}}
+@keyframes owlStar2{0%,100%{transform:translateY(0) rotate(0deg);opacity:.8}50%{transform:translateY(10px) rotate(-120deg);opacity:.4}}
 .splash-title{font-size:clamp(1.8rem,5vw,2.5rem);font-weight:800;margin:16px 0 0;text-shadow:3px 3px 0 rgba(0,0,0,.2);position:relative;z-index:1;text-align:center;padding:0 16px}
 .splash-title span{display:inline-block;animation:splashLetterBounce 1.2s ease-in-out infinite}
 @keyframes splashLetterBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -9496,7 +9506,7 @@ function showSplash(){
   var s = document.createElement('div');
   s.id = 'avSplash';
   s.style.cssText = 'position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#FF8F00,#FFC800 45%,#F4408C);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Baloo 2",sans-serif;color:#fff;animation:splashOut .5s ease 2s forwards;';
-  s.innerHTML = '<div style="font-size:4rem;animation:splashFly 1.5s ease-in-out infinite;">🦉</div>' +
+  s.innerHTML = '<div style="font-size:4rem;animation:splashOwlSpin 2s cubic-bezier(.4,0,.2,1) infinite;filter:drop-shadow(0 0 20px rgba(255,200,0,.6));position:relative;display:inline-block">'+OWL_MINI_SVG+'<span style="position:absolute;top:-10px;right:-10px;font-size:1.2rem;color:#FFD54F;animation:owlStar1 1.2s ease-in-out infinite">✦</span><span style="position:absolute;bottom:-5px;left:-12px;font-size:.9rem;animation:owlStar2 1.8s ease-in-out infinite">⭐</span></div>' +
     '<h1 style="font-size:2rem;margin:10px 0 0;text-shadow:2px 2px 0 rgba(0,0,0,0.2);">' +
     'Les Aventures du Savoir'.split('').map((ch,i)=> ch===' ' ? ' ' : '<span style="display:inline-block;animation:splashLetter 1.2s ease-in-out infinite;animation-delay:'+(i*0.05)+'s">'+ch+'</span>').join('') +
     '</h1><p style="font-size:1rem;opacity:0.8;margin-top:4px;">Apprendre en s\'amusant !</p>';
@@ -11079,7 +11089,7 @@ function showSplashPremium(){
     particles+='<div class="splash-particle" style="left:'+left+'%;animation-duration:'+dur+'s;animation-delay:'+delay+'s;width:'+size+'px;height:'+size+'px"></div>';
   }
   particles+='</div>';
-  var owl='<div class="splash-owl">🦉</div>';
+  var owl='<div class="splash-owl" style="position:relative;display:inline-block">'+OWL_MINI_SVG+'<span class="splash-owl-ring" style="position:absolute;top:-14px;right:-14px;font-size:1.4rem;color:#FFD54F;animation:owlStar1 1.2s ease-in-out infinite">✦</span><span class="splash-owl-star" style="position:absolute;bottom:-8px;left:-16px;font-size:1rem;animation:owlStar2 1.8s ease-in-out infinite">⭐</span></div>';
   var title='<h1 class="splash-title">';
   'Les Aventures du Savoir'.split('').forEach(function(ch,i){
     title+=ch===' '?' ':'<span style="animation-delay:'+(i*0.05)+'s">'+ch+'</span>';
