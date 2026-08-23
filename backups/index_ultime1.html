@@ -2220,7 +2220,7 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
 </head>
 <body>
 <a href="#app" class="skip-link" style="position:absolute;top:-100px;left:8px;background:var(--plum);color:#fff;padding:8px 16px;border-radius:0 0 8px 8px;z-index:9999;font-weight:700;text-decoration:none;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-100px'">Aller au contenu principal</a>
-<div id="highContrastToggle" onclick="toggleHighContrast()" style="position:fixed;bottom:8px;right:8px;z-index:999;background:var(--surface);border:2px solid var(--plum);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;opacity:0.7;" title="Activer le contraste élevé" aria-label="Activer/désactiver le contraste élevé">🔲</div>
+<div id="highContrastToggle" onclick="toggleHighContrast()" style="position:fixed;bottom:8px;right:8px;z-index:999;background:var(--surface);border:2px solid var(--plum);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;opacity:0.7;display:none;" title="Activer le contraste élevé" aria-label="Activer/désactiver le contraste élevé">🔲</div>
 
 <div class="bg-deco" aria-hidden="true">
   <span class="sun" style="left:86%;top:4%;">☀️</span>
@@ -2258,7 +2258,9 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
         <div class="voice-toggle music-h-btn" onclick="musicPrev()" title="Chanson précédente" role="button" tabindex="0">⏮</div>
         <div class="voice-toggle music-h-btn music-h-play" id="musicPlayBtn" onclick="musicTogglePlay()" title="Play / Pause" role="button" tabindex="0">▶</div>
         <div class="voice-toggle music-h-btn" onclick="musicNext()" title="Chanson suivante" role="button" tabindex="0">⏭</div>
-        <div class="voice-toggle music-h-btn music-h-mute" id="musicMuteBtn" onclick="musicMute()" title="Couler la musique" role="button" tabindex="0">🔊</div>
+        <div class="voice-toggle music-h-btn" onclick="musicVolDown()" title="Volume -" role="button" tabindex="0">🔉</div>
+        <div class="voice-toggle music-h-btn music-h-mute" id="musicMuteBtn" onclick="musicMute()" title="Couper le son" role="button" tabindex="0">🔊</div>
+        <div class="voice-toggle music-h-btn" onclick="musicVolUp()" title="Volume +" role="button" tabindex="0">🔊</div>
         <div id="musicTitleHeader" style="font-size:0.6rem;color:#fff;font-family:'Baloo 2';max-width:70px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center;opacity:0.85;">🎵</div>
       </div>
     </div>
@@ -4555,7 +4557,22 @@ const OWL_TIPS = [
   "Si tu hésites, souffle un coup et relis calmement. 🧘",
   "Le secret de la réussite, c'est la persévérance ! 🔥",
   "Tu as déjà fait un super chemin, continue comme ça ! 🚀",
-  "Je crois en toi, tu peux le faire ! 🎯"
+  "Je crois en toi, tu peux le faire ! 🎯",
+  "Tu veux un secret ? La curiosité est ta meilleure arme ! 🔍",
+  "Apprendre, c'est comme une partie de jeu vidéo ! 🎮",
+  "Chaque réponse te rapproche du sommet ! ⛰️",
+  "Si tu bloques, passe à une autre question et reviens ! 🔁",
+  "Le savoir, c'est un trésor qui ne s'épuise jamais ! 💰",
+  "Tu es plus fort(e) que tu ne le penses ! 💎",
+  "Même les grands scientifiques ont commencé par des bases ! 🔬",
+  "Prends un moment pour respirer si tu es fatigué(e) ! 🌬️",
+  "Demande de l'aide si tu en as besoin, c'est courageux ! 🤝",
+  "Ton cerveau devient plus puissant à chaque exercice ! 🧠⚡",
+  "Essaie de te souvenir de ce que tu as appris hier ! 📅",
+  "Les petits pas mènent à de grandes victoires ! 👣",
+  "Relis la question deux fois avant de choisir ! 👀",
+  "Tu as le droit de te tromper, c'est humain ! ❤️",
+  "Le plus important, c'est de participer ! 🎉"
 ];
 const OWL_ENCOURAGE = [
   "Super travail ! Continue comme ça ! 🎉",
@@ -4577,7 +4594,17 @@ const OWL_ENCOURAGE = [
   "Champion(ne), c'est toi ! 🏆",
   "Rien ne t'arrête, c'est dingue ! 🚀",
   "Tu rends l'apprentissage encore plus génial ! ✨",
-  "Je kiffe ton énergie ! Continue ! 💫"
+  "Je kiffe ton énergie ! Continue ! 💫",
+  "Trop bien ! T'es un as de l'apprentissage ! 🎯",
+  "Bravo bravo bravo ! 🎊🎊🎊",
+  "Je suis tellement fier de toi ! 🦉💖",
+  "Tu me donnes envie d'apprendre aussi ! 📚",
+  "C'est mérité, tu travailles super bien ! 🏅",
+  "Wow, ça c'est de la détermination ! 💎",
+  "Chaque bonne réponse est un pas en avant ! 👟",
+  "Tu es en feu ! Rien ne t'arrête ! 🔥",
+  "Que de talent, c'est impressionnant ! 🌠",
+  "Génie en herbe, c'est toi ça ! 🌳"
 ];
 const OWL_COMFORT = [
   "Pas grave du tout, on apprend de ses erreurs ! 🌱",
@@ -4594,7 +4621,22 @@ const OWL_COMFORT = [
   "Relis bien la question, tu l'auras ! 📖",
   "Tu es sur la bonne voie, ne lâche rien ! 🛤️",
   "Chaque erreur te rapproche de la victoire ! 🎯",
-  "Je suis fier de toi d'avoir essayé ! 🫶"
+  "Je suis fier de toi d'avoir essayé ! 🫶",
+  "C'est OK de se tromper, tu es en train d'apprendre ! 🧩",
+  "Les erreurs font partie du chemin, courage ! 🛤️",
+  "Ne t'inquiète pas, on apprend tous à notre rythme ! 🐢",
+  "Tu es plus fort(e) que tu ne le crois ! 💎",
+  "La prochaine fois, tu auras la bonne réponse ! 🔮",
+  "Respire, détends-toi, et essaie autrement ! 🧘",
+  "Moi aussi je me trompe parfois, c'est normal ! 🦉😊",
+  "Tu as le courage d'essayer, et c'est ça le plus important ! ⭐",
+  "Ne lâche pas, le succès est tout proche ! 🏁",
+  "C'est en tombant qu'on apprend à se relever ! 🤸",
+  "Chaque expert a été un débutant un jour ! 🌅",
+  "Prends-le comme un jeu, sans pression ! 🎲",
+  "Tu as déjà fait la moitié du chemin, bravo ! 🛤️",
+  "Rappelle-toi : les meilleur(e)s ont d'abord échoué ! 🏔️",
+  "Je suis ton allié, on fait ça ensemble ! 🤝"
 ];
 let comboCount = 0;
 function owlComboCheck(){
