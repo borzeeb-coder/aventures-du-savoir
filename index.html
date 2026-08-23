@@ -258,10 +258,11 @@
   .options{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   @media (max-width:480px){ .options{grid-template-columns:1fr;} }
   .opt-btn{
-    background:#fff; border:none; border-radius:18px; padding:14px 12px; font-family:'Quicksand'; font-weight:700;
-    font-size:1.05rem; cursor:pointer; box-shadow:0 5px 0 #d8cdb8, 0 8px 14px rgba(20,10,40,0.18); transition:transform .1s ease, box-shadow .1s ease;
+    background:rgba(255,255,255,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.5); border-radius:18px; padding:14px 12px; font-family:'Quicksand'; font-weight:700;
+    font-size:1.05rem; cursor:pointer; box-shadow:0 5px 0 #d8cdb8, 0 8px 14px rgba(20,10,40,0.18), inset 0 1px 0 rgba(255,255,255,0.6); transition:transform .1s ease, box-shadow .1s ease, filter .1s ease;
   }
-  .opt-btn:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 7px 0 #d8cdb8, 0 10px 16px rgba(20,10,40,0.22);}
+  .opt-btn:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 7px 0 #d8cdb8, 0 10px 16px rgba(20,10,40,0.22), inset 0 1px 0 rgba(255,255,255,0.6); filter:brightness(1.05);}
   .opt-btn:active:not(:disabled){transform:translateY(3px); box-shadow:0 2px 0 #d8cdb8, 0 4px 8px rgba(20,10,40,0.18);}
   .opt-btn.correct{background:var(--grass); color:white; box-shadow:0 5px 0 #2c8f43, 0 8px 14px rgba(20,10,40,0.22); animation:correctPop .4s ease;}
   .opt-btn.wrong{background:var(--coral); color:white; box-shadow:0 5px 0 #c2492f, 0 8px 14px rgba(20,10,40,0.22); animation:wrongShake .4s ease;}
@@ -1445,10 +1446,11 @@
 
   /* ===== CARTES : panneaux lumineux + entrée rebondie ===== */
   .card-screen{
-    background:linear-gradient(180deg,#ffffff,#fbf6ff);
-    border:2px solid rgba(139,111,217,0.28);
+    background:linear-gradient(180deg,rgba(255,255,255,0.88),rgba(251,246,255,0.88));
+    backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+    border:2px solid rgba(255,255,255,0.45);
     border-radius:28px;
-    box-shadow:0 8px 0 #0B0B2E, 0 14px 30px rgba(0,0,0,0.35), 0 0 26px rgba(139,111,217,0.3);
+    box-shadow:0 8px 0 #0B0B2E, 0 14px 30px rgba(0,0,0,0.35), 0 0 26px rgba(139,111,217,0.2), inset 0 1px 0 rgba(255,255,255,0.7);
     animation:cardEnter .45s cubic-bezier(.34,1.56,.64,1);
   }
   @keyframes cardEnter{ from{transform:scale(.94) translateY(16px); opacity:0;} to{transform:scale(1) translateY(0); opacity:1;} }
@@ -1566,33 +1568,52 @@
 
   /* ===== BARRE DE NAVIGATION SUPER APP ===== */
   .tab-bar{
-    position:fixed; left:50%; transform:translateX(-50%); bottom:14px; z-index:70;
+    position:fixed; left:50%; transform:translateX(-50%) perspective(600px); bottom:14px; z-index:70;
     display:flex; gap:4px; padding:8px 10px; border-radius:30px;
-    background:linear-gradient(135deg,#17104A,#2A1560);
-    border:4px solid #1B1B2F;
-    box-shadow:0 7px 0 #1B1B2F, 0 14px 26px rgba(0,0,0,0.35);
+    background:linear-gradient(135deg,rgba(23,16,74,0.75),rgba(42,21,96,0.75));
+    backdrop-filter:blur(20px) saturate(1.8); -webkit-backdrop-filter:blur(20px) saturate(1.8);
+    border:2px solid rgba(255,255,255,0.15);
+    box-shadow:0 8px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(139,111,217,0.15);
     max-width:calc(100vw - 20px);
+    transform-style:preserve-3d;
   }
   .tab-btn{
     border:none; background:transparent; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:2px;
     padding:6px 12px; border-radius:20px; min-width:62px;
     font-family:'Baloo 2'; font-weight:700; font-size:0.7rem; color:#C9BDF0;
-    transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+    transition:transform .2s cubic-bezier(.34,1.56,.64,1), background .15s ease, box-shadow .2s ease, filter .15s ease;
+    transform-style:preserve-3d;
   }
-  .tab-btn .tab-ico{font-size:1.3rem; filter:grayscale(0.5); opacity:0.85; transition:all .15s ease;}
+  .tab-btn .tab-ico{font-size:1.3rem; filter:grayscale(0.5); opacity:0.85; transition:all .2s cubic-bezier(.34,1.56,.64,1);}
   .tab-btn .tab-lbl{white-space:nowrap;}
-  .tab-btn:hover{transform:translateY(-2px);}
-  .tab-btn:active{transform:translateY(1px);}
+  .tab-btn:hover{transform:translateY(-3px) scale(1.08); filter:brightness(1.15);}
+  .tab-btn:active{transform:translateY(2px) scale(0.92);}
   .tab-btn.active{
     background:linear-gradient(180deg,#FFD54F,#FF9F00); color:#1B1B2F;
-    box-shadow:0 3px 0 #1B1B2F, inset 0 1px 0 rgba(255,255,255,0.5);
-    transform:translateY(-4px);
+    box-shadow:0 4px 0 #1B1B2F, inset 0 1px 0 rgba(255,255,255,0.5), 0 0 18px rgba(255,215,79,0.4);
+    transform:translateY(-6px) scale(1.1);
+    filter:brightness(1.1);
   }
-  .tab-btn.active .tab-ico{filter:none; opacity:1; transform:scale(1.2);}
+  .tab-btn.active .tab-ico{filter:none; opacity:1; transform:scale(1.3) rotateZ(-5deg);}
   @media (max-width:420px){
     .tab-btn{min-width:0; padding:6px 8px;}
     .tab-btn .tab-lbl{font-size:0.6rem;}
+  }
+
+  /* ===== GAME CARD 3D TILT ===== */
+  .game-card{
+    perspective:800px; transform-style:preserve-3d;
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease, filter .2s ease;
+    will-change:transform;
+  }
+  .game-card:hover{
+    filter:brightness(1.08) saturate(1.1);
+    box-shadow:0 8px 0 rgba(0,0,0,0.2), 0 20px 40px rgba(0,0,0,0.25), 0 0 20px rgba(255,255,255,0.1);
+  }
+  .game-card:active{
+    transform:translateZ(-10px) scale(0.96) !important;
+    transition:transform .08s ease;
   }
 
   /* ===== CARTE CONTINUER L'AVENTURE ===== */
@@ -2467,57 +2488,57 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
     </div>
     <div style="padding:8px 12px">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div onclick="startSpeedQuiz()" style="background:linear-gradient(135deg,#FF4B4B,#E53935);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #C62828;box-shadow:0 4px 0 #B71C1C;transition:transform .15s">
+        <div class="game-card" onclick="startSpeedQuiz()" style="background:linear-gradient(135deg,#FF4B4B,#E53935);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #C62828;box-shadow:0 4px 0 #B71C1C;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">⚡</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Speed Quiz</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Réponds vite !</div>
         </div>
-        <div onclick="startCarQuiz()" style="background:linear-gradient(135deg,#2196F3,#1565C0);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #0D47A1;box-shadow:0 4px 0 #0D47A1;transition:transform .15s">
+        <div class="game-card" onclick="startCarQuiz()" style="background:linear-gradient(135deg,#2196F3,#1565C0);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #0D47A1;box-shadow:0 4px 0 #0D47A1;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🚗</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Devine la Voiture</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">34 marques auto</div>
         </div>
-        <div onclick="startLogoQuiz()" style="background:linear-gradient(135deg,#FF9800,#E65100);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #BF360C;box-shadow:0 4px 0 #8D2608;transition:transform .15s">
+        <div class="game-card" onclick="startLogoQuiz()" style="background:linear-gradient(135deg,#FF9800,#E65100);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #BF360C;box-shadow:0 4px 0 #8D2608;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🏷️</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Devine le Logo</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">40 marques monde</div>
         </div>
-        <div onclick="startMathPuzzle()" style="background:linear-gradient(135deg,#7B68EE,#9B59B6);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #5B4FC0;box-shadow:0 3px 0 #4A3FA0;transition:transform .15s">
+        <div class="game-card" onclick="startMathPuzzle()" style="background:linear-gradient(135deg,#7B68EE,#9B59B6);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #5B4FC0;box-shadow:0 3px 0 #4A3FA0;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🧩</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Puzzle Maths</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Assemble les pièces</div>
         </div>
-        <div onclick="startLetterRace()" style="background:linear-gradient(135deg,#FF6B9D,#E84393);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #C2185B;box-shadow:0 3px 0 #AD1457;transition:transform .15s">
+        <div class="game-card" onclick="startLetterRace()" style="background:linear-gradient(135deg,#FF6B9D,#E84393);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #C2185B;box-shadow:0 3px 0 #AD1457;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🏁</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Course Lettres</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Vite, forme des mots !</div>
         </div>
-        <div onclick="startLab()" style="background:linear-gradient(135deg,#00D4AA,#2EC4B6);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #00897B;box-shadow:0 3px 0 #00695C;transition:transform .15s">
+        <div class="game-card" onclick="startLab()" style="background:linear-gradient(135deg,#00D4AA,#2EC4B6);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #00897B;box-shadow:0 3px 0 #00695C;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🔬</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Laboratoire</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Expériences fun</div>
         </div>
-        <div onclick="openHangman()" style="background:linear-gradient(135deg,#6D4C41,#4E342E);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #3E2723;box-shadow:0 3px 0 #3E2723;transition:transform .15s">
+        <div class="game-card" onclick="openHangman()" style="background:linear-gradient(135deg,#6D4C41,#4E342E);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #3E2723;box-shadow:0 3px 0 #3E2723;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🎯</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Pendu</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">5 modes différents</div>
         </div>
-        <div onclick="openMemory()" style="background:linear-gradient(135deg,#AB47BC,#7B1FA2);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #6A1B9A;box-shadow:0 3px 0 #4A148C;transition:transform .15s">
+        <div class="game-card" onclick="openMemory()" style="background:linear-gradient(135deg,#AB47BC,#7B1FA2);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #6A1B9A;box-shadow:0 3px 0 #4A148C;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🃏</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Memory</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Retrouve les paires</div>
         </div>
-        <div onclick="openWords()" style="background:linear-gradient(135deg,#26A69A,#00796B);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #00695C;box-shadow:0 3px 0 #004D40;transition:transform .15s">
+        <div class="game-card" onclick="openWords()" style="background:linear-gradient(135deg,#26A69A,#00796B);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #00695C;box-shadow:0 3px 0 #004D40;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🔤</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Mots Cachés</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Trouve les mots</div>
         </div>
-        <div onclick="openClock()" style="background:linear-gradient(135deg,#5C6BC0,#3949AB);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #283593;box-shadow:0 3px 0 #1A237E;transition:transform .15s">
+        <div class="game-card" onclick="openClock()" style="background:linear-gradient(135deg,#5C6BC0,#3949AB);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #283593;box-shadow:0 3px 0 #1A237E;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🕐</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Horloge</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Apprends l'heure</div>
         </div>
-        <div onclick="openTimeAttack()" style="background:linear-gradient(135deg,#EF5350,#C62828);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #B71C1C;box-shadow:0 3px 0 #880E4F;transition:transform .15s">
+        <div class="game-card" onclick="openTimeAttack()" style="background:linear-gradient(135deg,#EF5350,#C62828);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #B71C1C;box-shadow:0 3px 0 #880E4F;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">⏱️</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Contre-la-Montre</div>
           <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Score max en 60s</div>
@@ -4928,7 +4949,7 @@ function switchTab(tab){
   if(tab === 'stats'){ openStatsScreen(); return; }
   if(tab === 'profile'){ openProfileSwitcher(); return; }
   if(tab === 'learn'){ show('gamesScreen'); renderStars(); renderAvatars(); renderOwlHunger(); staggerIslands(); return; }
-  if(tab === 'games'){ show('gamesMenuScreen'); return; }
+  if(tab === 'games'){ show('gamesMenuScreen'); setTimeout(initGameCardTilt,50); return; }
   show('homeScreen');
   renderStars();
   renderAvatars();
@@ -8990,6 +9011,33 @@ function staggerIslands(){
       el.insertAdjacentElement('afterbegin', num);
     }
     el.classList.add('pop-appear');
+  });
+}
+
+/* ===== GAME CARD 3D TILT ===== */
+function initGameCardTilt(){
+  document.querySelectorAll('.game-card').forEach(card=>{
+    if(card.dataset.tiltInit) return;
+    card.dataset.tiltInit='1';
+    card.addEventListener('mousemove', e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-0.5;
+      const y=(e.clientY-r.top)/r.height-0.5;
+      card.style.transform=`perspective(800px) rotateY(${x*18}deg) rotateX(${-y*18}deg) scale3d(1.05,1.05,1.05)`;
+    });
+    card.addEventListener('mouseleave', ()=>{
+      card.style.transform='perspective(800px) rotateY(0) rotateX(0) scale3d(1,1,1)';
+    });
+    card.addEventListener('touchmove', e=>{
+      const t=e.touches[0];
+      const r=card.getBoundingClientRect();
+      const x=(t.clientX-r.left)/r.width-0.5;
+      const y=(t.clientY-r.top)/r.height-0.5;
+      card.style.transform=`perspective(800px) rotateY(${x*12}deg) rotateX(${-y*12}deg) scale3d(1.03,1.03,1.03)`;
+    },{passive:true});
+    card.addEventListener('touchend', ()=>{
+      card.style.transform='perspective(800px) rotateY(0) rotateX(0) scale3d(1,1,1)';
+    });
   });
 }
 
