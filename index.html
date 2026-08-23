@@ -11719,6 +11719,11 @@ function setupAccessibility(){
   observer.observe(document.body,{childList:true,subtree:true});
 }
 
+/* ============ HELPER: GET QUESTIONS ============ */
+function getQuestions(subject){
+  return ((QUESTIONS[state.level]||{})[subject]||[]).slice();
+}
+
 /* ============ IMPROVEMENT 5: NEW GAME MODES ============ */
 function startSpeedQuiz(){
   var subjects=['maths','francais','sciences','anglais'];
