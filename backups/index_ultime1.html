@@ -9041,6 +9041,159 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
   --color-success:#5CE882;--color-danger:#FF6B6B;--color-warning:#FFD874;--color-info:#4DC9F6;--color-accent:#9B8AFF;
 }
 
+/* --- AMBIENT MUSIC INDICATOR --- */
+.ambient-music-indicator{
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.7);color:#fff;padding:6px 16px;border-radius:20px;
+  font-size:0.75rem;z-index:900;pointer-events:none;opacity:0;transition:opacity .5s;
+  backdrop-filter:blur(8px);
+}
+.ambient-music-indicator.show{opacity:1;}
+
+/* --- SCREEN TRANSITION --- */
+.screen-enter{animation:screenSlideIn .35s cubic-bezier(.4,0,.2,1);}
+@keyframes screenSlideIn{
+  0%{opacity:0;transform:translateY(30px) scale(0.96);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+.screen-exit{animation:screenSlideOut .25s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes screenSlideOut{
+  0%{opacity:1;transform:translateY(0) scale(1);}
+  100%{opacity:0;transform:translateY(-20px) scale(0.97);}
+}
+
+/* --- ENHANCED CONFETTI BURST --- */
+.confetti-burst{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;}
+.confetti-piece{
+  position:absolute;width:10px;height:10px;
+  animation:confettiFall var(--fall-dur, 2.5s) ease-in forwards;
+}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translateY(-20px) rotate(0deg) scale(1);}
+  80%{opacity:1;}
+  100%{opacity:0;transform:translateY(100vh) rotate(720deg) scale(0.3);}
+}
+
+/* --- STREAK CALENDAR --- */
+.streak-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:320px;margin:12px auto;}
+.streak-day{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;font-weight:700;border:2px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);transition:all .3s;
+}
+.streak-day.done{background:linear-gradient(135deg,#FFC800,#FF9500);color:#fff;border-color:#FF9500;box-shadow:0 2px 8px rgba(255,149,0,0.4);}
+.streak-day.today{border-color:#FFC800;box-shadow:0 0 12px rgba(255,200,0,0.5);}
+
+/* --- STORY CHOICE BUTTONS --- */
+.story-choice{
+  display:block;width:100%;padding:14px 18px;margin:8px 0;border-radius:14px;border:2px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.08);color:#fff;font-size:1rem;font-weight:600;
+  cursor:pointer;transition:all .2s;text-align:left;backdrop-filter:blur(4px);
+}
+.story-choice:hover{background:rgba(255,200,0,0.2);border-color:#FFC800;transform:translateX(6px);box-shadow:0 4px 16px rgba(255,200,0,0.15);}
+.story-choice:active{transform:translateX(3px) scale(0.98);}
+
+/* --- PROGRESS RING ANIMATED --- */
+.progress-ring-circle{
+  transition:stroke-dashoffset 0.6s cubic-bezier(.4,0,.2,1);
+  transform:rotate(-90deg);transform-origin:50% 50%;
+}
+
+/* --- FLOATING BADGE POP --- */
+@keyframes badgePop{
+  0%{transform:scale(0) rotate(-20deg);opacity:0;}
+  50%{transform:scale(1.3) rotate(5deg);}
+  100%{transform:scale(1) rotate(0deg);opacity:1;}
+}
+.badge-pop{animation:badgePop .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+
+/* --- IMPROVED DARK MODE: DEEP NATURE HUES --- */
+body.dark-mode{
+  --owl-body:#3B2D5C;--owl-belly:#4A3B6E;--owl-cheeks:#6B5B8E;
+  background:linear-gradient(180deg,#07071f 0%,#0d0d24 35%,#150a2e 65%,#0a0a1a 100%)!important;
+}
+body.dark-mode .topbar{background:rgba(20,15,40,0.85)!important;backdrop-filter:blur(16px);border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .island{
+  background:linear-gradient(135deg,rgba(60,40,100,0.6),rgba(40,25,80,0.4))!important;
+  border-color:rgba(120,80,180,0.3)!important;box-shadow:0 4px 0 rgba(30,15,60,0.5),0 8px 20px rgba(0,0,0,0.3)!important;
+}
+body.dark-mode .island:hover{border-color:rgba(255,200,0,0.5)!important;box-shadow:0 4px 0 rgba(80,60,20,0.5),0 8px 24px rgba(255,200,0,0.15)!important;}
+body.dark-mode .opt-btn{
+  background:linear-gradient(135deg,rgba(50,35,80,0.8),rgba(35,25,60,0.6))!important;
+  border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;
+}
+body.dark-mode .opt-btn:hover:not(:disabled){background:linear-gradient(135deg,rgba(90,60,140,0.8),rgba(70,45,120,0.6))!important;}
+body.dark-mode .card-screen{background:rgba(20,15,40,0.92)!important;backdrop-filter:blur(12px);border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .question-box{background:rgba(40,25,70,0.6)!important;}
+body.dark-mode .tab-bar{background:rgba(15,10,30,0.9)!important;backdrop-filter:blur(16px);border-color:rgba(80,55,130,0.3)!important;}
+body.dark-mode .tab-btn{color:rgba(180,160,220,0.6)!important;}
+body.dark-mode .tab-btn.active{color:#FFC800!important;}
+body.dark-mode .game-card{border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .trophy{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .stat-card{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.2)!important;}
+body.dark-mode .progress-track{background:rgba(40,25,70,0.5)!important;}
+body.dark-mode .timer-track{background:rgba(40,25,70,0.5)!important;}
+body.dark-mode .feed-btn{background:linear-gradient(135deg,#7B68EE,#9B59B6)!important;border-color:#5B4FC0!important;}
+body.dark-mode .hint-btn{background:rgba(100,80,20,0.6)!important;border-color:rgba(180,140,40,0.3)!important;}
+body.dark-mode .btn-secondary{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .next-btn{background:linear-gradient(135deg,#FFC800,#FF9500)!important;border-color:#CC8800!important;color:#1a1a2e!important;}
+body.dark-mode .onboard-input{background:rgba(40,25,70,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .avatar-choice{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .avatar-choice.selected{border-color:#FFC800!important;background:rgba(80,60,120,0.6)!important;}
+body.dark-mode .daily-card{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .daily-card.done{background:rgba(30,80,40,0.5)!important;border-color:rgba(60,140,70,0.3)!important;}
+body.dark-mode .challenge-card{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .challenge-opt{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .chat-messages .msg-bubble{background:rgba(50,35,80,0.6)!important;color:#D4C4F0!important;}
+body.dark-mode .msg-row.owl .msg-bubble{background:rgba(70,50,110,0.7)!important;}
+body.dark-mode .msg-row.child .msg-bubble{background:rgba(90,80,50,0.6)!important;}
+body.dark-mode .chip{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .stories-grid .story-card{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .story-reader{background:rgba(20,15,40,0.95)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .wardrobe-grid .wardrobe-item{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .profile-card{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .profile-card.add-profile{background:rgba(20,15,40,0.8)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .mem-card .mem-back{background:rgba(40,25,70,0.6)!important;}
+body.dark-mode .mem-card{box-shadow:4px 4px 0 rgba(20,10,40,0.5)!important;}
+body.dark-mode .badge-item{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .badge-item.locked{background:rgba(30,20,50,0.4)!important;}
+body.dark-mode .levelup-banner{background:rgba(80,60,20,0.9)!important;border-color:rgba(180,140,40,0.4)!important;}
+body.dark-mode .points-trophy{background:rgba(100,80,20,0.6)!important;}
+body.dark-mode .streak-trophy{background:rgba(100,30,30,0.6)!important;}
+body.dark-mode .egg-card{box-shadow:0 5px 0 rgba(20,10,40,0.5)!important;}
+body.dark-mode .result h2{color:#D4C4F0!important;}
+body.dark-mode .result p{color:rgba(180,160,220,0.7)!important;}
+body.dark-mode .owl-bubble{background:rgba(40,25,70,0.9)!important;color:#D4C4F0!important;border-color:rgba(100,70,160,0.4)!important;}
+body.dark-mode .owl-bubble::after{background:rgba(40,25,70,0.9)!important;}
+body.dark-mode .gate-box{background:rgba(40,25,70,0.6)!important;border-color:rgba(100,70,160,0.3)!important;}
+body.dark-mode .gate-box input{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .progress-row .progress-label{color:#D4C4F0!important;}
+body.dark-mode .timer-text{color:#D4C4F0!important;}
+body.dark-mode .feedback .msg{color:#D4C4F0!important;}
+body.dark-mode .chat-input-row input{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .chat-input-row input::placeholder{color:rgba(180,160,220,0.4)!important;}
+body.dark-mode .age-btn{background:rgba(50,35,80,0.6)!important;border-color:rgba(100,70,160,0.3)!important;color:#D4C4F0!important;}
+body.dark-mode .notes-list .note-item{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
+
+/* --- STORY NARRATOR --- */
+.story-narrator{
+  font-style:italic;color:rgba(200,180,240,0.8);font-size:0.9rem;margin:8px 0 16px;
+  padding:10px 14px;border-left:3px solid rgba(200,180,240,0.3);
+  background:rgba(200,180,240,0.05);border-radius:0 8px 8px 0;
+}
+.story-result{
+  text-align:center;padding:24px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(255,200,0,0.15),rgba(255,149,0,0.1));
+  border:2px solid rgba(255,200,0,0.3);margin:16px 0;
+}
+.story-result h3{color:#FFC800;font-size:1.3rem;margin-bottom:8px;}
+
+/* --- MEGA LEVEL PROGRESS RING --- */
+.level-ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}
+.level-ring-wrap .level-number{
+  position:absolute;font-size:1.6rem;font-weight:900;
+  background:linear-gradient(135deg,#FFC800,#FF6B00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
 </style></head><body>
     <div class="diploma">
       <h1>🎓 Diplôme du Savoir</h1>
@@ -12036,6 +12189,217 @@ function showLogoQuizResult(){
   document.getElementById('logoQuizBox').innerHTML=html;
 }
 
+/* ================================================
+   MEGA BLOC FINAL : AMBIENT MUSIC, CONFETTI BURST,
+   SCREEN TRANSITIONS, ENHANCED STORIES, STREAK
+   ================================================ */
+
+/* --- AMBIENT MUSIC BY WORLD --- */
+var _ambientCtx=null,_ambientGain=null,_ambientOscillators=[],_ambientTimer=null;
+var WORLD_AMBIENT={
+  forêt:{melody:[[262,0.4],[330,0.3],[392,0.4],[330,0.3],[294,0.4],[262,0.3]],type:'sine',vol:0.06},
+  ocean:{melody:[[196,0.6],[220,0.5],[262,0.4],[220,0.5],[196,0.6],[175,0.5]],type:'triangle',vol:0.05},
+  volcan:{melody:[[330,0.3],[370,0.3],[392,0.3],[440,0.4],[392,0.3],[370,0.3]],type:'sawtooth',vol:0.03},
+  space:{melody:[[523,0.5],[494,0.4],[440,0.5],[392,0.4],[440,0.5],[494,0.4]],type:'sine',vol:0.04},
+  desert:{melody:[[330,0.6],[349,0.4],[392,0.5],[349,0.4],[330,0.6],[294,0.4]],type:'triangle',vol:0.05},
+  nord:{melody:[[392,0.5],[440,0.4],[494,0.5],[523,0.4],[494,0.5],[440,0.4]],type:'sine',vol:0.04},
+  jungle:{melody:[[262,0.3],[294,0.3],[330,0.3],[392,0.4],[330,0.3],[262,0.4]],type:'square',vol:0.02},
+  ville:{melody:[[440,0.3],[494,0.3],[523,0.4],[587,0.3],[523,0.3],[440,0.4]],type:'triangle',vol:0.04},
+  archipel:{melody:[[294,0.5],[330,0.4],[392,0.5],[440,0.4],[392,0.5],[330,0.4]],type:'sine',vol:0.05},
+  caverne:{melody:[[196,0.6],[220,0.5],[196,0.5],[175,0.6],[165,0.5],[196,0.5]],type:'sine',vol:0.06},
+  nuages:{melody:[[494,0.5],[523,0.5],[587,0.4],[659,0.5],[587,0.4],[523,0.5]],type:'sine',vol:0.03},
+  coeur:{melody:[[330,0.4],[392,0.4],[440,0.4],[392,0.4],[330,0.5],[294,0.4]],type:'triangle',vol:0.05}
+};
+var WORLD_NAMES={forêt:'Forêt',ocean:'Océan',volcan:'Volcan',space:'Espace',desert:'Désert',nord:'Pôle Nord',jungle:'Jungle',ville:'Ville',archipel:'Archipel',caverne:'Caverne',nuages:'Nuages',coeur:'Cœur'};
+
+function startAmbientMusic(worldId){
+  stopAmbientMusic();
+  if(!state.soundEnabled) return;
+  var cfg=WORLD_AMBIENT[worldId];if(!cfg)return;
+  try{
+    _ambientCtx=new(window.AudioContext||window.webkitAudioContext)();
+    _ambientGain=_ambientCtx.createGain();
+    _ambientGain.gain.value=cfg.vol;
+    _ambientGain.connect(_ambientCtx.destination);
+    var idx=0;
+    function playNote(){
+      if(!_ambientCtx||_ambientCtx.state==='closed')return;
+      var freq=cfg.melody[idx%cfg.melody.length][0];
+      var dur=cfg.melody[idx%cfg.melody.length][1];
+      var osc=_ambientCtx.createOscillator();
+      osc.type=cfg.type;osc.frequency.value=freq;
+      var env=_ambientCtx.createGain();
+      env.gain.setValueAtTime(0,_ambientCtx.currentTime);
+      env.gain.linearRampToValueAtTime(1,_ambientCtx.currentTime+0.05);
+      env.gain.exponentialRampToValueAtTime(0.001,_ambientCtx.currentTime+dur);
+      osc.connect(env);env.connect(_ambientGain);
+      osc.start(_ambientCtx.currentTime);
+      osc.stop(_ambientCtx.currentTime+dur+0.1);
+      idx++;
+      _ambientTimer=setTimeout(playNote,dur*1000);
+    }
+    playNote();
+    showAmbientIndicator(WORLD_NAMES[worldId]||worldId);
+  }catch(e){}
+}
+
+function stopAmbientMusic(){
+  if(_ambientTimer){clearTimeout(_ambientTimer);_ambientTimer=null;}
+  if(_ambientCtx){try{_ambientCtx.close();}catch(e){}_ambientCtx=null;}
+  _ambientGain=null;
+  hideAmbientIndicator();
+}
+
+function showAmbientIndicator(name){
+  var el=document.getElementById('ambientMusicIndicator');
+  if(!el){el=document.createElement('div');el.id='ambientMusicIndicator';el.className='ambient-music-indicator';document.body.appendChild(el);}
+  el.textContent='\u266B '+name;
+  el.classList.add('show');
+}
+function hideAmbientIndicator(){var el=document.getElementById('ambientMusicIndicator');if(el)el.classList.remove('show');}
+
+var _origOpenWorld=typeof openWorld==='function'?openWorld:null;
+openWorld=function(worldId){
+  if(_origOpenWorld) _origOpenWorld(worldId);
+  if(state.musicEnabled!==false) startAmbientMusic(worldId);
+};
+var _origGoHome=typeof goHome==='function'?goHome:null;
+goHome=function(){stopAmbientMusic();if(_origGoHome)_origGoHome();};
+
+/* --- CONFETTI BURST --- */
+function confettiBurst(count,duration){
+  count=count||40;duration=duration||2500;
+  var container=document.createElement('div');
+  container.className='confetti-burst';
+  document.body.appendChild(container);
+  var colors=['#FFC800','#FF6B6B','#4DC9F6','#43C463','#FF6B9D','#7B68EE','#FF9500','#9B59B6'];
+  for(var i=0;i<count;i++){
+    var piece=document.createElement('div');
+    piece.className='confetti-piece';
+    piece.style.cssText='left:'+Math.random()*100+'%;top:-10px;width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;background:'+colors[Math.floor(Math.random()*colors.length)]+';border-radius:'+(Math.random()>0.5?'50%':'2px')+';--fall-dur:'+(1.5+Math.random()*1.5)+'s;animation-delay:'+(Math.random()*0.3)+'s;';
+    container.appendChild(piece);
+  }
+  setTimeout(function(){if(container.parentNode)container.parentNode.removeChild(container);},duration+500);
+}
+
+var _origFloatReward=typeof floatReward==='function'?floatReward:null;
+floatReward=function(x,y,text,color){
+  if(_origFloatReward)_origFloatReward(x,y,text,color);
+  try{
+    if(text && (text.indexOf('\uD83E\uDE99')> -1 || text.indexOf('+')===0)){
+      confettiBurst(20,1800);
+    }
+  }catch(e){}
+};
+
+/* --- SCREEN TRANSITIONS --- */
+var _origShowCardScreen=typeof showCardScreen==='function'?showCardScreen:null;
+showCardScreen=function(id,html){
+  if(_origShowCardScreen)_origShowCardScreen(id,html);
+  var el=document.getElementById(id);
+  if(el){
+    el.classList.remove('screen-enter');void el.offsetWidth;
+    el.classList.add('screen-enter');
+    setTimeout(function(){el.classList.remove('screen-enter');},400);
+  }
+};
+
+/* --- ENHANCED LEVEL UP --- */
+var _origCheckLevelUp=typeof checkLevelUp==='function'?checkLevelUp:null;
+checkLevelUp=function(){
+  try{var before=typeof getLevel==='function'?getLevel():1;
+  if(_origCheckLevelUp)_origCheckLevelUp();
+  var after=typeof getLevel==='function'?getLevel():1;
+  if(after>before){
+    confettiBurst(60,3000);
+    owlSay('\u{1F389} Niveau '+after+' ! Tu es incroyable !',4000);
+  }}catch(e){if(_origCheckLevelUp)_origCheckLevelUp();}
+};
+
+/* --- ENHANCED STREAK DISPLAY --- */
+function renderStreakCalendar(){
+  var html='<div class="streak-calendar">';
+  var streak=state.loginStreak||0;
+  var today=new Date();
+  var dayOfWeek=today.getDay();
+  var startOfWeek=new Date(today);
+  startOfWeek.setDate(today.getDate()-((dayOfWeek+6)%7));
+  for(var i=0;i<7;i++){
+    var d=new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate()+i);
+    var ds=d.toISOString().slice(0,10);
+    var isDone=state.lastLogin===ds || (state.loginStreak||0)>(6-i);
+    var isToday=ds===today.toISOString().slice(0,10);
+    var dayNames=['L','M','M','J','V','S','D'];
+    html+='<div class="streak-day'+(isDone?' done':'')+(isToday?' today':'')+'">'+dayNames[i]+'</div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+/* --- ENHANCED QUIZ FEEDBACK: GIGANTIC CONFETTI --- */
+var _origFinishQuiz=typeof finishQuiz==='function'?finishQuiz:null;
+finishQuiz=function(){
+  if(_origFinishQuiz)_origFinishQuiz();
+  try{
+    var sc=state.current;
+    if(sc && sc.score && sc.total){
+      var pct=sc.score/sc.total;
+      if(pct>=0.8) confettiBurst(80,3500);
+      else if(pct>=0.5) confettiBurst(30,2000);
+    }
+  }catch(e){}
+};
+
+/* --- BONUS QUESTION STREAK EFFECT --- */
+var _streakCount=0;
+var _origAnswerQuiz=typeof answerQuiz==='function'?answerQuiz:null;
+answerQuiz=function(){
+  if(_origAnswerQuiz)_origAnswerQuiz.apply(null,arguments);
+  try{
+    var sc=state.current;
+    if(sc && sc.questionList && sc.qIndex!==undefined && sc.qIndex<sc.questionList.length){
+      var q=sc.questionList[sc.qIndex];
+      var correct=q.answer===arguments[1];
+      if(correct){
+        _streakCount++;
+        if(_streakCount>=3 && _streakCount%3===0){
+          confettiBurst(15,1200);
+          owlSay('\u{1F525} Combo x'+_streakCount+' !',1500);
+        }
+      }else{_streakCount=0;}
+    }
+  }catch(e){}
+};
+var _origAnswerQuizSpeed=typeof answerQuizSpeed==='function'?answerQuizSpeed:null;
+answerQuizSpeed=function(){
+  if(_origAnswerQuizSpeed)_origAnswerQuizSpeed.apply(null,arguments);
+  try{
+    var btn=arguments[0];
+    if(btn && (btn.style&&btn.style.background&&btn.style.background.indexOf('43C463')>-1) || (btn&&btn.classList&&btn.classList.contains('correct'))){
+      _streakCount++;
+      if(_streakCount>=3 && _streakCount%3===0){
+        confettiBurst(15,1200);
+        owlSay('\u{1F525} Combo x'+_streakCount+' !',1500);
+      }
+    }else{_streakCount=0;}
+  }catch(e){}
+};
+
+/* --- ENHANCED STICKER COLLECTION REWARD --- */
+var _origSecretUnlock=typeof secretUnlock==='function'?secretUnlock:null;
+secretUnlock=function(){
+  if(_origSecretUnlock)_origSecretUnlock();
+  confettiBurst(50,3000);
+};
+
 </script>
-<div id="toast" class="toast"></div>`n<div id="dailyRewardBanner" class="daily-reward-banner"><div class="daily-reward-title">\uD83C\uDF1F R�compense Quotidienne !</div><div class="daily-reward-subtitle" id="dailyRewardDay">Jour 1</div><div style="font-size:2rem;margin:8px 0;" id="dailyRewardAmount">+5 \uD83E\uDE99</div><button class="daily-reward-claim" onclick="closeDailyReward()">Super !</button></div>`n<div id="toast" class="toast"></div><div id="dailyRewardBanner" class="daily-reward-banner"><div class="daily-reward-title">? R�compense Quotidienne !</div><div class="daily-reward-subtitle" id="dailyRewardDay">Jour 1</div><div style="font-size:2rem;margin:8px 0;" id="dailyRewardAmount">+5 ??</div><button class="daily-reward-claim" onclick="closeDailyReward()">Super !</button></div></body>
+<div id="toast" class="toast"></div>
+<div id="dailyRewardBanner" class="daily-reward-banner">
+  <div class="daily-reward-title">\uD83C\uDF1F R\u00e9compense Quotidienne !</div>
+  <div class="daily-reward-subtitle" id="dailyRewardDay">Jour 1</div>
+  <div style="font-size:2rem;margin:8px 0;" id="dailyRewardAmount">+5 \uD83E\uDE99</div>
+  <button class="daily-reward-claim" onclick="closeDailyReward()">Super !</button>
+</div>
+</body>
 </html>
