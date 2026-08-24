@@ -5015,7 +5015,7 @@ function goHome(){
   clearInterval(_snakeTimer);_snakeTimer=null;
   if(_whackData&&_whackData.timer)clearInterval(_whackData.timer);
   clearInterval(_tetrisTimer);_tetrisTimer=null;
-  clearInterval(_simonTimer);_simonTimer=null;
+  clearInterval(_simonSequenceTimer);_simonSequenceTimer=null;
   clearInterval(_runnerTimer);_runnerTimer=null;
   if(typeof setMusicMode==='function') setMusicMode('calm');
   switchTab(lastTab);
@@ -12844,66 +12844,172 @@ function dungeonHeal(){
   renderDungeon();
 }
 
-/* ===== 6. SIMON SAYS ===== */
-var _simonData=null,_simonTimer=null;
+/* ===== 6. SIMON SAYS (VRAI DESIGN CIRCULAIRE) ===== */
+var _simonData=null,_simonSequenceTimer=null;
+var SIMON_COLORS=[
+  {id:'red',base:'#CC0000',lit:'#FF3333',sound:329.63,angle:[180,270]},
+  {id:'green',base:'#00AA00',lit:'#33FF33',sound:261.63,angle:[270,360]},
+  {id:'yellow',base:'#CCAA00',lit:'#FFFF33',sound:440,angle:[90,180]},
+  {id:'blue',base:'#0044CC',lit:'#3366FF',sound:392,angle:[0,90]}
+];
+
 function startSimon(){
-  var colors=['#FF4B4B','#4DC9F6','#43C463','#FFC800'];
-  var names=['Rouge','Bleu','Vert','Jaune'];
-  _simonData={colors:colors,names:names,sequence:[],playerSeq:[],score:0,playing:false,showing:false};
+  _simonData={sequence:[],playerSeq:[],score:0,showing:false,strict:false,lives:1,highScore:0};
+  renderSimon();
+}
+
+function renderSimon(){
+  var d=_simonData;
+  var html='<div style="text-align:center;padding:12px">';
+  html+='<div style="font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:2px">🎵 Simon Says</div>';
+  html+='<div style="font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:10px">Niveau: <b style="color:#FFC800" id="simonLevel">'+(d.score+1)+'</b> | Vies: <b style="color:#FF6B6B" id="simonLives">'+'❤️'.repeat(d.lives)+'</b></div>';
+
+  /* SVG cercle Simon */
+  var size=280,cx=size/2,cy=size/2,r=125,w=110;
+  html+='<svg id="simonSVG" width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" style="filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5))">';
+  /* Fond sombre */
+  html+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(r+15)+'" fill="#1a1a2e" stroke="#333" stroke-width="3"/>';
+  /* 4 quadrants */
+  var gap=3;
+  for(var i=0;i<4;i++){
+    var c=SIMON_COLORS[i];
+    var startA=c.angle[0]+gap;var endA=c.angle[1]-gap;
+    var largeArc=(endA-startA)>180?1:0;
+    var radS=startA*Math.PI/180,radE=endA*Math.PI/180;
+    var x1=cx+r*Math.cos(radS),y1=cy+r*Math.sin(radS);
+    var x2=cx+r*Math.cos(radE),y2=cy+r*Math.sin(radE);
+    var ix1=cx+(r-w)*Math.cos(radS),iy1=cy+(r-w)*Math.sin(radS);
+    var ix2=cx+(r-w)*Math.cos(radE),iy2=cy+(r-w)*Math.sin(radE);
+    html+='<path id="simonQ'+i+'" d="M'+ix1+' '+iy1+' L'+x1+' '+y1+' A'+r+' '+r+' 0 '+largeArc+' 1 '+x2+' '+y2+' L'+ix2+' '+iy2+' A'+(r-w)+' '+(r-w)+' 0 '+largeArc+' 0 '+ix1+' '+iy1+' Z" fill="'+c.base+'" stroke="#1a1a2e" stroke-width="2" style="cursor:pointer;transition:fill .15s" onclick="simonPlayer('+i+')" ontouchstart="simonPlayer('+i+')"/>';
+  }
+  /* Centre noir avec texte */
+  html+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-w-5)+'" fill="#1a1a2e" stroke="#444" stroke-width="2"/>';
+  html+='<circle cx="'+cx+'" cy="'+cy+'" r="'+(r-w-8)+'" fill="#111" stroke="#333" stroke-width="1"/>';
+  html+='<text x="'+cx+'" y="'+(cy-8)+'" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif" id="simonCenterText">'+(d.showing?'Écoute...':'Simon')+'</text>';
+  html+='<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" fill="#FFC800" font-size="16" font-weight="bold" font-family="sans-serif" id="simonCenterNum">'+(d.score+1)+'</text>';
+  html+='</svg>';
+
+  /* Boutons contrôle */
+  html+='<div style="margin-top:12px;display:flex;gap:8px;justify-content:center">';
+  html+='<button onclick="simonStart()" style="padding:8px 18px;border-radius:10px;border:2px solid #43C463;background:linear-gradient(135deg,#43C463,#2EAF7D);color:#fff;font-weight:700;cursor:pointer;font-size:0.85rem">▶ Jouer</button>';
+  html+='<button onclick="simonToggleStrict()" style="padding:8px 18px;border-radius:10px;border:2px solid '+(d.strict?'#FF4B4B':'rgba(255,255,255,0.2)')+';background:'+(d.strict?'rgba(255,75,75,0.2)':'rgba(255,255,255,0.1)')+';color:'+(d.strict?'#FF4B4B':'#fff')+';font-weight:700;cursor:pointer;font-size:0.85rem">💀 Strict: '+(d.strict?'ON':'OFF')+'</button>';
+  html+='<button onclick="goHome();clearInterval(_simonSequenceTimer)" style="padding:8px 18px;border-radius:10px;border:2px solid rgba(255,200,0,0.3);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer;font-size:0.85rem">✖</button>';
+  html+='</div>';
+
+  /* Instructions */
+  html+='<div style="margin-top:10px;padding:10px;background:rgba(0,0,0,0.3);border-radius:10px;border:1px solid rgba(255,255,255,0.1)">';
+  html+='<div style="font-size:0.75rem;color:rgba(255,255,255,0.5)">Regarde la séquence, puis répète-la dans l\'ordre !</div>';
+  html+='</div>';
+  html+='</div>';
+
+  showCardScreen('simonGame',html);
+}
+
+function simonStart(){
+  var d=_simonData;
+  d.sequence=[];d.playerSeq=[];d.score=0;d.lives=d.strict?1:2;
   simonNext();
 }
+
+function simonToggleStrict(){
+  _simonData.strict=!_simonData.strict;
+  _simonData.lives=_simonData.strict?1:2;
+  renderSimon();
+}
+
 function simonNext(){
   var d=_simonData;
   d.sequence.push(Math.floor(Math.random()*4));
   d.playerSeq=[];
-  d.score=d.sequence.length-1;
   d.showing=true;
-  renderSimon();
-  simonShowSequence(0);
+  var el=document.getElementById('simonCenterText');if(el)el.textContent='Écoute...';
+  var el2=document.getElementById('simonCenterNum');if(el2)el2.textContent=d.sequence.length;
+  var elL=document.getElementById('simonLives');if(elL)elL.textContent='❤️'.repeat(d.lives);
+  setTimeout(function(){simonShowSequence(0);},600);
 }
+
 function simonShowSequence(idx){
   var d=_simonData;
-  if(idx>=d.sequence.length){d.showing=false;renderSimon();return;}
-  var btn=document.getElementById('simonBtn'+d.sequence[idx]);
-  if(btn){btn.style.opacity='1';btn.style.transform='scale(1.1)';btn.style.boxShadow='0 0 20px '+d.colors[d.sequence[idx]];}
-  playTone(300+idx*100,0.3,'sine',0,0.15);
-  setTimeout(function(){
-    if(btn){btn.style.opacity='0.5';btn.style.transform='';btn.style.boxShadow='';}
-    setTimeout(function(){simonShowSequence(idx+1);},200);
-  },500);
-}
-function renderSimon(){
-  var d=_simonData;
-  var html='<div style="text-align:center;padding:12px">';
-  html+='<div style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:8px">Niveau : '+(d.score+1)+'</div>';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:250px;margin:0 auto">';
-  for(var i=0;i<4;i++){
-    html+='<div id="simonBtn'+i+'" onclick="simonPlayer('+i+')" style="width:110px;height:110px;border-radius:16px;background:'+d.colors[i]+';opacity:0.5;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border:3px solid rgba(255,255,255,0.3);box-shadow:0 4px 0 rgba(0,0,0,0.3);transition:all .2s">'+d.names[i]+'</div>';
+  if(idx>=d.sequence.length){
+    d.showing=false;
+    var el=document.getElementById('simonCenterText');if(el)el.textContent='À toi !';
+    return;
   }
-  html+='</div>';
-  html+='<div id="simonMsg" style="margin-top:12px;font-size:0.9rem;color:rgba(255,255,255,0.7)">'+(d.showing?'Regarde la séquence...':'À ton tour !')+'</div>';
-  html+='<button onclick="clearInterval(_simonTimer);goHome()" style="margin-top:12px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">✖ Quitter</button>';
-  html+='</div>';
-  showCardScreen('simonGame',html);
+  var colorIdx=d.sequence[idx];
+  simonLightUp(colorIdx,true);
+  /* Jouer le son */
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var osc=ctx.createOscillator();
+    var gain=ctx.createGain();
+    osc.type='sine';osc.frequency.value=SIMON_COLORS[colorIdx].sound;
+    gain.gain.setValueAtTime(0.3,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.35);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.4);
+  }catch(e){}
+  /* Éteindre après un délai */
+  setTimeout(function(){
+    simonLightUp(colorIdx,false);
+    setTimeout(function(){simonShowSequence(idx+1);},200);
+  },450);
 }
+
+function simonLightUp(idx,lit){
+  var el=document.getElementById('simonQ'+idx);
+  if(el){el.setAttribute('fill',lit?SIMON_COLORS[idx].lit:SIMON_COLORS[idx].base);}
+}
+
 function simonPlayer(i){
-  var d=_simonData;if(d.showing)return;
-  var btn=document.getElementById('simonBtn'+i);
-  if(btn){btn.style.opacity='1';btn.style.transform='scale(1.1)';setTimeout(function(){btn.style.opacity='0.5';btn.style.transform='';},200);}
-  playTone(300+i*100,0.2,'sine',0,0.1);
+  var d=_simonData;
+  if(d.showing||!d.sequence.length)return;
+  /* Flash immédiat du bouton */
+  simonLightUp(i,true);
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var osc=ctx.createOscillator();
+    var gain=ctx.createGain();
+    osc.type='sine';osc.frequency.value=SIMON_COLORS[i].sound;
+    gain.gain.setValueAtTime(0.3,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.25);
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);
+  }catch(e){}
+  setTimeout(function(){simonLightUp(i,false);},200);
+
   d.playerSeq.push(i);
   var idx=d.playerSeq.length-1;
+
   if(d.playerSeq[idx]!==d.sequence[idx]){
+    /* Mauvaise réponse */
     soundWrong();
-    owlSay('\u{1F622} Perdu ! Niveau : '+(d.score+1));
-    addCoins(d.score);addPoints(d.score*5);
-    confettiBurst(d.score*3,1500);
-    setTimeout(goHome,2000);return;
+    d.lives--;
+    var elL=document.getElementById('simonLives');if(elL)elL.textContent='❤️'.repeat(Math.max(0,d.lives));
+    if(d.lives<=0){
+      /* Game Over */
+      var el=document.getElementById('simonCenterText');if(el)el.textContent='Perdu !';
+      owlSay('\u{1F622} Perdu au niveau '+(d.score+1)+' !');
+      addCoins(d.score);addPoints(d.score*5);
+      confettiBurst(d.score*3,1500);
+      setTimeout(function(){renderSimon();},1500);
+    }else{
+      /* Encore une vie — rejouer la séquence */
+      var el=document.getElementById('simonCenterText');if(el)el.textContent='Raté ! Encore...';
+      d.playerSeq=[];
+      setTimeout(simonNext,1200);
+    }
+    return;
   }
+
+  /* Bonne réponse */
   if(d.playerSeq.length===d.sequence.length){
+    d.score++;
     soundCorrect();
-    owlSay('\u{1F44D} Bravo !');
-    setTimeout(simonNext,1000);
+    var el=document.getElementById('simonCenterText');if(el)el.textContent='Bravo !';
+    owlSay('\u{1F44D} Niveau '+(d.score+1)+' !');
+    if(d.score>=5)addCoins(1);
+    if(d.score>=10)addCoins(2);
+    setTimeout(simonNext,1200);
   }
 }
 
