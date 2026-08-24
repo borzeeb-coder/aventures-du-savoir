@@ -309,10 +309,24 @@
     display:flex; align-items:center; justify-content:center; font-size:inherit;
     border-radius:14px; overflow:hidden;
   }
-  .mem-card .mem-front{background:var(--purple);}
-  .mem-card .mem-back{background:#fff; transform:rotateY(180deg);}
-  .mem-card.flipped, .mem-card.matched{transform:rotateY(180deg);}
-  .mem-card.matched{opacity:0.55; cursor:default;}
+  .mem-card .mem-front{background:var(--purple); z-index:2;}
+  .mem-card .mem-back{background:#fff; transform:rotateY(180deg); z-index:1;}
+  .mem-card.flipped{transform:rotateY(180deg);}
+  .mem-card.matched{
+    transform:rotateY(180deg); opacity:1; cursor:default;
+    border-color:#43C463 !important; box-shadow:0 0 16px rgba(67,196,99,0.5),0 4px 0 #2EAF7D !important;
+    animation:memMatchPop .5s cubic-bezier(.34,1.56,.64,1);
+  }
+  .mem-card.matched .mem-back{background:linear-gradient(135deg,#E8F8EE,#D4F5E0);font-size:2.2rem;}
+  @keyframes memMatchPop{
+    0%{transform:rotateY(180deg) scale(1);}
+    40%{transform:rotateY(180deg) scale(1.2);}
+    100%{transform:rotateY(180deg) scale(1);}
+  }
+  @media (max-width:480px){
+    .mem-card{width:52px; height:52px; font-size:1.4rem;}
+    .mem-card.matched .mem-back{font-size:1.6rem;}
+  }
   @media (max-width:480px){ .mem-card{width:52px; height:52px; font-size:1.4rem;} }
 
   .hidden{display:none !important;}
@@ -6851,7 +6865,7 @@ let mem = { cards:[], flipped:[], moves:0, found:0, lock:false, elements:[] };
 
 function openMemory(){
   stopAutoEncourage();
-  const symbols = MEM_SETS[state.level];
+  const symbols = MEM_SETS[state.level] || MEM_SETS.A;
   let deck = shuffleArray([...symbols, ...symbols]);
   mem = { cards: deck.map(sym=>({sym, flipped:false, matched:false})), flipped:[], moves:0, found:0, lock:false, elements:[] };
 
@@ -6860,7 +6874,13 @@ function openMemory(){
   document.getElementById('memFound').textContent = 0;
 
   const grid = document.getElementById('memoryGrid');
-  grid.style.gridTemplateColumns = `repeat(4, auto)`;
+  const total = symbols.length * 2;
+  let cols = 4;
+  if(total <= 8) cols = 4;
+  else if(total <= 12) cols = 4;
+  else if(total <= 16) cols = 4;
+  else cols = 4;
+  grid.style.gridTemplateColumns = `repeat(${cols}, auto)`;
   renderMemoryGrid();
   show('memoryScreen');
   owlSay("Trouve toutes les paires, je crois en toi !");
@@ -9155,6 +9175,8 @@ body.dark-mode .profile-card{background:rgba(40,25,70,0.5)!important;border-colo
 body.dark-mode .profile-card.add-profile{background:rgba(20,15,40,0.8)!important;border-color:rgba(100,70,160,0.3)!important;}
 body.dark-mode .mem-card .mem-back{background:rgba(40,25,70,0.6)!important;}
 body.dark-mode .mem-card{box-shadow:4px 4px 0 rgba(20,10,40,0.5)!important;}
+body.dark-mode .mem-card.matched{box-shadow:0 0 16px rgba(67,196,99,0.5),0 4px 0 #2EAF7D!important;}
+body.dark-mode .mem-card.matched .mem-back{background:linear-gradient(135deg,rgba(67,196,99,0.3),rgba(46,175,125,0.2))!important;}
 body.dark-mode .badge-item{background:rgba(40,25,70,0.5)!important;border-color:rgba(100,70,160,0.3)!important;}
 body.dark-mode .badge-item.locked{background:rgba(30,20,50,0.4)!important;}
 body.dark-mode .levelup-banner{background:rgba(80,60,20,0.9)!important;border-color:rgba(180,140,40,0.4)!important;}
