@@ -6388,7 +6388,9 @@ function openQuiz(subject){
   show('quizScreen');
   speak(SUBJECT_SPEECH[subject] || '', true);
   renderQuestion();
-  if(mastered.length > 0 && nonMastered.length >= 3){
+  if(isSpeedMode){
+    setTimeout(()=>owlSay("⚡ Contre-la-montre, 30 secondes ! Go go go !", 2500, true), 300);
+  } else if(mastered.length > 0 && nonMastered.length >= 3){
     setTimeout(()=>owlSay(`Tu maîtrises déjà ${mastered.length} question(s) ! On passe aux suivantes ! 🦉✨`, 3000, true), 300);
   } else {
     const quizGreetings = [
@@ -10163,6 +10165,7 @@ function stopDynamicMusic(){if(_musicTimer){clearInterval(_musicTimer);_musicTim
 var _puzzleState={solution:[],current:[],moves:0,subject:''};
 
 function startMathPuzzle(){
+  try{
   state.currentGame='puzzle';scheduleSave();
   var ops=['+','-','×','÷'];
   var op=ops[Math.floor(Math.random()*ops.length)];
@@ -10191,6 +10194,7 @@ function startMathPuzzle(){
   
   _puzzleState.solution=puzzleAnswer;_puzzleState.moves=0;_puzzleState.subject='nombres';
   showCardScreen('puzzle',html);
+  }catch(e){console.error('startMathPuzzle error:',e);owlSay('Erreur : '+e.message,3000);}
 }
 
 function checkPuzzleAnswer(btn,selected,correct){
@@ -11755,13 +11759,15 @@ function randInt(min,max){
 
 /* ============ IMPROVEMENT 5: NEW GAME MODES ============ */
 function startSpeedQuiz(){
+  try{
   var subjects=['maths','francais','sciences','anglais'];
   var subj=subjects[Math.floor(Math.random()*subjects.length)];
   var questions=getQuestions(subj);var qs=shuffleArray(questions).slice(0,10);
   if(qs.length<4){owlSay('Pas assez de questions pour ce mode !',3000);return}
-  state.current={subject:subj,score:0,total:qs.length,questionList:qs,qIndex:0,missed:[],isReview:false,startTime:Date.now(),timeLimit:30,_speedMode:true};
+  state.current={subject:subj,score:0,total:qs.length,questionList:qs,qIndex:0,missed:[],isReview:false,startTime:Date.now(),timeLimit:30,_speedMode:true,totalQuestionCount:qs.length,masteredCount:0};
   owlSay('\u26A1 Contre-la-montre : 30 secondes !',2500);
   openQuiz(subj);
+  }catch(e){console.error('startSpeedQuiz error:',e);owlSay('Erreur : '+e.message,3000);}
 }
 function startPhotoQuiz(){
   owlSay('\u{1F4F7} Mode Photo bient\u00f4t disponible ! En attendant, joue aux autres modes !',4000);
