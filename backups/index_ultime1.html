@@ -5012,6 +5012,11 @@ function goHome(){
   clearInterval(taTimer);
   clearTimeout(taNextTimer);
   clearTimeout(memFlipTimer);
+  clearInterval(_snakeTimer);_snakeTimer=null;
+  if(_whackData&&_whackData.timer)clearInterval(_whackData.timer);
+  clearInterval(_tetrisTimer);_tetrisTimer=null;
+  clearInterval(_simonTimer);_simonTimer=null;
+  clearInterval(_runnerTimer);_runnerTimer=null;
   if(typeof setMusicMode==='function') setMusicMode('calm');
   switchTab(lastTab);
   renderStars();
@@ -12817,9 +12822,10 @@ function dungeonAnswer(chosen,correct){
     soundCorrect();
     d.enemy.hp--;
     if(d.enemy.hp<=0){
-      d.xp+=d.enemy.xp;d.enemy=null;
-      addCoins(Math.floor(d.enemy?d.enemy.xp/5:3));
-      owlSay('\u{1F44E} Ennemi vaincu ! +'+d.enemy.xp+' XP');
+      var xpGain=d.enemy.xp;d.xp+=xpGain;
+      addCoins(Math.floor(xpGain/5));
+      d.enemy=null;
+      owlSay('\u{1F44E} Ennemi vaincu ! +'+xpGain+' XP');
     }
   }else{
     soundWrong();
