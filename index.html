@@ -12134,6 +12134,7 @@ function nextCarRound(){
   var others=[];while(others.length<3){var r=CAR_LOGOS[Math.floor(Math.random()*CAR_LOGOS.length)];if(r.name!==correct.name&&!others.some(function(o){return o.name===r.name}))others.push(r)}
   var choices=[correct,...others].sort(function(){return Math.random()-0.5});
   carGameState.current=correct;carGameState.choices=choices;
+  carGameState.answered=false;
   renderCarQuizHeader();
 
   var box=document.getElementById('carQuizBox');
@@ -12156,12 +12157,11 @@ function nextCarRound(){
   html+='<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:2px;text-transform:uppercase;letter-spacing:1px">Indice</div>';
   html+='<div style="font-size:1rem;font-weight:700;color:#B8A9FF">'+correct.clue+'</div></div>';
   speak('Quelle est cette marque ? '+correct.clue,true);
-  /* Boutons 3D */
+  /* Boutons 3D — tous identiques au départ, aucun n'est pré-vert */
+  var btnColors=['linear-gradient(145deg,#2a2a50,#1e1e3a)','linear-gradient(145deg,#2a2a50,#1e1e3a)','linear-gradient(145deg,#2a2a50,#1e1e3a)','linear-gradient(145deg,#2a2a50,#1e1e3a)'];
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px">';
   choices.forEach(function(c,i){
-    var color=c.name===correct.name?'linear-gradient(145deg,#43C463,#2EAF7D)':'linear-gradient(145deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))';
-    var border=c.name===correct.name?'#43C463':'rgba(255,255,255,0.15)';
-    html+='<button onclick="guessCar(\''+c.name+'\')" style="padding:14px 8px;border-radius:14px;border:2px solid '+border+';background:'+color+';color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.3),0 8px 20px rgba(0,0,0,0.2);transition:all .15s;position:relative;overflow:hidden" onmousedown="this.style.transform=\'translateY(3px)\';this.style.boxShadow=\'0 2px 0 rgba(0,0,0,0.3)\'" onmouseup="this.style.transform=\'\'" onmouseout="this.style.transform=\'\'" class="car-opt-btn">';
+    html+='<button onclick="guessCar(\''+c.name+'\')" data-car="'+c.name+'" style="padding:16px 10px;border-radius:14px;border:2px solid rgba(120,100,200,0.4);background:linear-gradient(145deg,rgba(60,50,100,0.8),rgba(40,30,70,0.9));color:#e0d8ff;font-weight:700;font-size:1rem;cursor:pointer;box-shadow:0 6px 0 rgba(20,15,40,0.8),0 8px 20px rgba(0,0,0,0.3);transition:all .15s;position:relative;overflow:hidden" onmousedown="this.style.transform=\'translateY(3px)\';this.style.boxShadow=\'0 2px 0 rgba(20,15,40,0.8)\'" onmouseup="this.style.transform=\'\'" onmouseout="this.style.transform=\'\'" class="car-opt-btn">';
     html+='<span style="position:relative;z-index:1">'+c.name+'</span>';
     html+='</button>';
   });
@@ -12170,6 +12170,8 @@ function nextCarRound(){
 }
 
 function guessCar(name){
+  if(carGameState.answered)return;
+  carGameState.answered=true;
   carGameState.total++;
   var correct=carGameState.current.name===name;
   if(correct){
@@ -12177,7 +12179,6 @@ function guessCar(name){
     if(carGameState.streak>carGameState.bestStreak)carGameState.bestStreak=carGameState.streak;
     soundCorrect();
     confettiBurst(25,1500);
-    /* Flash vert sur le bouton */
     if(carGameState.streak>=3){
       owlSay('\u{1F525} Streak x'+carGameState.streak+' !',1200);
       addCoins(carGameState.streak>=5?3:1);
@@ -12186,38 +12187,45 @@ function guessCar(name){
     carGameState.streak=0;
     soundWrong();screenShake(3,200);
   }
-  /* Highlight boutons */
+  /* Highlight les boutons — CORRECT en vert, WRONG en rouge */
   var btns=document.querySelectorAll('.car-opt-btn');
   btns.forEach(function(b){
     b.disabled=true;b.style.pointerEvents='none';
-    var n=b.textContent.trim();
+    var n=b.getAttribute('data-car');
     if(n===carGameState.current.name){
-      b.style.background='linear-gradient(145deg,#43C463,#2E8B57)';b.style.borderColor='#43C463';
-      b.style.boxShadow='0 0 20px rgba(67,196,99,0.4),0 4px 0 #1a5e2e';
-      b.style.transform='translateY(-2px)';
+      /* BONNE RÉPONSE → VERT brillant */
+      b.style.background='linear-gradient(145deg,#2EAF7D,#1a8a5a)';
+      b.style.borderColor='#43C463';
+      b.style.color='#fff';
+      b.style.boxShadow='0 0 24px rgba(67,196,99,0.6),0 4px 0 #1a5e2e';
+      b.style.transform='translateY(-3px)';
+      b.style.fontSize='1.1rem';
     }else if(n===name&&!correct){
-      b.style.background='linear-gradient(145deg,#FF4B4B,#C62828)';b.style.borderColor='#FF4B4B';
-      b.style.boxShadow='0 0 20px rgba(255,75,75,0.4),0 4px 0 #8a1c1c';
-      b.style.transform='translateY(-2px)';
+      /* MAUVAISE RÉPONSE → ROUGE */
+      b.style.background='linear-gradient(145deg,#C62828,#8a1c1c)';
+      b.style.borderColor='#FF4B4B';
+      b.style.color='#fff';
+      b.style.boxShadow='0 0 24px rgba(255,75,75,0.6),0 4px 0 #5a0e0e';
+      b.style.transform='translateY(-3px)';
     }else{
-      b.style.opacity='0.3';
+      b.style.opacity='0.35';
+      b.style.transform='scale(0.95)';
     }
   });
-  /* Logo révélé en grand */
+  /* Afficher le nom de la marque */
   var box=document.getElementById('carQuizBox');
   if(box){
-    var cur=box.innerHTML;
-    var reveal='<div style="text-align:center;margin-top:12px;padding:12px;border-radius:14px;background:'+(correct?'rgba(67,196,99,0.15)':'rgba(255,75,75,0.15)')+';border:2px solid '+(correct?'rgba(67,196,99,0.3)':'rgba(255,75,75,0.3)')+'">';
-    reveal+='<div style="font-size:2rem;margin-bottom:4px">'+(correct?'\u2705':'\u274C')+'</div>';
-    reveal+='<div style="font-size:1.3rem;font-weight:900;color:'+(correct?'#43C463':'#FF4B4B')+'">'+carGameState.current.name+'</div>';
-    if(!correct)reveal+='<div style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:2px">C\'était '+carGameState.current.name+'</div>';
+    var reveal='<div style="text-align:center;margin-top:12px;padding:14px;border-radius:16px;background:'+(correct?'rgba(67,196,99,0.15)':'rgba(255,75,75,0.15)')+';border:2px solid '+(correct?'rgba(67,196,99,0.35)':'rgba(255,75,75,0.35)')+'">';
+    reveal+='<div style="font-size:2.5rem;margin-bottom:4px">'+(correct?'\u2705':'\u274C')+'</div>';
+    reveal+='<div style="font-size:1.4rem;font-weight:900;color:'+(correct?'#43C463':'#FF4B4B')+'">'+carGameState.current.name+'</div>';
+    if(!correct)reveal+='<div style="font-size:0.85rem;color:rgba(255,255,255,0.5);margin-top:4px">La bonne réponse était : <b style="color:#43C463">'+carGameState.current.name+'</b></div>';
     reveal+='</div>';
     box.innerHTML+=reveal;
   }
   renderCarQuizHeader();
   if(correct)owlSay('\u2705 '+carGameState.current.name+' !',1200,true);
   else owlSay('\u274C C\'\u00e9tait '+carGameState.current.name+' !',1800,true);
-  setTimeout(function(){nextCarRound()},1600);
+  setTimeout(function(){nextCarRound()},1800);
 }
 
 function showCarQuizResult(){
