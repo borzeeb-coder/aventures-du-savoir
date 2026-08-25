@@ -5006,6 +5006,8 @@ function setLevel(lvl){
 
 let lastSessionMsg = '';
 function goHome(){
+  clearInterval(_carQuizTimer);
+
   stopQuestionTimer();
   clearTimeout(autoAdvanceTimer);
   clearTimeout(autoAdvanceWordTimer);
@@ -12098,6 +12100,8 @@ var CAR_LOGOS=[
 ];
 
 var carGameState={score:0,total:0,round:0,maxRounds:15,current:null,choices:[]};
+var _carQuizTimer=null;var _carQuizTimeLeft=10;var _carQuizTimeMax=10;
+
 function startCarQuiz(){
   carGameState={score:0,total:0,round:0,maxRounds:15,current:null,choices:[],streak:0,bestStreak:0};
   closeDynamicCard();show('carQuizScreen');
@@ -12143,6 +12147,8 @@ function nextCarRound(){
   var logoHTML=logoSvg?'<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center">'+logoSvg+'</div>':
     '<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:'+(correct.fg||'#fff')+';text-shadow:0 4px 8px rgba(0,0,0,0.4)">'+(correct.txt||correct.name)+'</div>';
 
+    /* Timer SVG ring */
+  html+='<div style="display:flex;justify-content:center;margin-bottom:10px"><svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/><circle id="carTimerRing" cx="30" cy="30" r="26" fill="none" stroke="#7B68EE" stroke-width="4" stroke-dasharray="163.36" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 30 30)" style="transition:stroke-dashoffset 1s linear,stroke 0.5s"/><text x="30" y="35" text-anchor="middle" fill="#fff" font-size="16" font-weight="700" id="carTimerText">10</text></svg></div>';
   var html='<div style="text-align:center;padding:4px">';
   /* Carte 3D du logo */
   html+='<div style="perspective:800px;margin:0 auto 12px;width:200px;height:220px">';
@@ -12167,11 +12173,26 @@ function nextCarRound(){
   });
   html+='</div></div>';
   box.innerHTML=html;
+
+  /* Start timer */
+  _carQuizTimeLeft=10;
+  var timerRing=document.getElementById('carTimerRing');
+  var timerText=document.getElementById('carTimerText');
+  clearInterval(_carQuizTimer);
+  _carQuizTimer=setInterval(function(){
+    _carQuizTimeLeft--;
+    if(timerText)timerText.textContent=_carQuizTimeLeft;
+    if(timerRing){var pct=_carQuizTimeLeft/_carQuizTimeMax;var offset=163.36*(1-pct);timerRing.setAttribute('stroke-dashoffset',offset);timerRing.setAttribute('stroke',_carQuizTimeLeft<=3?'#FF4B4B':_carQuizTimeLeft<=5?'#FFB347':'#7B68EE');}
+    if(_carQuizTimeLeft<=0){clearInterval(_carQuizTimer);guessCar('__TIMEOUT__');}
+  },1000);
 }
 
 function guessCar(name){
+  clearInterval(_carQuizTimer);
+
   carGameState.total++;
   var correct=carGameState.current.name===name;
+  var isTimeout=(name==='__TIMEOUT__');if(isTimeout)correct=false;
   if(correct){
     carGameState.score++;carGameState.streak++;
     if(carGameState.streak>carGameState.bestStreak)carGameState.bestStreak=carGameState.streak;
