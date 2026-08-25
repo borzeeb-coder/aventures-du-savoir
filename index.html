@@ -12159,9 +12159,9 @@ function nextCarRound(){
   /* Boutons 3D */
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px">';
   choices.forEach(function(c,i){
-    var color=c.name===correct.name?'linear-gradient(145deg,#43C463,#2EAF7D)':'linear-gradient(145deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04))';
+    var color=c.name===correct.name?'linear-gradient(145deg,#43C463,#2EAF7D)':'linear-gradient(145deg,rgba(255,255,255,0.25),rgba(255,255,255,0.10))';
     var border=c.name===correct.name?'#43C463':'rgba(255,255,255,0.15)';
-    html+='<button onclick="guessCar(\''+c.name+'\')" style="padding:14px 8px;border-radius:14px;border:2px solid '+border+';background:'+color+';color:#fff;font-weight:700;font-size:0.9rem;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.3),0 8px 20px rgba(0,0,0,0.2);transition:all .15s;position:relative;overflow:hidden" onmousedown="this.style.transform=\'translateY(3px)\';this.style.boxShadow=\'0 2px 0 rgba(0,0,0,0.3)\'" onmouseup="this.style.transform=\'\'" onmouseout="this.style.transform=\'\'" class="car-opt-btn">';
+    html+='<button class="car-opt-btn" onclick="guessCar(\''+c.name+'\')" style="padding:14px 10px;border-radius:14px;border:2px solid '+border+';background:'+color+';color:#fff;font-weight:700;font-size:0.95rem;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.3),0 8px 20px rgba(0,0,0,0.2);transition:all .15s;position:relative;overflow:hidden;min-height:48px" onmousedown="this.style.transform=\'translateY(3px)\';this.style.boxShadow=\'0 2px 0 rgba(0,0,0,0.3)\'" onmouseup="this.style.transform=\'\'" onmouseout="this.style.transform=\'\'" class="car-opt-btn">';
     html+='<span style="position:relative;z-index:1">'+c.name+'</span>';
     html+='</button>';
   });
