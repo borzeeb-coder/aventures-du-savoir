@@ -12104,6 +12104,36 @@ var CAR_LOGOS=[
   {name:'RIIM',bg:'#1A1A1A',fg:'#00C853',txt:'RI',shape:'slash',clue:'La barre verte'},
   {name:'LUCID',bg:'#C0C0C0',fg:'#1A1A1A',txt:'LC',shape:'lucid',clue:'Le L argente'},
   {name:'POLESTAR',bg:'#1A1A1A',fg:'#C0C0C0',txt:'PS',shape:'star',clue:'L etoile'},
+  {name:'MG2',bg:'#C4161C',fg:'#fff',txt:'MG',shape:'octagon',clue:'L octogone rouge'},
+  {name:'ALFAROMEO',bg:'#8B0000',fg:'#fff',txt:'AQ',shape:'quadrifoglio',clue:'Le trefle rouge'},
+  {name:'ABARTH',bg:'#C4161C',fg:'#FFD700',txt:'AS',shape:'scorpion',clue:'Le scorpion'},
+  {name:'LANCIA',bg:'#0D3B66',fg:'#FFD700',txt:'LN',shape:'lance',clue:'La lance'},
+  {name:'LOTUS',bg:'#6B8E23',fg:'#fff',txt:'LT',shape:'cercle',clue:'Le cercle vert'},
+  {name:'MINI',bg:'#1A1A1A',fg:'#fff',txt:'MI',shape:'rond',clue:'Le toit Union Jack'},
+  {name:'PAGANI',bg:'#1C1C1C',fg:'#C0C0C0',txt:'PG',shape:'aile',clue:'L aile de carbone'},
+  {name:'KOENIGSEGG',bg:'#003366',fg:'#FFD700',txt:'KK',shape:'shield',clue:'Le bouclier suedois'},
+  {name:'BYD',bg:'#C4161C',fg:'#fff',txt:'BY',shape:'letters',clue:'Les lettres rouges'},
+  {name:'GEELY',bg:'#003DA5',fg:'#fff',txt:'GL',shape:'shield6',clue:'Le bouclier bleu'},
+  {name:'CHERY',bg:'#C4161C',fg:'#fff',txt:'CY',shape:'chevron',clue:'Les chevrons C'},
+  {name:'GREATWALL',bg:'#1A1A1A',fg:'#FFD700',txt:'GW',shape:'tower',clue:'La tour doree'},
+  {name:'HAVAL',bg:'#003DA5',fg:'#fff',txt:'HV',shape:'h',clue:'Le H bleu'},
+  {name:'SSANGYONG',bg:'#1A1A1A',fg:'#C0C0C0',txt:'SS',shape:'dragon',clue:'Le dragon'},
+  {name:'DAIHATSU',bg:'#C4161C',fg:'#fff',txt:'DH',shape:'d',clue:'Le D rouge'},
+  {name:'HINO',bg:'#C4161C',fg:'#fff',txt:'HN',shape:'hino',clue:'Le camion Hino'},
+  {name:'ISUZU',bg:'#003DA5',fg:'#fff',txt:'IS',shape:'i',clue:'Le I bleu'},
+  {name:'CHEVROLET',bg:'#C4A35A',fg:'#1A1A1A',txt:'CV',shape:'bowtie',clue:'La cravatee doree'},
+  {name:'DODGE',bg:'#C4161C',fg:'#fff',txt:'DG',shape:'ram',clue:'Le belier rouge'},
+  {name:'JEEP',bg:'#1A1A1A',fg:'#fff',txt:'JP',shape:'grille',clue:'La grille 7 fentes'},
+  {name:'CHRYSLER',bg:'#1A1A1A',fg:'#C0C0C0',txt:'CR',shape:'wing',clue:'Les ailes argentees'},
+  {name:'GMC',bg:'#C4161C',fg:'#fff',txt:'GM',shape:'letters',clue:'Les lettres rouges'},
+  {name:'RAM',bg:'#1A1A1A',fg:'#C0C0C0',txt:'RM',shape:'ram',clue:'Le belier argente'},
+  {name:'LADA',bg:'#006B3F',fg:'#fff',txt:'LD',shape:'sail',clue:'La voile verte'},
+  {name:'TATA',bg:'#1A3C6E',fg:'#fff',txt:'TA',shape:'t',clue:'Le T bleu'},
+  {name:'MAHINDRA',bg:'#C4161C',fg:'#fff',txt:'MH',shape:'roads',clue:'Les routes'},
+  {name:'SAAB',bg:'#003DA5',fg:'#FFD700',txt:'SB',shape:'griffin',clue:'Le griffon'},
+  {name:'RIIM',bg:'#1A1A1A',fg:'#00C853',txt:'RI',shape:'slash',clue:'La barre verte'},
+  {name:'LUCID',bg:'#C0C0C0',fg:'#1A1A1A',txt:'LC',shape:'lucid',clue:'Le L argente'},
+  {name:'POLESTAR',bg:'#1A1A1A',fg:'#C0C0C0',txt:'PS',shape:'star',clue:'L etoile'},
   {name:'MG2',bg:'#C4161C',fg:'#fff',txt:'MG',shape:'octagon',clue:'L octogone rouge'}
 ];
 [
@@ -12173,7 +12203,7 @@ function nextCarRound(){
   var box=document.getElementById('carQuizBox');
   /* SECTION PRINCIPALE : Logo 3D */
   var logoSvg='';
-  if(LOCAL_LOGOS[correct.name]){logoSvg='<img src="'+LOCAL_LOGOS[correct.name]+'" style="width:130px;height:130px;object-fit:contain">';}else if(svgs[correct.name]){logoSvg=svgs[correct.name].replace('<svg ','<svg width="100%" height="100%" ');}
+  if(LOCAL_LOGOS[correct.name]){logoSvg='<div style="width:130px;height:130px;background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;padding:8px"><img src="'+LOCAL_LOGOS[correct.name]+'" style="width:100%;height:100%;object-fit:contain"></div>';}else if(svgs[correct.name]){logoSvg=svgs[correct.name].replace('<svg ','<svg width="100%" height="100%" ');}
   var logoHTML=logoSvg?'<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center">'+logoSvg+'</div>':
     '<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:'+(correct.fg||'#fff')+';text-shadow:0 4px 8px rgba(0,0,0,0.4)">'+(correct.txt||correct.name)+'</div>';
 
@@ -12195,8 +12225,8 @@ function nextCarRound(){
   /* Boutons 3D */
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px">';
   choices.forEach(function(c,i){
-    var color=c.name===correct.name?'linear-gradient(145deg,#43C463,#2EAF7D)':'linear-gradient(145deg,rgba(255,255,255,0.25),rgba(255,255,255,0.10))';
-    var border=c.name===correct.name?'#43C463':'rgba(255,255,255,0.15)';
+    var color='linear-gradient(145deg,rgba(255,255,255,0.25),rgba(255,255,255,0.10))';
+    var border='rgba(255,255,255,0.35)';
     html+='<button class="car-opt-btn" onclick="guessCar(\''+c.name+'\')" style="padding:14px 10px;border-radius:14px;border:2px solid '+border+';background:'+color+';color:#fff;font-weight:700;font-size:0.95rem;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,0.3),0 8px 20px rgba(0,0,0,0.2);transition:all .15s;position:relative;overflow:hidden;min-height:48px" onmousedown="this.style.transform=\'translateY(3px)\';this.style.boxShadow=\'0 2px 0 rgba(0,0,0,0.3)\'" onmouseup="this.style.transform=\'\'" onmouseout="this.style.transform=\'\'" class="car-opt-btn">';
     html+='<span style="position:relative;z-index:1">'+c.name+'</span>';
     html+='</button>';
