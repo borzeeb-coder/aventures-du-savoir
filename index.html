@@ -12207,9 +12207,9 @@ function nextCarRound(){
   var logoHTML=logoSvg?'<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center">'+logoSvg+'</div>':
     '<div style="width:140px;height:140px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:900;color:'+(correct.fg||'#fff')+';text-shadow:0 4px 8px rgba(0,0,0,0.4)">'+(correct.txt||correct.name)+'</div>';
 
-    /* Timer SVG ring */
+    var html='<div style="text-align:center;padding:4px">';
+  /* Timer SVG ring */
   html+='<div style="display:flex;justify-content:center;margin-bottom:10px"><svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="4"/><circle id="carTimerRing" cx="30" cy="30" r="26" fill="none" stroke="#7B68EE" stroke-width="4" stroke-dasharray="163.36" stroke-dashoffset="0" stroke-linecap="round" transform="rotate(-90 30 30)" style="transition:stroke-dashoffset 1s linear,stroke 0.5s"/><text x="30" y="35" text-anchor="middle" fill="#fff" font-size="16" font-weight="700" id="carTimerText">10</text></svg></div>';
-  var html='<div style="text-align:center;padding:4px">';
   /* Carte 3D du logo */
   html+='<div style="perspective:800px;margin:0 auto 12px;width:200px;height:220px">';
   html+='<div style="width:200px;height:220px;border-radius:24px;background:linear-gradient(145deg,'+(correct.bg||'#333')+',rgba(0,0,0,0.8));display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,0.15);box-shadow:0 20px 40px rgba(0,0,0,0.5),0 0 30px '+(correct.fg||'#7B68EE')+'33,inset 0 1px 0 rgba(255,255,255,0.1);transform:rotateY(0deg) rotateX(2deg);transition:transform .6s;animation:carCardFloat 3s ease-in-out infinite" onmouseover="this.style.transform=\'rotateY(5deg) rotateX(-3deg) scale(1.05)\'" onmouseout="this.style.transform=\'rotateY(0deg) rotateX(2deg) scale(1)\'">';
