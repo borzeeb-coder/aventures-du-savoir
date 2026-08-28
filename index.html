@@ -2623,7 +2623,7 @@ body.colorblind .xp-bar-fill{background:linear-gradient(90deg,#4A90D9,#2C5F9E)!i
         <div class="game-card" onclick="startDraw()" style="background:linear-gradient(135deg,#FF5722,#D84315);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #BF360C;box-shadow:0 3px 0 #8D2608;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🎨</div>
           <div style="font-weight:800;color:#fff;font-size:1rem">Dessin</div>
-          <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Crée librement</div>
+          <div style="color:rgba(255,255,255,0.8);font-size:0.75rem;margin-top:4px">Colorie par lettres</div>
         </div>
         <div class="game-card" onclick="startRunner()" style="background:linear-gradient(135deg,#607D8B,#455A64);border-radius:18px;padding:20px 14px;text-align:center;cursor:pointer;border:3px solid #37474F;box-shadow:0 3px 0 #263238;transition:transform .15s">
           <div style="font-size:2.4rem;margin-bottom:6px">🏃</div>
@@ -13163,45 +13163,134 @@ function simonPlayer(i){
   }
 }
 
-/* ===== 7. DESSIN CREATIF ===== */
-var _drawData=null;
+/* ===== 7. COLORIAGE PAR LETTRES ===== */
+var _drawState=null;
+var _drawPuzzles=[
+  {name:'Soleil',emoji:'\u2600\uFE0F',cols:8,rows:8,
+   palette:{A:'#FFD700',B:'#FF9500',C:'#FF4B4B',D:'#4DC9F6'},
+   grid:'AAAAAAAAAABBBBBBBBAAABBBBAAAAAABBBBAAAAAAAAAABBBBBBBBAAABBBBAAAAAABBBBAAAAAAAAAABBBBBBBBAAABBBBAAAAAABBBBBBBB'},
+  {name:'Maison',emoji:'\uD83C\uDFE0',cols:10,rows:10,
+   palette:{A:'#FF4B4B',B:'#8B4513',C:'#4DC9F6',D:'#FFD700',E:'#87CEEB'},
+   grid:'EEEEEEEEEEEDDDDDDDDDDEEEEEEEDDDEEEEEDDDEEEEEDDDEEEEBBBBBBBBBBBBBBBBBBBBBBBBAAAAABBBBBBBBBBBBBBBBBBBBBBBBAAAAABBBBBBBBBBBBBBBBBBBBBBBB'},
+  {name:'Arbre',emoji:'\uD83C\uDF33',cols:8,rows:10,
+   palette:{A:'#8B4513',B:'#228B22',C:'#32CD32',D:'#90EE90'},
+   grid:'BBCCCCCCBBBBCBBBBBBBBBBBBBBBBBBCCCBBBBBBBBBBBBBBBCCCCBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCBBBBBBBBBBBBBBBBBBCCCCBBBBBBBBBBBBBBBBBBBAAAAAAAABBBBBBBB'},
+  {name:'Voiture',emoji:'\uD83D\uDE97',cols:10,rows:8,
+   palette:{A:'#FF4B4B',B:'#333333',C:'#87CEEB',D:'#FFD700',E:'#808080'},
+   grid:'AAAAAAAAAAAEEEEAAAAEEAABBCCBBAAEEAABBCCBBAAEEAABBCCBBAAEEAABBCCBBAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBB'},
+  {name:'Chat',emoji:'\uD83D\uDC31',cols:8,rows:8,
+   palette:{A:'#FF9500',B:'#FFD700',C:'#000000',D:'#FF69B4',E:'#808080'},
+   grid:'AABBBBAAABBBBBBBAABBBBBBBBAABBCBBBAADBBDAAAACCCAADAABBBBAABBBBBBBBAABBBBBBBA'},
+  {name:'Fleur',emoji:'\uD83C\uDF3C',cols:8,rows:8,
+   palette:{A:'#FF69B4',B:'#FF1493',C:'#FFD700',D:'#228B22',E:'#32CD32'},
+   grid:'DDAAAAADDAAABBAAADDBBBBBDDDDCCCCDDDDCCCCDDDDBBBBBDDAAABBAAADDAAAAAADDDDDDDD'}
+];
+var _drawCurrentPalette=null;
+
 function startDraw(){
-  _drawData={color:'#FFC800',size:4,drawing:false,lastX:0,lastY:0};
-  var colors=['#FF4B4B','#FF9500','#FFC800','#43C463','#4DC9F6','#7B68EE','#E91E63','#fff','#000'];
   var html='<div style="text-align:center;padding:8px">';
-  html+='<div style="font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:8px">🎨 Dessine librement !</div>';
-  html+='<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:8px">';
-  for(var i=0;i<colors.length;i++){
-    html+='<div onclick="drawColor(\''+colors[i]+'\')" style="width:32px;height:32px;border-radius:50%;background:'+colors[i]+';cursor:pointer;border:3px solid '+(colors[i]===_drawData.color?'#fff':'transparent')+';box-shadow:0 2px 6px rgba(0,0,0,0.3)"></div>';
+  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">\uD83C\uDFA8 Coloriage par Lettres</div>';
+  html+='<div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:12px">Choisis un dessin et colorie chaque case selon la lettre</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
+  for(var i=0;i<_drawPuzzles.length;i++){
+    var p=_drawPuzzles[i];
+    html+='<div onclick="startDrawGame('+i+')" style="background:rgba(255,255,255,0.1);border-radius:16px;padding:16px 8px;cursor:pointer;border:2px solid rgba(255,255,255,0.15);transition:transform .15s" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'">';
+    html+='<div style="font-size:2rem;margin-bottom:4px">'+p.emoji+'</div>';
+    html+='<div style="color:#fff;font-weight:700;font-size:0.85rem">'+p.name+'</div>';
+    html+='<div style="color:rgba(255,255,255,0.5);font-size:0.7rem">'+p.cols+'x'+p.rows+'</div>';
+    html+='</div>';
   }
-  html+='</div>';
-  html+='<div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px">';
-  html+='<button onclick="drawSize(-1)" style="padding:4px 12px;border-radius:8px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;cursor:pointer">➖</button>';
-  html+='<span style="color:#fff;font-size:0.85rem;line-height:28px">Taille: <b id="drawSizeVal">4</b></span>';
-  html+='<button onclick="drawSize(1)" style="padding:4px 12px;border-radius:8px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;cursor:pointer">➕</button>';
-  html+='</div>';
-  html+='<canvas id="drawCanvas" width="350" height="350" style="border-radius:14px;border:3px solid rgba(255,255,255,0.2);background:#1a1a2e;cursor:crosshair;touch-action:none;max-width:100%"></canvas>';
-  html+='<div style="margin-top:8px;display:flex;gap:8px;justify-content:center">';
-  html+='<button onclick="drawClear()" style="padding:6px 16px;border-radius:10px;border:2px solid #FF4B4B;background:rgba(255,75,75,0.2);color:#FF4B4B;font-weight:700;cursor:pointer">🗑 Effacer</button>';
-  html+='<button onclick="drawSave()" style="padding:6px 16px;border-radius:10px;border:2px solid #43C463;background:rgba(67,196,99,0.2);color:#43C463;font-weight:700;cursor:pointer">💾 Sauver</button>';
-  html+='<button onclick="goHome()" style="padding:6px 16px;border-radius:10px;border:2px solid rgba(255,200,0,0.3);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">✖</button>';
   html+='</div></div>';
   showCardScreen('drawGame',html);
-  setTimeout(function(){
-    var c=document.getElementById('drawCanvas');if(!c)return;
-    var ctx=c.getContext('2d');
-    function getPos(e){var r=c.getBoundingClientRect();var t=e.touches?e.touches[0]:e;return{x:(t.clientX-r.left)*(c.width/r.width),y:(t.clientY-r.top)*(c.height/r.height)};}
-    function start(e){e.preventDefault();_drawData.drawing=true;var p=getPos(e);_drawData.lastX=p.x;_drawData.lastY=p.y;}
-    function draw(e){e.preventDefault();if(!_drawData.drawing)return;var p=getPos(e);ctx.beginPath();ctx.strokeStyle=_drawData.color;ctx.lineWidth=_drawData.size;ctx.lineCap='round';ctx.moveTo(_drawData.lastX,_drawData.lastY);ctx.lineTo(p.x,p.y);ctx.stroke();_drawData.lastX=p.x;_drawData.lastY=p.y;}
-    function stop(){_drawData.drawing=false;}
-    c.addEventListener('mousedown',start);c.addEventListener('mousemove',draw);c.addEventListener('mouseup',stop);c.addEventListener('mouseleave',stop);
-    c.addEventListener('touchstart',start);c.addEventListener('touchmove',draw);c.addEventListener('touchend',stop);
-  },100);
 }
-function drawColor(c){_drawData.color=c;startDraw();}
-function drawSize(d){_drawData.size=Math.max(1,Math.min(20,_drawData.size+d));var el=document.getElementById('drawSizeVal');if(el)el.textContent=_drawData.size;}
-function drawClear(){var c=document.getElementById('drawCanvas');if(c){var ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);}}
-function drawSave(){showToast('Dessin sauvegard\u00e9 !');confettiBurst(15,1000);addCoins(2);}
+
+function startDrawGame(idx){
+  var p=_drawPuzzles[idx];
+  _drawState={puzzle:idx,selected:null,filled:{},total:p.rows*p.cols};
+  _drawCurrentPalette=p.palette;
+  var html='<div style="text-align:center;padding:8px">';
+  html+='<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:2px">'+p.emoji+' '+p.name+'</div>';
+  html+='<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:8px" id="drawProgress">0/'+_drawState.total+' cases</div>';
+  html+='<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px" id="drawPalette">';
+  var keys=Object.keys(p.palette);
+  for(var i=0;i<keys.length;i++){
+    var k=keys[i];var c=p.palette[k];
+    html+='<div onclick="drawSelectColor(\''+k+'\')" id="drawBtn_'+k+'" style="width:40px;height:40px;border-radius:12px;background:'+c+';cursor:pointer;border:3px solid '+(k===_drawState.selected?'#fff':'rgba(255,255,255,0.3)')+';box-shadow:0 3px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:'+(k==='C'||k==='A'?'#fff':'#333')+';text-shadow:0 1px 2px rgba(0,0,0,0.3)">'+k+'</div>';
+  }
+  html+='</div>';
+  html+='<div style="display:inline-grid;grid-template-columns:repeat('+p.cols+',1fr);gap:2px;background:rgba(0,0,0,0.3);border-radius:12px;padding:6px;border:2px solid rgba(255,255,255,0.1)" id="drawGrid">';
+  for(var r=0;r<p.rows;r++){
+    for(var c2=0;c2<p.cols;c2++){
+      var ci=r*p.cols+c2;
+      var letter=p.grid[ci]||' ';
+      var id='dc_'+ci;
+      html+='<div id="'+id+'" onclick="drawFill('+ci+')" data-letter="'+letter+'" style="width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.7rem;color:rgba(255,255,255,0.25);cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,0.1)">'+letter+'</div>';
+    }
+  }
+  html+='</div>';
+  html+='<div style="margin-top:10px;display:flex;gap:8px;justify-content:center">';
+  html+='<button onclick="startDraw()" style="padding:6px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">\u2190 Retour</button>';
+  html+='<button onclick="drawReset()" style="padding:6px 16px;border-radius:10px;border:2px solid #FF4B4B;background:rgba(255,75,75,0.2);color:#FF4B4B;font-weight:700;cursor:pointer">\uD83D\uDDD1 Effacer</button>';
+  html+='</div></div>';
+  showCardScreen('drawGame',html);
+}
+
+function drawSelectColor(letter){
+  _drawState.selected=letter;
+  var keys=Object.keys(_drawCurrentPalette);
+  for(var i=0;i<keys.length;i++){
+    var el=document.getElementById('drawBtn_'+keys[i]);
+    if(el)el.style.border=keys[i]===letter?'3px solid #fff':'3px solid rgba(255,255,255,0.3)';
+  }
+}
+
+function drawFill(ci){
+  if(!_drawState||!_drawState.selected)return;
+  var p=_drawPuzzles[_drawState.puzzle];
+  var cell=document.getElementById('dc_'+ci);
+  if(!cell)return;
+  var letter=cell.getAttribute('data-letter');
+  if(letter!==_drawState.selected){
+    cell.style.animation='wrongShake .3s ease';
+    setTimeout(function(){cell.style.animation='';},300);
+    return;
+  }
+  var color=_drawCurrentPalette[_drawState.selected];
+  cell.style.background=color;
+  cell.style.color=color;
+  cell.style.borderColor=color;
+  cell.style.boxShadow='0 0 8px '+color+'66';
+  cell.style.transform='scale(1.1)';
+  setTimeout(function(){cell.style.transform='';},150);
+  _drawState.filled[ci]=true;
+  var count=Object.keys(_drawState.filled).length;
+  var el=document.getElementById('drawProgress');
+  if(el)el.textContent=count+'/'+_drawState.total+' cases';
+  if(count===_drawState.total){
+    setTimeout(function(){
+      confettiBurst(40,2000);
+      addCoins(5);
+      showToast('\uD83C\uDF89 Bravo ! '+p.name+' termin\u00e9 ! +5 \uD83E\uDE99');
+      owlSay('\uD83D\uDC4D Superbe coloriage !',2000,true);
+    },200);
+  }
+}
+
+function drawReset(){
+  var p=_drawPuzzles[_drawState.puzzle];
+  _drawState.filled={};
+  for(var ci=0;ci<p.rows*p.cols;ci++){
+    var cell=document.getElementById('dc_'+ci);
+    if(cell){
+      cell.style.background='rgba(255,255,255,0.08)';
+      cell.style.color='rgba(255,255,255,0.25)';
+      cell.style.borderColor='rgba(255,255,255,0.1)';
+      cell.style.boxShadow='';
+    }
+  }
+  var el=document.getElementById('drawProgress');
+  if(el)el.textContent='0/'+_drawState.total+' cases';
+}
 
 /* ===== 8. RUNNER ===== */
 var _runnerTimer=null,_runnerData=null;
