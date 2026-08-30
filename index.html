@@ -13208,7 +13208,7 @@ function startDrawGame(idx){
   var p=_drawPuzzles[idx];
   _drawState={puzzle:idx,selected:null,filled:{},total:p.rows*p.cols};
   _drawCurrentPalette=p.palette;
-  var cellSz=Math.min(32,Math.floor(330/p.cols));
+  var cellSz=Math.min(40,Math.floor(Math.min(420,window.innerWidth-40)/p.cols));
   var html='<div style="text-align:center;padding:8px">';
   html+='<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:2px">'+p.emoji+' '+p.name+'</div>';
   html+='<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:8px" id="drawProgress">0/'+_drawState.total+' cases</div>';
@@ -13220,13 +13220,13 @@ function startDrawGame(idx){
     html+='<div onclick="drawSelectColor(\''+k+'\')" id="drawBtn_'+k+'" style="width:40px;height:40px;border-radius:12px;background:'+c+';cursor:pointer;border:3px solid '+(k===_drawState.selected?'#fff':'rgba(255,255,255,0.3)')+';box-shadow:0 3px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:'+(isLight?'#333':'#fff')+';text-shadow:0 1px 2px rgba(0,0,0,0.3)">'+k+'</div>';
   }
   html+='</div>';
-  html+='<div style="display:inline-grid;grid-template-columns:repeat('+p.cols+','+cellSz+'px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:6px;border:2px solid rgba(255,255,255,0.1)" id="drawGrid">';
+  html+='<div style="display:inline-grid;grid-template-columns:repeat('+p.cols+','+cellSz+'px);gap:2px;background:rgba(0,0,0,0.3);border-radius:14px;padding:8px;border:2px solid rgba(255,255,255,0.1)" id="drawGrid">';
   for(var r=0;r<p.rows;r++){
     for(var c2=0;c2<p.cols;c2++){
       var ci=r*p.cols+c2;
       var num=p.grid[ci]||' ';
       var id='dc_'+ci;
-      html+='<div id="'+id+'" onclick="drawFill('+ci+')" data-letter="'+num+'" style="width:'+cellSz+'px;height:'+cellSz+'px;border-radius:3px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:'+(cellSz<20?'0.5rem':'0.6rem')+';color:rgba(255,255,255,0.25);cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,0.1)">'+num+'</div>';
+      html+='<div id="'+id+'" onclick="drawFill('+ci+')" data-letter="'+num+'" style="width:'+cellSz+'px;height:'+cellSz+'px;border-radius:4px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:'+(cellSz<20?'0.65rem':cellSz<30?'0.8rem':'0.95rem')+';color:rgba(255,255,255,0.35);cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,0.1)">'+num+'</div>';
     }
   }
   html+='</div>';
