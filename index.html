@@ -13226,7 +13226,7 @@ function startDrawGame(idx){
       var ci=r*p.cols+c2;
       var num=p.grid[ci]||' ';
       var id='dc_'+ci;
-      html+='<div id="'+id+'" onclick="drawFill('+ci+')" data-letter="'+num+'" style="width:'+cellSz+'px;height:'+cellSz+'px;border-radius:4px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:'+(cellSz<20?'0.65rem':cellSz<30?'0.8rem':'0.95rem')+';color:rgba(255,255,255,0.35);cursor:pointer;transition:all .15s;border:1px solid rgba(255,255,255,0.1)">'+num+'</div>';
+      html+='<div id="'+id+'" onclick="drawFill('+ci+')" data-letter="'+num+'" style="width:'+cellSz+'px;height:'+cellSz+'px;border-radius:4px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:'+(cellSz<20?'0.7rem':cellSz<30?'0.9rem':'1.05rem')+';color:rgba(255,255,255,0.7);text-shadow:0 1px 3px rgba(0,0,0,0.5);cursor:pointer;transition:all .15s;border:2px solid rgba(255,255,255,0.2)">'+num+'</div>';
     }
   }
   html+='</div>';
