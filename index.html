@@ -12627,19 +12627,20 @@ function startSnake(){
   var target=items[Math.floor(Math.random()*items.length)];
   _snakeData={snake:[{x:7,y:7}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
   spawnSnakeFood();
+  var bc='width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900';
   var html='<div style="text-align:center;padding:8px">';
-  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">\uD83D\uDC0D Trouve la lettre : <span style="color:#FFC800;font-size:1.4rem">'+target+'</span></div>';
-  html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:8px">Score: <span id="snakeScore">0</span> | Fl\u00e8ches ou WASD</div>';
+  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">Trouve la lettre : <span style="color:#FFC800;font-size:1.4rem">'+target+'</span></div>';
+  html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:8px">Score: <span id="snakeScore">0</span></div>';
   html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',24px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div>';
-  html+='<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">';
-  html+='<button onclick="snakeDir(0,-1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25B2</button>';
-  html+='</div><div style="display:flex;gap:8px;justify-content:center">';
-  html+='<button onclick="snakeDir(-1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25C0</button>';
-  html+='<button onclick="snakeDir(0,1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25BC</button>';
-  html+='<button onclick="snakeDir(1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25B6</button>';
-  html+='</div>';
-  html+='<button onclick="snakePause()" id="snakePauseBtn" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">\u23F8 Pause</button>';
-  html+='<button onclick="goHome();clearInterval(_snakeTimer)" style="margin-top:8px;margin-left:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">\u2716 Quitter</button>';
+  html+='<div style="margin-top:12px">';
+  html+='<div style="display:flex;justify-content:center;margin-bottom:6px"><button onclick="snakeDir(0,-1)" style="'+bc+'">H</button></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:center">';
+  html+='<button onclick="snakeDir(-1,0)" style="'+bc+'">G</button>';
+  html+='<button onclick="snakeDir(0,1)" style="'+bc+'">B</button>';
+  html+='<button onclick="snakeDir(1,0)" style="'+bc+'">D</button>';
+  html+='</div></div>';
+  html+='<button onclick="snakePause()" id="snakePauseBtn" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">Pause</button>';
+  html+=' <button onclick="goHome();clearInterval(_snakeTimer)" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">Quitter</button>';
   html+='</div>';
   showCardScreen('snakeGame',html);
   renderSnakeGrid();
@@ -12674,7 +12675,7 @@ function snakeTick(){
     soundCorrect();
     if(d.food.ch===d.target){
       confettiBurst(20,1500);
-      owlSay('\uD83C\uDF89 Bravo ! Tu as trouv\u00e9 le '+d.target+' !');
+      owlSay('Bravo ! Tu as trouv\u00e9 le '+d.target+' !');
       addCoins(5);addPoints(10);
       clearInterval(_snakeTimer);
       setTimeout(function(){goHome();},1500);
@@ -12702,7 +12703,7 @@ function renderSnakeGrid(){
       var isFood=d.food&&d.food.x===x&&d.food.y===y;
       var bg='rgba(255,255,255,0.03)';
       var ch='';
-      if(d.over&&isHead){bg='#FF4B4B';ch='\u2716';}
+      if(d.over&&isHead){bg='#FF4B4B';ch='X';}
       else if(isHead){bg='#43C463';ch='\u25CF';}
       else if(isSnake){bg='rgba(67,196,99,0.4)';}
       else if(isFood){bg='rgba(255,200,0,0.3)';ch='<span style="color:#FFC800;font-weight:900">'+d.food.ch+'</span>';}
@@ -12776,21 +12777,20 @@ function startTetris(){
   _tetrisData={grid:[],cols:cols,rows:rows,shape:shape.s,color:shape.c,px:3,py:0,score:0,over:false,shapes:shapes};
   for(var y=0;y<rows;y++){_tetrisData.grid.push(new Array(cols).fill(null));}
   renderTetris();
-  var bc='width:48px;height:48px;border-radius:12px;border:2px solid rgba(255,255,255,0.25);background:rgba(255,255,255,0.12);color:#fff;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center';
+  var bc='width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900';
   var html='<div style="text-align:center;padding:8px">';
   html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:4px">Score: <b id="tetrisScore" style="color:#FFC800">0</b></div>';
-  html+='<div style="font-size:0.7rem;color:rgba(255,255,255,0.4);margin-bottom:6px">Fl\u00e8ches clavier ou boutons</div>';
   html+='<div id="tetrisCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',26px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div>';
   html+='<div style="margin-top:12px">';
-  html+='<div style="display:flex;justify-content:center;margin-bottom:6px"><button onclick="tetrisRotate()" style="'+bc+'">\u21BB Tourner</button></div>';
-  html+='<div style="display:flex;gap:8px;justify-content:center">';
-  html+='<button onclick="tetrisMove(-1,0)" style="'+bc+'">\u25C0</button>';
-  html+='<button onclick="tetrisMove(0,1)" style="'+bc+'">\u25BC</button>';
-  html+='<button onclick="tetrisMove(1,0)" style="'+bc+'">\u25B6</button>';
+  html+='<div style="display:flex;justify-content:center;margin-bottom:6px"><button onclick="tetrisRotate()" style="'+bc+';width:auto;padding:0 20px;font-size:1rem">Tourner</button></div>';
+  html+='<div style="display:flex;gap:10px;justify-content:center">';
+  html+='<button onclick="tetrisMove(-1,0)" style="'+bc+'">G</button>';
+  html+='<button onclick="tetrisMove(0,1)" style="'+bc+'">B</button>';
+  html+='<button onclick="tetrisMove(1,0)" style="'+bc+'">D</button>';
   html+='</div>';
-  html+='<div style="display:flex;justify-content:center;margin-top:6px"><button onclick="tetrisDrop()" style="'+bc+';border-color:rgba(255,200,0,0.4);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:900">Tomber</button></div>';
+  html+='<div style="display:flex;justify-content:center;margin-top:6px"><button onclick="tetrisDrop()" style="'+bc+';width:auto;padding:0 20px;border-color:rgba(255,200,0,0.5);background:rgba(255,200,0,0.2);color:#FFC800;font-size:1rem">Tomber</button></div>';
   html+='</div>';
-  html+='<button onclick="clearInterval(_tetrisTimer);goHome()" style="margin-top:10px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">\u2716 Quitter</button>';
+  html+='<button onclick="clearInterval(_tetrisTimer);goHome()" style="margin-top:10px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">Quitter</button>';
   html+='</div>';
   showCardScreen('tetrisGame',html);
   _tetrisTimer=setInterval(tetrisTick,600);
@@ -12852,7 +12852,7 @@ function tetrisPlace(){
 function tetrisGameOver(){
   var d=_tetrisData;d.over=true;clearInterval(_tetrisTimer);
   soundWrong();addCoins(Math.floor(d.score/10));addPoints(d.score);
-  owlSay('\uD83C\uDFAE Game Over ! Score : '+d.score);confettiBurst(d.score,2000);
+  owlSay('Game Over ! Score : '+d.score);confettiBurst(d.score,2000);
   renderTetris();
   var el=document.getElementById('tetrisCanvas');
   if(el){el.style.opacity='0.5';el.style.filter='grayscale(1)';}
