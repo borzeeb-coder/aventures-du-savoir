@@ -12628,18 +12628,18 @@ function startSnake(){
   _snakeData={snake:[{x:7,y:7}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
   spawnSnakeFood();
   var html='<div style="text-align:center;padding:8px">';
-  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">🐍 Trouve la lettre : <span style="color:#FFC800;font-size:1.4rem">'+target+'</span></div>';
-  html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:8px">Score: <span id="snakeScore">0</span></div>';
+  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">\uD83D\uDC0D Trouve la lettre : <span style="color:#FFC800;font-size:1.4rem">'+target+'</span></div>';
+  html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:8px">Score: <span id="snakeScore">0</span> | Fl\u00e8ches ou WASD</div>';
   html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',24px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div>';
   html+='<div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">';
-  html+='<button onclick="snakeDir(0,-1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">▲</button>';
+  html+='<button onclick="snakeDir(0,-1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25B2</button>';
   html+='</div><div style="display:flex;gap:8px;justify-content:center">';
-  html+='<button onclick="snakeDir(-1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">◀</button>';
-  html+='<button onclick="snakeDir(0,1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">▼</button>';
-  html+='<button onclick="snakeDir(1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">▶</button>';
+  html+='<button onclick="snakeDir(-1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25C0</button>';
+  html+='<button onclick="snakeDir(0,1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25BC</button>';
+  html+='<button onclick="snakeDir(1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25B6</button>';
   html+='</div>';
-  html+='<button onclick="snakePause()" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">⏸ Pause</button>';
-  html+='<button onclick="goHome();clearInterval(_snakeTimer)" style="margin-top:8px;margin-left:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">✖ Quitter</button>';
+  html+='<button onclick="snakePause()" id="snakePauseBtn" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">\u23F8 Pause</button>';
+  html+='<button onclick="goHome();clearInterval(_snakeTimer)" style="margin-top:8px;margin-left:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">\u2716 Quitter</button>';
   html+='</div>';
   showCardScreen('snakeGame',html);
   renderSnakeGrid();
@@ -12658,8 +12658,9 @@ function snakeDir(dx,dy){
 function snakePause(){
   var d=_snakeData;if(!d)return;
   d.paused=!d.paused;
-  if(d.paused)clearInterval(_snakeTimer);
-  else _snakeTimer=setInterval(snakeTick,180);
+  var btn=document.getElementById('snakePauseBtn');
+  if(d.paused){clearInterval(_snakeTimer);if(btn)btn.textContent='\u25B6 Jouer';}
+  else{_snakeTimer=setInterval(snakeTick,180);if(btn)btn.textContent='\u23F8 Pause';}
 }
 function snakeTick(){
   var d=_snakeData;if(!d||d.over||d.paused)return;
@@ -12673,7 +12674,7 @@ function snakeTick(){
     soundCorrect();
     if(d.food.ch===d.target){
       confettiBurst(20,1500);
-      owlSay('\u{1F389} Bravo ! Tu as trouvé le '+d.target+' !');
+      owlSay('\uD83C\uDF89 Bravo ! Tu as trouv\u00e9 le '+d.target+' !');
       addCoins(5);addPoints(10);
       clearInterval(_snakeTimer);
       setTimeout(function(){goHome();},1500);
@@ -12686,6 +12687,9 @@ function snakeTick(){
 function snakeDie(){
   var d=_snakeData;d.over=true;clearInterval(_snakeTimer);
   soundWrong();owlSay('Perdu ! Retente ta chance !');
+  renderSnakeGrid();
+  var el=document.getElementById('snakeCanvas');
+  if(el){el.style.opacity='0.5';el.style.filter='grayscale(1)';}
 }
 function renderSnakeGrid(){
   var d=_snakeData;if(!d)return;
@@ -12698,8 +12702,9 @@ function renderSnakeGrid(){
       var isFood=d.food&&d.food.x===x&&d.food.y===y;
       var bg='rgba(255,255,255,0.03)';
       var ch='';
-      if(isHead){bg='#43C463';ch='●';}
-      else if(isSnake){bg='rgba(67,196,99,0.4)';ch='';}
+      if(d.over&&isHead){bg='#FF4B4B';ch='\u2716';}
+      else if(isHead){bg='#43C463';ch='\u25CF';}
+      else if(isSnake){bg='rgba(67,196,99,0.4)';}
       else if(isFood){bg='rgba(255,200,0,0.3)';ch='<span style="color:#FFC800;font-weight:900">'+d.food.ch+'</span>';}
       html+='<div style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:'+bg+';font-size:0.7rem;color:#fff">'+ch+'</div>';
     }
@@ -12771,7 +12776,7 @@ function startTetris(){
   _tetrisData={grid:[],cols:cols,rows:rows,shape:shape.s,color:shape.c,px:3,py:0,score:0,over:false,shapes:shapes};
   for(var y=0;y<rows;y++){_tetrisData.grid.push(new Array(cols).fill(null));}
   renderTetris();
-  showCardScreen('tetrisGame','<div style="text-align:center;padding:8px"><div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:4px">Score: <b id="tetrisScore" style="color:#FFC800">0</b></div><div id="tetrisCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',26px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div><div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button onclick="tetrisMove(-1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">◀</button><button onclick="tetrisDrop()" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">▼</button><button onclick="tetrisMove(1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">▶</button><button onclick="tetrisRotate()" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">↻</button></div><button onclick="clearInterval(_tetrisTimer);goHome()" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">✖ Quitter</button></div>');
+  showCardScreen('tetrisGame','<div style="text-align:center;padding:8px"><div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:4px">Score: <b id="tetrisScore" style="color:#FFC800">0</b> | Fl\u00e8ches + Espace</div><div id="tetrisCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',26px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div><div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button onclick="tetrisMove(-1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25C0</button><button onclick="tetrisMove(0,1)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25BC</button><button onclick="tetrisMove(1,0)" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u25B6</button><button onclick="tetrisRotate()" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:1.2rem;cursor:pointer">\u21BB</button><button onclick="tetrisDrop()" style="width:44px;height:44px;border-radius:10px;border:2px solid rgba(255,200,0,0.3);background:rgba(255,200,0,0.15);color:#FFC800;font-size:1.2rem;cursor:pointer;font-weight:900">\u2B07</button></div><button onclick="clearInterval(_tetrisTimer);goHome()" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">\u2716 Quitter</button></div>');
   _tetrisTimer=setInterval(tetrisTick,600);
 }
 function tetrisMove(dx,dy){
@@ -12831,7 +12836,10 @@ function tetrisPlace(){
 function tetrisGameOver(){
   var d=_tetrisData;d.over=true;clearInterval(_tetrisTimer);
   soundWrong();addCoins(Math.floor(d.score/10));addPoints(d.score);
-  owlSay('\u{1F3AE} Game Over ! Score : '+d.score);confettiBurst(d.score,2000);
+  owlSay('\uD83C\uDFAE Game Over ! Score : '+d.score);confettiBurst(d.score,2000);
+  renderTetris();
+  var el=document.getElementById('tetrisCanvas');
+  if(el){el.style.opacity='0.5';el.style.filter='grayscale(1)';}
   setTimeout(goHome,2000);
 }
 function tetrisTick(){
@@ -12854,7 +12862,7 @@ function renderTetris(){
   for(var y=0;y<d.rows;y++){
     for(var x=0;x<d.cols;x++){
       var c=gridCopy[y][x];
-      html+='<div style="width:26px;height:26px;border-radius:3px;background:'+(c||'rgba(255,255,255,0.03)')+'"></div>';
+      html+='<div style="width:26px;height:26px;border-radius:3px;background:'+(c||'rgba(255,255,255,0.03)')+';border:1px solid '+(c?'rgba(0,0,0,0.2)':'rgba(255,255,255,0.05)')+'"></div>';
     }
   }
   el.innerHTML=html;
@@ -13295,6 +13303,24 @@ function drawReset(){
   s.textContent='@keyframes drawZonePop{0%{transform:scale(1);}40%{transform:scale(1.12);}100%{transform:scale(1);}}@keyframes drawZoneShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}';
   if(document.head)document.head.appendChild(s);
 })();
+
+/* ===== GAME KEYBOARD CONTROLS ===== */
+document.addEventListener('keydown',function(e){
+  if(_snakeData&&!_snakeData.over){
+    if(e.key==='ArrowUp'||e.key==='w'||e.key==='W'){snakeDir(0,-1);e.preventDefault();}
+    else if(e.key==='ArrowDown'||e.key==='s'||e.key==='S'){snakeDir(0,1);e.preventDefault();}
+    else if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A'){snakeDir(-1,0);e.preventDefault();}
+    else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D'){snakeDir(1,0);e.preventDefault();}
+    else if(e.key===' '){snakePause();e.preventDefault();}
+  }
+  if(_tetrisData&&!_tetrisData.over){
+    if(e.key==='ArrowLeft'){tetrisMove(-1,0);e.preventDefault();}
+    else if(e.key==='ArrowRight'){tetrisMove(1,0);e.preventDefault();}
+    else if(e.key==='ArrowDown'){tetrisMove(0,1);e.preventDefault();}
+    else if(e.key==='ArrowUp'||e.key===' '){tetrisRotate();e.preventDefault();}
+    else if(e.key==='Enter'){tetrisDrop();e.preventDefault();}
+  }
+});
 
 /* ===== 8. RUNNER ===== */
 var _runnerTimer=null,_runnerData=null;
