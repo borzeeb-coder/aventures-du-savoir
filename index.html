@@ -13163,41 +13163,39 @@ function simonPlayer(i){
   }
 }
 
-/* ===== 7. COLORIAGE PAR CHIFFRES ===== */
+/* ===== 7. COLORIAGE PAR CHIFFRES (SVG) ===== */
 var _drawState=null;
 var _drawPuzzles=[
-  {name:'Hibou',emoji:'\uD83E\uDD89',cols:14,rows:14,
-   palette:{1:'#8B4513',2:'#D2691E',3:'#FFD700',4:'#FF8C00',5:'#000000',6:'#FFC800',7:'#FFFFFF',8:'#FF4500'},
-   grid:'3333333333333333666666666633366666666666636666666666666666556666556666665766667566666655666655666666666666666666666668886666666666888886666636666666666663223666666632222223333333322211111111111111'},
-  {name:'Papillon',emoji:'\uD83E\uDD8B',cols:16,rows:12,
-   palette:{1:'#4B0082',2:'#8A2BE2',3:'#DA70D6',4:'#FF69B4',5:'#FFD700',6:'#000000',7:'#FF4500',8:'#FF1493'},
-   grid:'111111661111111111111611611111111111611116111111111611111161111112343222234321111234532223453111123432222343211112345322234531111123432223432111111234222342111111112311132111111111161116111111'},
-  {name:'Bateau',emoji:'\u26F5',cols:16,rows:12,
-   palette:{1:'#1E90FF',2:'#87CEEB',3:'#FFFFFF',4:'#8B4513',5:'#FF4500',6:'#FFD700',7:'#000080',8:'#4169E1'},
-   grid:'111111131111111111111113311111111111113331111111111111333311111111111133333111111111111333333111111111144444111122222244444442222222224444444222772222444444227777772224444227777777772222277777'},
-  {name:'Fus\u00e9e',emoji:'\uD83D\uDE80',cols:12,rows:16,
-   palette:{1:'#C0C0C0',2:'#808080',3:'#FF4500',4:'#FFD700',5:'#1E90FF',6:'#FFFFFF',7:'#FF0000',8:'#000080'},
-   grid:'111116611111111166661111111666666111116666666611166666666661166655556661166655556661166666666661166666666661166666666661126666666621223666666322333466664333333346644333777733337777777444444777'},
-  {name:'Couronne',emoji:'\uD83D\uDC51',cols:14,rows:10,
-   palette:{1:'#FFD700',2:'#FFA500',3:'#FF0000',4:'#FF4500',5:'#8B0000',6:'#FFC800',7:'#DAA520',8:'#B8860B'},
-   grid:'17111111111171171666666617171716666666171711666666666111111663663661111116636636611111166666666111118888888881118888888888888888888888888888'},
-  {name:'Dinosaure',emoji:'\uD83E\uDD95',cols:16,rows:14,
-   palette:{1:'#228B22',2:'#32CD32',3:'#90EE90',4:'#8B4513',5:'#FF4500',6:'#000000',7:'#FFD700',8:'#006400'},
-   grid:'11111111111111111111111661111111111111666611111111111666666111111111166666611111111666666661111111166666666611111112222222222111112233333332211112233333332211111122222222221111111111221111111111111444111111111111444441111111'}
+  {name:'Papillon',emoji:'\u{1F98B}',
+   colors:{1:'#FF69B4',2:'#FF1493',3:'#FFD700',4:'#4DC9F6',5:'#90EE90'},
+   svg:'<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><path data-zone="1" data-color="#FF69B4" d="M150 100 Q120 60 60 50 Q20 45 30 100 Q35 130 70 145 Q100 155 140 140Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="1" data-color="#FF69B4" d="M150 100 Q180 60 240 50 Q280 45 270 100 Q265 130 230 145 Q200 155 160 140Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF1493" d="M150 140 Q120 155 80 180 Q50 200 60 240 Q68 265 100 260 Q130 252 148 230Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF1493" d="M150 140 Q180 155 220 180 Q250 200 240 240 Q232 265 200 260 Q170 252 152 230Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FFD700" d="M148 80 Q140 60 130 50 Q140 55 145 70Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FFD700" d="M152 80 Q160 60 170 50 Q160 55 155 70Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="4" data-color="#4DC9F6" d="M140 140 Q120 120 100 130 Q80 140 90 155 Q100 165 120 158Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="4" data-color="#4DC9F6" d="M160 140 Q180 120 200 130 Q220 140 210 155 Q200 165 180 158Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><circle data-zone="5" data-color="#90EE90" cx="150" cy="155" r="12" fill="transparent" stroke="#2D2D3A" stroke-width="3" style="cursor:pointer"/><text x="90" y="110" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="200" y="110" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="80" y="210" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="208" y="210" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="135" y="62" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text><text x="157" y="62" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text><text x="100" y="152" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">4</text><text x="186" y="152" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">4</text><text x="144" y="160" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">5</text></svg>'},
+  {name:'Soleil',emoji:'\u2600\uFE0F',
+   colors:{1:'#FFD700',2:'#FF8C00',3:'#FF6347',4:'#FFA500'},
+   svg:'<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><circle data-zone="1" data-color="#FFD700" cx="150" cy="150" r="42" fill="transparent" stroke="#2D2D3A" stroke-width="3" style="cursor:pointer"/><path data-zone="2" data-color="#FF8C00" d="M150 55 L145 95 L155 95Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF8C00" d="M150 205 L145 245 L155 245Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF8C00" d="M55 150 L95 145 L95 155Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF8C00" d="M205 150 L245 145 L245 155Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FF6347" d="M78 78 L108 108 L98 118Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FF6347" d="M222 78 L192 108 L202 118Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FF6347" d="M78 222 L108 192 L98 182Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FF6347" d="M222 222 L192 192 L202 182Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="4" data-color="#FFA500" d="M82 118 L112 128 L108 142Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="4" data-color="#FFA500" d="M218 118 L188 128 L192 142Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="4" data-color="#FFA500" d="M82 182 L112 172 L108 158Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="4" data-color="#FFA500" d="M218 182 L188 172 L192 158Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><circle cx="132" cy="142" r="6" fill="transparent" stroke="#2D2D3A" stroke-width="2"/><circle cx="168" cy="142" r="6" fill="transparent" stroke="#2D2D3A" stroke-width="2"/><path d="M135 165 Q150 178 165 165" fill="none" stroke="#2D2D3A" stroke-width="2.5" stroke-linecap="round"/><text x="144" y="155" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="144" y="80" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="82" y="100" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text><text x="200" y="100" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text><text x="100" y="130" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">4</text><text x="188" y="130" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">4</text></svg>'},
+  {name:'Maison',emoji:'\u{1F3E0}',
+   colors:{1:'#FF6347',2:'#8B4513',3:'#87CEEB',4:'#FFD700',5:'#228B22'},
+   svg:'<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><path data-zone="3" data-color="#87CEEB" d="M150 40 L40 140 L260 140Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><rect data-zone="2" data-color="#8B4513" x="70" y="140" width="160" height="120" rx="2" fill="transparent" stroke="#2D2D3A" stroke-width="3" style="cursor:pointer"/><rect data-zone="1" data-color="#FF6347" x="115" y="155" width="70" height="80" rx="3" fill="transparent" stroke="#2D2D3A" stroke-width="2.5" style="cursor:pointer"/><rect data-zone="4" data-color="#FFD700" x="130" y="165" width="40" height="40" rx="3" fill="transparent" stroke="#2D2D3A" stroke-width="2.5" style="cursor:pointer"/><line x1="150" y1="165" x2="150" y2="205" stroke="#2D2D3A" stroke-width="1.5"/><line x1="130" y1="185" x2="170" y2="185" stroke="#2D2D3A" stroke-width="1.5"/><rect data-zone="5" data-color="#228B22" x="120" y="220" width="35" height="40" rx="3" fill="transparent" stroke="#2D2D3A" stroke-width="2.5" style="cursor:pointer"/><circle data-zone="5" data-color="#228B22" cx="148" cy="240" r="3" fill="transparent" stroke="#2D2D3A" stroke-width="2"/><text x="147" y="105" font-size="16" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text><text x="140" y="130" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="144" y="200" font-size="12" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="143" y="190" font-size="12" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">4</text><text x="132" y="245" font-size="12" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">5</text></svg>'},
+  {name:'Fleur',emoji:'\u{1F33B}',
+   colors:{1:'#FF69B4',2:'#FF1493',3:'#228B22',4:'#FFD700'},
+   svg:'<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><path data-zone="3" data-color="#228B22" d="M148 180 Q140 220 130 260 Q145 250 150 260 Q155 250 170 260 Q160 220 152 180Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#228B22" d="M150 200 Q115 185 95 195 Q110 175 130 182Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#228B22" d="M150 200 Q185 185 205 195 Q190 175 170 182Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="1" data-color="#FF69B4" d="M150 75 Q125 85 120 110 Q118 130 135 138 Q145 142 150 132Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="1" data-color="#FF69B4" d="M150 75 Q175 85 180 110 Q182 130 165 138 Q155 142 150 132Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF1493" d="M115 128 Q105 112 112 92 Q120 102 132 115Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF1493" d="M185 128 Q195 112 188 92 Q180 102 168 115Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF1493" d="M125 150 Q112 158 118 172 Q128 165 138 158Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF1493" d="M175 150 Q188 158 182 172 Q172 165 162 158Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><circle data-zone="4" data-color="#FFD700" cx="150" cy="125" r="18" fill="transparent" stroke="#2D2D3A" stroke-width="3" style="cursor:pointer"/><text x="143" y="131" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">4</text><text x="108" y="112" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="182" y="112" font-size="11" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="118" y="105" font-size="10" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="175" y="105" font-size="10" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="122" y="168" font-size="10" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="172" y="168" font-size="10" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="144" y="235" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text></svg>'},
+  {name:'Coeur',emoji:'\u2764\uFE0F',
+   colors:{1:'#FF1493',2:'#FF69B4',3:'#FFB6C1'},
+   svg:'<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><path data-zone="1" data-color="#FF1493" d="M150 260 Q50 200 40 130 Q30 80 70 60 Q110 40 150 100 Q190 40 230 60 Q270 80 260 130 Q250 200 150 260Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FF69B4" d="M150 260 Q70 210 60 145 Q55 110 80 90 Q105 72 150 115Z" fill="transparent" stroke="#2D2D3A" stroke-width="2" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="3" data-color="#FFB6C1" d="M150 260 Q230 210 240 145 Q245 110 220 90 Q195 72 150 115Z" fill="transparent" stroke="#2D2D3A" stroke-width="2" stroke-linejoin="round" style="cursor:pointer"/><text x="140" y="190" font-size="24" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="100" y="185" font-size="16" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text><text x="188" y="185" font-size="16" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text></svg>'},
+  {name:'\u00C9toile',emoji:'\u2B50',
+   colors:{1:'#FFD700',2:'#FFA500',3:'#FF8C00'},
+   svg:'<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><path data-zone="1" data-color="#FFD700" d="M150 40 L175 115 L260 115 L190 165 L215 240 L150 195 L85 240 L110 165 L40 115 L125 115Z" fill="transparent" stroke="#2D2D3A" stroke-width="3" stroke-linejoin="round" style="cursor:pointer"/><path data-zone="2" data-color="#FFA500" d="M150 100 L165 135 L200 135 L172 158 L182 195 L150 172 L118 195 L128 158 L100 135 L135 135Z" fill="transparent" stroke="#2D2D3A" stroke-width="2.5" stroke-linejoin="round" style="cursor:pointer"/><circle data-zone="3" data-color="#FF8C00" cx="150" cy="148" r="16" fill="transparent" stroke="#2D2D3A" stroke-width="2.5" style="cursor:pointer"/><text x="143" y="154" font-size="14" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">3</text><text x="144" y="82" font-size="16" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">1</text><text x="144" y="125" font-size="12" font-weight="bold" fill="#555" font-family="Arial" pointer-events="none">2</text></svg>'}
 ];
-var _drawCurrentPalette=null;
 
 function startDraw(){
   var html='<div style="text-align:center;padding:8px">';
   html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">\uD83C\uDFA8 Coloriage par Chiffres</div>';
-  html+='<div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:12px">Choisis un dessin et colorie chaque case selon le chiffre</div>';
+  html+='<div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:12px">Choisis un dessin et colorie chaque zone selon le chiffre</div>';
   html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
   for(var i=0;i<_drawPuzzles.length;i++){
     var p=_drawPuzzles[i];
     html+='<div onclick="startDrawGame('+i+')" style="background:rgba(255,255,255,0.1);border-radius:16px;padding:16px 8px;cursor:pointer;border:2px solid rgba(255,255,255,0.15);transition:transform .15s" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'">';
     html+='<div style="font-size:2rem;margin-bottom:4px">'+p.emoji+'</div>';
     html+='<div style="color:#fff;font-weight:700;font-size:0.85rem">'+p.name+'</div>';
-    html+='<div style="color:rgba(255,255,255,0.5);font-size:0.7rem">'+p.cols+'x'+p.rows+'</div>';
     html+='</div>';
   }
   html+='</div></div>';
@@ -13206,93 +13204,97 @@ function startDraw(){
 
 function startDrawGame(idx){
   var p=_drawPuzzles[idx];
-  _drawState={puzzle:idx,selected:null,filled:{},total:p.rows*p.cols};
-  _drawCurrentPalette=p.palette;
-  var cellSz=Math.min(40,Math.floor(Math.min(420,window.innerWidth-40)/p.cols));
+  var keys=Object.keys(p.colors);
+  _drawState={puzzle:idx,selected:null,filled:{},total:0};
   var html='<div style="text-align:center;padding:8px">';
   html+='<div style="font-size:1rem;font-weight:800;color:#fff;margin-bottom:2px">'+p.emoji+' '+p.name+'</div>';
-  html+='<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:8px" id="drawProgress">0/'+_drawState.total+' cases</div>';
+  html+='<div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-bottom:8px" id="drawProgress">0 zones</div>';
   html+='<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:10px" id="drawPalette">';
-  var keys=Object.keys(p.palette);
   for(var i=0;i<keys.length;i++){
-    var k=keys[i];var c=p.palette[k];
-    var isLight=(k==='3'||k==='4'||k==='7');
-    html+='<div onclick="drawSelectColor(\''+k+'\')" id="drawBtn_'+k+'" style="width:40px;height:40px;border-radius:12px;background:'+c+';cursor:pointer;border:3px solid '+(k===_drawState.selected?'#fff':'rgba(255,255,255,0.3)')+';box-shadow:0 3px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:'+(isLight?'#333':'#fff')+';text-shadow:0 1px 2px rgba(0,0,0,0.3)">'+k+'</div>';
+    var k=keys[i];var c=p.colors[k];
+    html+='<div onclick="drawSelectColor(\''+k+'\')" id="drawBtn_'+k+'" style="width:44px;height:44px;border-radius:12px;background:'+c+';cursor:pointer;border:3px solid rgba(255,255,255,0.3);box-shadow:0 3px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.4)">'+k+'</div>';
   }
   html+='</div>';
-  html+='<div style="display:inline-grid;grid-template-columns:repeat('+p.cols+','+cellSz+'px);gap:2px;background:rgba(0,0,0,0.3);border-radius:14px;padding:8px;border:2px solid rgba(255,255,255,0.1)" id="drawGrid">';
-  for(var r=0;r<p.rows;r++){
-    for(var c2=0;c2<p.cols;c2++){
-      var ci=r*p.cols+c2;
-      var num=p.grid[ci]||' ';
-      var id='dc_'+ci;
-      html+='<div id="'+id+'" onclick="drawFill('+ci+')" data-letter="'+num+'" style="width:'+cellSz+'px;height:'+cellSz+'px;border-radius:5px;background:rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:'+(cellSz<20?'0.75rem':cellSz<30?'0.95rem':'1.1rem')+';color:#fff;text-shadow:0 0 6px rgba(0,0,0,0.8),0 1px 2px rgba(0,0,0,0.9);cursor:pointer;transition:all .15s;border:2px solid rgba(255,255,255,0.25);letter-spacing:0">'+num+'</div>';
-    }
-  }
-  html+='</div>';
+  html+='<div style="display:inline-block;background:#fff;border-radius:18px;padding:12px;border:3px solid #2D2D3A;box-shadow:0 4px 0 #2D2D3A;max-width:100%;overflow:hidden" id="drawSvgWrap">'+p.svg+'</div>';
   html+='<div style="margin-top:10px;display:flex;gap:8px;justify-content:center">';
   html+='<button onclick="startDraw()" style="padding:6px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">\u2190 Retour</button>';
   html+='<button onclick="drawReset()" style="padding:6px 16px;border-radius:10px;border:2px solid #FF4B4B;background:rgba(255,75,75,0.2);color:#FF4B4B;font-weight:700;cursor:pointer">\uD83D\uDDD1 Effacer</button>';
   html+='</div></div>';
   showCardScreen('drawGame',html);
+  setTimeout(function(){
+    var wrap=document.getElementById('drawSvgWrap');
+    if(!wrap)return;
+    var paths=wrap.querySelectorAll('[data-zone]');
+    var counted={};
+    for(var i=0;i<paths.length;i++){
+      var z=paths[i].getAttribute('data-zone');
+      if(!counted[z]){counted[z]=true;_drawState.total++;}
+      paths[i].addEventListener('click',drawClickZone);
+    }
+    var el=document.getElementById('drawProgress');
+    if(el)el.textContent='0/'+_drawState.total+' zones';
+  },50);
 }
 
-function drawSelectColor(letter){
-  _drawState.selected=letter;
-  var keys=Object.keys(_drawCurrentPalette);
+function drawSelectColor(n){
+  _drawState.selected=n;
+  var p=_drawPuzzles[_drawState.puzzle];
+  var keys=Object.keys(p.colors);
   for(var i=0;i<keys.length;i++){
     var el=document.getElementById('drawBtn_'+keys[i]);
-    if(el)el.style.border=keys[i]===letter?'3px solid #fff':'3px solid rgba(255,255,255,0.3)';
+    if(el)el.style.border=keys[i]===n?'3px solid #fff':'3px solid rgba(255,255,255,0.3)';
   }
 }
 
-function drawFill(ci){
+function drawClickZone(e){
   if(!_drawState||!_drawState.selected)return;
-  var p=_drawPuzzles[_drawState.puzzle];
-  var cell=document.getElementById('dc_'+ci);
-  if(!cell)return;
-  var letter=cell.getAttribute('data-letter');
-  if(letter!==_drawState.selected){
-    cell.style.animation='wrongShake .3s ease';
-    setTimeout(function(){cell.style.animation='';},300);
-    return;
-  }
-  var color=_drawCurrentPalette[_drawState.selected];
-  cell.style.background=color;
-  cell.style.color=color;
-  cell.style.borderColor=color;
-  cell.style.boxShadow='0 0 8px '+color+'66';
-  cell.style.transform='scale(1.1)';
-  setTimeout(function(){cell.style.transform='';},150);
-  _drawState.filled[ci]=true;
-  var count=Object.keys(_drawState.filled).length;
-  var el=document.getElementById('drawProgress');
-  if(el)el.textContent=count+'/'+_drawState.total+' cases';
-  if(count===_drawState.total){
-    setTimeout(function(){
-      confettiBurst(40,2000);
-      addCoins(5);
-      showToast('\uD83C\uDF89 Bravo ! '+p.name+' termin\u00e9 ! +5 \uD83E\uDE99');
-      owlSay('\uD83D\uDC4D Superbe coloriage !',2000,true);
-    },200);
+  var el=e.currentTarget;
+  var zone=el.getAttribute('data-zone');
+  var target=el.getAttribute('data-color');
+  var chosen=_drawPuzzles[_drawState.puzzle].colors[_drawState.selected];
+  if(chosen===target){
+    el.setAttribute('fill',chosen);
+    el.style.transition='fill .3s ease';
+    el.style.cursor='default';
+    _drawState.filled[zone]=true;
+    var count=Object.keys(_drawState.filled).length;
+    var prog=document.getElementById('drawProgress');
+    if(prog)prog.textContent=count+'/'+_drawState.total+' zones';
+    el.style.animation='drawZonePop .35s ease';
+    setTimeout(function(){el.style.animation='';},350);
+    if(count===_drawState.total){
+      setTimeout(function(){
+        confettiBurst(40,2000);
+        addCoins(5);
+        showToast('\uD83C\uDF89 Bravo ! '+_drawPuzzles[_drawState.puzzle].name+' termin\u00e9 ! +5 \uD83E\uDE99');
+        owlSay('\uD83D\uDC4D Superbe coloriage !',2000,true);
+      },300);
+    }
+  } else {
+    el.style.animation='drawZoneShake .4s ease';
+    setTimeout(function(){el.style.animation='';},400);
   }
 }
 
 function drawReset(){
-  var p=_drawPuzzles[_drawState.puzzle];
+  if(!_drawState)return;
   _drawState.filled={};
-  for(var ci=0;ci<p.rows*p.cols;ci++){
-    var cell=document.getElementById('dc_'+ci);
-    if(cell){
-      cell.style.background='rgba(255,255,255,0.08)';
-      cell.style.color='rgba(255,255,255,0.25)';
-      cell.style.borderColor='rgba(255,255,255,0.1)';
-      cell.style.boxShadow='';
-    }
+  var wrap=document.getElementById('drawSvgWrap');
+  if(!wrap)return;
+  var paths=wrap.querySelectorAll('[data-zone]');
+  for(var i=0;i<paths.length;i++){
+    paths[i].setAttribute('fill','transparent');
+    paths[i].style.cursor='pointer';
   }
   var el=document.getElementById('drawProgress');
-  if(el)el.textContent='0/'+_drawState.total+' cases';
+  if(el)el.textContent='0/'+_drawState.total+' zones';
 }
+
+(function(){
+  var s=document.createElement('style');
+  s.textContent='@keyframes drawZonePop{0%{transform:scale(1);}40%{transform:scale(1.12);}100%{transform:scale(1);}}@keyframes drawZoneShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}';
+  if(document.head)document.head.appendChild(s);
+})();
 
 /* ===== 8. RUNNER ===== */
 var _runnerTimer=null,_runnerData=null;
