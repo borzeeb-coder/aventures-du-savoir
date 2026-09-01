@@ -12771,46 +12771,138 @@ function whackEnd(){
 
 /* ===== 3. TETRIS ===== */
 var _tetrisTimer=null,_tetrisData=null;
+function tetrisSound(type){
+  try{
+    var ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    g.gain.value=0.12;
+    if(type==='move'){o.frequency.value=300;o.type='square';g.gain.value=0.06;o.start();o.stop(ctx.currentTime+0.05);}
+    else if(type==='rotate'){o.frequency.value=500;o.type='sine';o.start();o.stop(ctx.currentTime+0.08);}
+    else if(type==='drop'){o.frequency.value=150;o.type='triangle';g.gain.value=0.15;o.start();o.frequency.linearRampToValueAtTime(80,ctx.currentTime+0.15);o.stop(ctx.currentTime+0.15);}
+    else if(type==='clear'){
+      o.frequency.value=600;o.type='sine';g.gain.value=0.15;o.start();
+      o.frequency.linearRampToValueAtTime(1200,ctx.currentTime+0.2);
+      o.frequency.linearRampToValueAtTime(800,ctx.currentTime+0.35);
+      o.stop(ctx.currentTime+0.35);
+    }
+    else if(type==='tetris'){
+      o.frequency.value=400;o.type='square';g.gain.value=0.18;o.start();
+      o.frequency.setValueAtTime(400,ctx.currentTime);o.frequency.setValueAtTime(500,ctx.currentTime+0.08);
+      o.frequency.setValueAtTime(600,ctx.currentTime+0.16);o.frequency.setValueAtTime(800,ctx.currentTime+0.24);
+      o.frequency.setValueAtTime(1000,ctx.currentTime+0.32);
+      g.gain.linearRampToValueAtTime(0,ctx.currentTime+0.5);
+      o.stop(ctx.currentTime+0.5);
+    }
+    else if(type==='levelup'){
+      o.frequency.value=523;o.type='sine';g.gain.value=0.15;o.start();
+      o.frequency.setValueAtTime(523,ctx.currentTime);o.frequency.setValueAtTime(659,ctx.currentTime+0.1);
+      o.frequency.setValueAtTime(784,ctx.currentTime+0.2);o.frequency.setValueAtTime(1047,ctx.currentTime+0.3);
+      g.gain.linearRampToValueAtTime(0,ctx.currentTime+0.45);
+      o.stop(ctx.currentTime+0.45);
+    }
+    else if(type==='gameover'){
+      o.frequency.value=400;o.type='sawtooth';g.gain.value=0.12;o.start();
+      o.frequency.linearRampToValueAtTime(100,ctx.currentTime+0.6);
+      g.gain.linearRampToValueAtTime(0,ctx.currentTime+0.6);
+      o.stop(ctx.currentTime+0.6);
+    }
+  }catch(e){}
+}
 function startTetris(){
-  var cols=10,rows=16;
-  var shapes=[{s:[[1,1],[1,1]],c:'#FFC800'},{s:[[1,1,1]],c:'#4DC9F6'},{s:[[1,0],[1,0],[1,1]],c:'#FF6B9D'},{s:[[0,1],[0,1],[1,1]],c:'#7B68EE'},{s:[[1,1,0],[0,1,1]],c:'#43C463'},{s:[[0,1,1],[1,1,0]],c:'#FF4B4B'},{s:[[1,1,1],[0,1,0]],c:'#9B59B6'}];
-  var shape=shapes[Math.floor(Math.random()*shapes.length)];
-  _tetrisData={grid:[],cols:cols,rows:rows,shape:shape.s,color:shape.c,px:3,py:0,score:0,over:false,shapes:shapes};
+  var cols=10,rows=18;
+  var shapes=[
+    {s:[[1,1],[1,1]],c:'#FFC800',n:'O'},
+    {s:[[1,1,1]],c:'#4DC9F6',n:'I'},
+    {s:[[1,0],[1,0],[1,1]],c:'#FF6B9D',n:'L'},
+    {s:[[0,1],[0,1],[1,1]],c:'#7B68EE',n:'J'},
+    {s:[[1,1,0],[0,1,1]],c:'#43C463',n:'S'},
+    {s:[[0,1,1],[1,1,0]],c:'#FF4B4B',n:'Z'},
+    {s:[[1,1,1],[0,1,0]],c:'#9B59B6',n:'T'}
+  ];
+  var next=shapes[Math.floor(Math.random()*shapes.length)];
+  _tetrisData={grid:[],cols:cols,rows:rows,shape:next.s,color:next.c,px:3,py:0,score:0,level:1,lines:0,over:false,paused:false,shapes:shapes,combo:0,ghostY:0,bag:[],nextShape:null};
+  _tetrisData.nextShape=shapes[Math.floor(Math.random()*shapes.length)];
   for(var y=0;y<rows;y++){_tetrisData.grid.push(new Array(cols).fill(null));}
+  tetrisCalcGhost();
   renderTetris();
-  var bc='width:52px;height:52px;border-radius:12px;border:2px solid rgba(0,0,0,0.2);background:rgba(80,50,150,0.9);color:#fff;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900';
-  var html='<div style="text-align:center;padding:8px">';
-  html+='<div style="font-size:0.9rem;color:#666;margin-bottom:4px">Score: <b id="tetrisScore" style="color:#7C3AED">0</b></div>';
-  html+='<div id="tetrisCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',26px);gap:1px;background:rgba(0,0,0,0.1);border-radius:12px;padding:4px;border:2px solid rgba(0,0,0,0.15)"></div>';
-  html+='<div style="margin-top:12px">';
-  html+='<div style="display:flex;justify-content:center;margin-bottom:6px"><button onclick="tetrisRotate()" style="'+bc+';width:auto;padding:0 20px;font-size:1rem">Tourner</button></div>';
-  html+='<div style="display:flex;gap:10px;justify-content:center">';
-  html+='<button onclick="tetrisMove(-1,0)" style="'+bc+'">G</button>';
-  html+='<button onclick="tetrisMove(0,1)" style="'+bc+'">B</button>';
-  html+='<button onclick="tetrisMove(1,0)" style="'+bc+'">D</button>';
+  var bw='width:56px;height:56px;border-radius:14px;border:2px solid rgba(0,0,0,0.15);background:linear-gradient(180deg,rgba(100,60,180,0.95),rgba(70,30,140,0.95));color:#fff;font-size:1.8rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 3px 0 rgba(50,20,100,0.5);active:translateY(2px);-webkit-tap-highlight-color:transparent;touch-action:manipulation';
+  var html='<div style="text-align:center;padding:6px;user-select:none">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding:0 4px">';
+  html+='<div style="text-align:left"><div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:1px">Score</div><div id="tetrisScore" style="font-size:1.3rem;font-weight:900;color:#7C3AED">0</div></div>';
+  html+='<div style="text-align:center"><div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:1px">Niveau</div><div id="tetrisLevel" style="font-size:1.3rem;font-weight:900;color:#FF6B9D">1</div></div>';
+  html+='<div style="text-align:right"><div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:1px">Lignes</div><div id="tetrisLines" style="font-size:1.3rem;font-weight:900;color:#43C463">0</div></div>';
   html+='</div>';
-  html+='<div style="display:flex;justify-content:center;margin-top:6px"><button onclick="tetrisDrop()" style="'+bc+';width:auto;padding:0 20px;border-color:rgba(200,160,0,0.5);background:rgba(200,160,0,0.9);color:#fff;font-size:1rem">Tomber</button></div>';
+  html+='<div id="tetrisNext" style="margin:0 auto 6px;display:inline-flex;gap:8px;align-items:center;background:rgba(0,0,0,0.05);border-radius:10px;padding:4px 12px"><span style="font-size:0.7rem;color:#999">Suivant:</span><div id="tetrisNextShape" style="display:inline-grid;gap:1px"></div></div>';
+  html+='<div id="tetrisCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',26px);gap:1px;background:rgba(0,0,0,0.08);border-radius:10px;padding:3px;border:2px solid rgba(0,0,0,0.12);box-shadow:inset 0 2px 8px rgba(0,0,0,0.08)"></div>';
+  html+='<div id="tetrisCombo" style="height:20px;margin-top:4px;font-size:0.85rem;font-weight:800;color:#FFC800"></div>';
+  html+='<div style="margin-top:8px">';
+  html+='<div style="display:flex;justify-content:center;margin-bottom:6px"><button onclick="tetrisRotate()" style="'+bw+';width:60px">\u21BB</button></div>';
+  html+='<div style="display:flex;gap:8px;justify-content:center">';
+  html+='<button onclick="tetrisMove(-1,0)" style="'+bw+'">\u25C0</button>';
+  html+='<button onclick="tetrisDrop()" style="'+bw+';background:linear-gradient(180deg,rgba(220,160,0,0.95),rgba(180,120,0,0.95));box-shadow:0 3px 0 rgba(140,90,0,0.5)">\u2B07</button>';
+  html+='<button onclick="tetrisMove(1,0)" style="'+bw+'">\u25B6</button>';
   html+='</div>';
-  html+='<button onclick="clearInterval(_tetrisTimer);goHome()" style="margin-top:10px;padding:8px 20px;border-radius:10px;border:2px solid rgba(0,0,0,0.2);background:rgba(200,160,0,0.9);color:#fff;font-weight:700;cursor:pointer">Quitter</button>';
+  html+='<div style="display:flex;justify-content:center;margin-top:6px"><button onclick="tetrisMove(0,1)" style="'+bw+';width:60px">\u25BC</button></div>';
+  html+='</div>';
+  html+='<button onclick="tetrisPause()" id="tetrisPauseBtn" style="margin-top:8px;padding:8px 18px;border-radius:10px;border:2px solid rgba(0,0,0,0.15);background:rgba(100,60,180,0.1);color:#7C3AED;font-weight:700;cursor:pointer;font-size:0.85rem">Pause</button>';
+  html+=' <button onclick="tetrisQuit()" style="padding:8px 18px;border-radius:10px;border:2px solid rgba(0,0,0,0.15);background:rgba(200,50,50,0.1);color:#FF4B4B;font-weight:700;cursor:pointer;font-size:0.85rem">Quitter</button>';
   html+='</div>';
   showCardScreen('tetrisGame',html);
-  _tetrisTimer=setInterval(tetrisTick,600);
+  renderTetrisNext();
+  _tetrisTimer=setInterval(tetrisTick,800);
+}
+function tetrisQuit(){clearInterval(_tetrisTimer);_tetrisData=null;goHome();}
+function tetrisPause(){
+  var d=_tetrisData;if(!d)return;
+  d.paused=!d.paused;
+  var btn=document.getElementById('tetrisPauseBtn');
+  if(d.paused){clearInterval(_tetrisTimer);if(btn)btn.textContent='Reprendre';}
+  else{_tetrisTimer=setInterval(tetrisTick,Math.max(100,800-(d.level-1)*60));if(btn)btn.textContent='Pause';}
+}
+function tetrisNextPiece(){
+  var d=_tetrisData;
+  var next=d.nextShape;
+  d.nextShape=d.shapes[Math.floor(Math.random()*d.shapes.length)];
+  d.shape=next.s;d.color=next.c;d.px=Math.floor((d.cols-next.s[0].length)/2);d.py=0;
+  d.combo=0;
+  if(tetrisCollision(d.px,d.py,d.shape)){tetrisGameOver();return;}
+  tetrisCalcGhost();
+  renderTetrisNext();
+}
+function tetrisCalcGhost(){
+  var d=_tetrisData;if(!d)return;
+  var gy=d.py;
+  while(!tetrisCollision(d.px,gy+1,d.shape)){gy++;}
+  d.ghostY=gy;
 }
 function tetrisMove(dx,dy){
-  var d=_tetrisData;if(!d||d.over)return;
+  var d=_tetrisData;if(!d||d.over||d.paused)return;
   var nx=d.px+dx,ny=d.py+dy;
-  if(!tetrisCollision(nx,ny,d.shape)){d.px=nx;d.py=ny;renderTetris();}
+  if(!tetrisCollision(nx,ny,d.shape)){
+    d.px=nx;d.py=ny;tetrisCalcGhost();
+    if(dx!==0)tetrisSound('move');
+    renderTetris();
+  }
 }
 function tetrisRotate(){
-  var d=_tetrisData;if(!d||d.over)return;
+  var d=_tetrisData;if(!d||d.over||d.paused)return;
   var rows=d.shape.length,cols=d.shape[0].length;
   var rot=[];
   for(var x=0;x<cols;x++){rot.push([]);for(var y=rows-1;y>=0;y--){rot[x].push(d.shape[y][x]);}}
-  if(!tetrisCollision(d.px,d.py,rot)){d.shape=rot;renderTetris();}
+  var kicks=[0,-1,1,-2,2];
+  for(var i=0;i<kicks.length;i++){
+    if(!tetrisCollision(d.px+kicks[i],d.py,rot)){
+      d.px+=kicks[i];d.shape=rot;tetrisCalcGhost();tetrisSound('rotate');renderTetris();return;
+    }
+  }
 }
 function tetrisDrop(){
-  var d=_tetrisData;if(!d||d.over)return;
-  while(!tetrisCollision(d.px,d.py+1,d.shape)){d.py++;}
+  var d=_tetrisData;if(!d||d.over||d.paused)return;
+  var dropped=0;
+  while(!tetrisCollision(d.px,d.py+1,d.shape)){d.py++;dropped++;}
+  d.score+=dropped;
+  tetrisSound('drop');
   tetrisPlace();
 }
 function tetrisCollision(px,py,shape){
@@ -12843,43 +12935,96 @@ function tetrisPlace(){
       cleared++;y++;
     }
   }
-  if(cleared>0){d.score+=cleared*10;soundCorrect();}
-  var next=d.shapes[Math.floor(Math.random()*d.shapes.length)];
-  d.shape=next.s;d.color=next.c;d.px=3;d.py=0;
-  if(tetrisCollision(d.px,d.py,d.shape)){tetrisGameOver();return;}
+  if(cleared>0){
+    d.combo++;
+    d.lines+=cleared;
+    var pts=cleared===1?100:cleared===2?300:cleared===3?500:800;
+    pts*=d.level;
+    if(d.combo>1)pts+=d.combo*50;
+    d.score+=pts;
+    tetrisSound(cleared>=4?'tetris':'clear');
+    var comboEl=document.getElementById('tetrisCombo');
+    if(comboEl){
+      var txt=cleared>=4?'TETRIS !':cleared===3?'Triple !':cleared===2?'Double !':''; 
+      if(d.combo>1)txt+=(txt?' + ':'Combo x'+d.combo+' !');
+      comboEl.textContent=txt;comboEl.style.transform='scale(1.2)';comboEl.style.transition='transform 0.2s';
+      setTimeout(function(){comboEl.style.transform='scale(1)';},200);
+    }
+    var newLevel=Math.floor(d.lines/10)+1;
+    if(newLevel>d.level){
+      d.level=newLevel;
+      tetrisSound('levelup');
+      var lvEl=document.getElementById('tetrisLevel');
+      if(lvEl){lvEl.textContent=d.level;lvEl.style.transform='scale(1.3)';setTimeout(function(){lvEl.style.transform='scale(1)';},300);}
+    }
+    clearInterval(_tetrisTimer);
+    _tetrisTimer=setInterval(tetrisTick,Math.max(100,800-(d.level-1)*60));
+  }else{d.combo=0;}
   var el=document.getElementById('tetrisScore');if(el)el.textContent=d.score;
+  var el2=document.getElementById('tetrisLines');if(el2)el2.textContent=d.lines;
+  var el3=document.getElementById('tetrisLevel');if(el3)el3.textContent=d.level;
+  tetrisNextPiece();
   renderTetris();
 }
 function tetrisGameOver(){
   var d=_tetrisData;d.over=true;clearInterval(_tetrisTimer);
-  soundWrong();addCoins(Math.floor(d.score/10));addPoints(d.score);
-  owlSay('Game Over ! Score : '+d.score);confettiBurst(d.score,2000);
+  tetrisSound('gameover');
+  addCoins(Math.floor(d.score/100));addPoints(d.score);
+  owlSay('Game Over ! Score : '+d.score+' | Niveau : '+d.level);confettiBurst(d.score,2500);
   renderTetris();
   var el=document.getElementById('tetrisCanvas');
-  if(el){el.style.opacity='0.5';el.style.filter='grayscale(1)';}
-  setTimeout(goHome,2000);
+  if(el){el.style.opacity='0.4';el.style.filter='grayscale(1) blur(1px)';}
+  setTimeout(function(){owlSay('Tu as atteint le niveau '+d.level+' avec '+d.lines+' lignes !');goHome();},2500);
 }
 function tetrisTick(){
-  var d=_tetrisData;if(!d||d.over)return;
-  if(!tetrisCollision(d.px,d.py+1,d.shape)){d.py++;renderTetris();}
+  var d=_tetrisData;if(!d||d.over||d.paused)return;
+  if(!tetrisCollision(d.px,d.py+1,d.shape)){d.py++;tetrisCalcGhost();renderTetris();}
   else{tetrisPlace();}
+}
+function renderTetrisNext(){
+  var d=_tetrisData;if(!d||!d.nextShape)return;
+  var el=document.getElementById('tetrisNextShape');if(!el)return;
+  var ns=d.nextShape;
+  var html='<div style="display:inline-grid;grid-template-columns:repeat('+ns.s[0].length+',14px);gap:1px">';
+  for(var y=0;y<ns.s.length;y++){
+    for(var x=0;x<ns.s[y].length;x++){
+      html+='<div style="width:14px;height:14px;border-radius:3px;background:'+(ns.s[y][x]?ns.c:'transparent')+'"></div>';
+    }
+  }
+  html+='</div>';
+  el.innerHTML=html;
 }
 function renderTetris(){
   var d=_tetrisData;if(!d)return;
   var el=document.getElementById('tetrisCanvas');if(!el)return;
   var html='';
   var gridCopy=d.grid.map(function(r){return r.slice();});
-  for(var y=0;y<d.shape.length;y++){
-    for(var x=0;x<d.shape[y].length;x++){
-      if(!d.shape[y][x])continue;
-      var gy=d.py+y;
-      if(gy>=0&&gy<d.rows)gridCopy[gy][d.px+x]=d.color;
+  if(!d.over){
+    for(var y=0;y<d.shape.length;y++){
+      for(var x=0;x<d.shape[y].length;x++){
+        if(!d.shape[y][x])continue;
+        var gy=d.py+y;
+        if(gy>=0&&gy<d.rows)gridCopy[gy][d.px+x]=d.color;
+      }
+    }
+    for(var y=0;y<d.shape.length;y++){
+      for(var x=0;x<d.shape[y].length;x++){
+        if(!d.shape[y][x])continue;
+        var gy=d.ghostY+y;
+        if(gy>=0&&gy<d.rows&&!gridCopy[gy][d.px+x])gridCopy[gy][d.px+x]='ghost';
+      }
     }
   }
   for(var y=0;y<d.rows;y++){
     for(var x=0;x<d.cols;x++){
       var c=gridCopy[y][x];
-      html+='<div style="width:26px;height:26px;border-radius:3px;background:'+(c||'rgba(0,0,0,0.04)')+';border:1px solid '+(c?'rgba(0,0,0,0.2)':'rgba(0,0,0,0.08)')+'"></div>';
+      if(c==='ghost'){
+        html+='<div style="width:26px;height:26px;border-radius:3px;background:transparent;border:2px dashed rgba(124,58,237,0.35)"></div>';
+      }else if(c){
+        html+='<div style="width:26px;height:26px;border-radius:3px;background:'+c+';border:1px solid rgba(0,0,0,0.15);box-shadow:inset 0 1px 0 rgba(255,255,255,0.3)"></div>';
+      }else{
+        html+='<div style="width:26px;height:26px;border-radius:3px;background:rgba(0,0,0,0.03);border:1px solid rgba(0,0,0,0.05)"></div>';
+      }
     }
   }
   el.innerHTML=html;
@@ -13334,8 +13479,9 @@ document.addEventListener('keydown',function(e){
     if(e.key==='ArrowLeft'){tetrisMove(-1,0);e.preventDefault();}
     else if(e.key==='ArrowRight'){tetrisMove(1,0);e.preventDefault();}
     else if(e.key==='ArrowDown'){tetrisMove(0,1);e.preventDefault();}
-    else if(e.key==='ArrowUp'||e.key===' '){tetrisRotate();e.preventDefault();}
-    else if(e.key==='Enter'){tetrisDrop();e.preventDefault();}
+    else if(e.key==='ArrowUp'){tetrisRotate();e.preventDefault();}
+    else if(e.key===' '){tetrisDrop();e.preventDefault();}
+    else if(e.key==='p'||e.key==='P'){tetrisPause();e.preventDefault();}
   }
 });
 
