@@ -12622,26 +12622,27 @@ secretUnlock=function(){
 /* ===== 1. SNAKE ===== */
 var _snakeTimer=null,_snakeData=null;
 function startSnake(){
-  var cols=15,rows=15;
+  var cols=12,rows=12;
   var items='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
   var target=items[Math.floor(Math.random()*items.length)];
-  _snakeData={snake:[{x:7,y:7}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
+  _snakeData={snake:[{x:6,y:6}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
   spawnSnakeFood();
-  var bc='width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:900';
-  var html='<div style="text-align:center;padding:8px">';
-  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:4px">Trouve la lettre : <span style="color:#FFC800;font-size:1.4rem">'+target+'</span></div>';
-  html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:8px">Score: <span id="snakeScore">0</span></div>';
-  html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',24px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div>';
-  html+='<div style="margin-top:12px">';
-  html+='<div style="display:flex;justify-content:center;margin-bottom:6px"><button onclick="snakeDir(0,-1)" style="'+bc+'">H</button></div>';
+  var bc='width:52px;height:52px;border-radius:12px;border:2px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:1.5rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:900';
+  var html='<div style="text-align:center;padding:4px">';
+  html+='<div style="font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:2px">Trouve : <span style="color:#FFC800;font-size:1.4rem">'+target+'</span></div>';
+  html+='<div style="font-size:0.9rem;color:rgba(255,255,255,0.7);margin-bottom:6px">Score: <span id="snakeScore">0</span></div>';
+  html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',22px);gap:1px;background:rgba(0,0,0,0.3);border-radius:12px;padding:4px;border:2px solid rgba(255,255,255,0.15)"></div>';
+  html+='<div style="margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:6px">';
+  html+='<button onclick="snakeDir(0,-1)" style="'+bc+'">H</button>';
   html+='<div style="display:flex;gap:10px;justify-content:center">';
   html+='<button onclick="snakeDir(-1,0)" style="'+bc+'">G</button>';
   html+='<button onclick="snakeDir(0,1)" style="'+bc+'">B</button>';
   html+='<button onclick="snakeDir(1,0)" style="'+bc+'">D</button>';
   html+='</div></div>';
-  html+='<button onclick="snakePause()" id="snakePauseBtn" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">Pause</button>';
-  html+=' <button onclick="goHome();clearInterval(_snakeTimer)" style="margin-top:8px;padding:8px 20px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">Quitter</button>';
-  html+='</div>';
+  html+='<div style="margin-top:8px;display:flex;gap:8px;justify-content:center">';
+  html+='<button onclick="snakePause()" id="snakePauseBtn" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-weight:700;cursor:pointer">Pause</button>';
+  html+='<button onclick="goHome();clearInterval(_snakeTimer)" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(255,255,255,0.2);background:rgba(255,200,0,0.15);color:#FFC800;font-weight:700;cursor:pointer">Quitter</button>';
+  html+='</div></div>';
   showCardScreen('snakeGame',html);
   renderSnakeGrid();
   _snakeTimer=setInterval(snakeTick,180);
@@ -12707,7 +12708,7 @@ function renderSnakeGrid(){
       else if(isHead){bg='#43C463';ch='\u25CF';}
       else if(isSnake){bg='rgba(67,196,99,0.4)';}
       else if(isFood){bg='rgba(255,200,0,0.3)';ch='<span style="color:#FFC800;font-weight:900">'+d.food.ch+'</span>';}
-      html+='<div style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:'+bg+';font-size:0.7rem;color:#fff">'+ch+'</div>';
+      html+='<div style="width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:'+bg+';font-size:0.65rem;color:#fff">'+ch+'</div>';
     }
   }
   el.innerHTML=html;
