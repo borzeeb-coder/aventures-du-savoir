@@ -12620,32 +12620,70 @@ secretUnlock=function(){
    ============================================= */
 
 /* ===== 1. SNAKE ===== */
-var _snakeTimer=null,_snakeData=null;
+var _snakeTimer=null,_snakeData=null,_snakeDAS={};
 function startSnake(){
   var cols=12,rows=12;
   var items='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
   var target=items[Math.floor(Math.random()*items.length)];
   _snakeData={snake:[{x:6,y:6}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
   spawnSnakeFood();
-  var bc='width:52px;height:52px;border-radius:12px;border:2px solid rgba(0,0,0,0.2);background:rgba(80,50,150,0.9);color:#fff;font-size:1.5rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:900';
-  var html='<div style="text-align:center;padding:4px">';
+  var bc='width:56px;height:56px;border-radius:14px;border:2px solid rgba(0,0,0,0.15);background:linear-gradient(180deg,rgba(60,160,80,0.95),rgba(40,120,60,0.95));color:#fff;font-size:1.6rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 3px 0 rgba(30,80,40,0.5);-webkit-tap-highlight-color:transparent;touch-action:manipulation';
+  var html='<div style="text-align:center;padding:4px;user-select:none">';
   html+='<div style="font-size:1.2rem;font-weight:800;color:#333;margin-bottom:2px">Trouve : <span style="color:#7C3AED;font-size:1.4rem">'+target+'</span></div>';
   html+='<div style="font-size:0.9rem;color:#666;margin-bottom:6px">Score: <span id="snakeScore" style="color:#7C3AED;font-weight:800">0</span></div>';
-  html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',22px);gap:1px;background:rgba(0,0,0,0.1);border-radius:12px;padding:4px;border:2px solid rgba(0,0,0,0.15)"></div>';
+  html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',28px);gap:1px;background:rgba(0,0,0,0.1);border-radius:12px;padding:4px;border:2px solid rgba(0,0,0,0.15)"></div>';
   html+='<div style="margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:6px">';
-  html+='<button onclick="snakeDir(0,-1)" style="'+bc+'">H</button>';
-  html+='<div style="display:flex;gap:10px;justify-content:center">';
-  html+='<button onclick="snakeDir(-1,0)" style="'+bc+'">G</button>';
-  html+='<button onclick="snakeDir(0,1)" style="'+bc+'">B</button>';
-  html+='<button onclick="snakeDir(1,0)" style="'+bc+'">D</button>';
+  html+='<button onclick="snakeDir(0,-1)" id="snakeUpBtn" style="'+bc+'">\u25B2</button>';
+  html+='<div style="display:flex;gap:8px;justify-content:center">';
+  html+='<button onclick="snakeDir(-1,0)" id="snakeLeftBtn" style="'+bc+'">\u25C0</button>';
+  html+='<button onclick="snakeDir(0,1)" id="snakeDownBtn" style="'+bc+'">\u25BC</button>';
+  html+='<button onclick="snakeDir(1,0)" id="snakeRightBtn" style="'+bc+'">\u25B6</button>';
   html+='</div></div>';
   html+='<div style="margin-top:8px;display:flex;gap:8px;justify-content:center">';
-  html+='<button onclick="snakePause()" id="snakePauseBtn" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(0,0,0,0.2);background:rgba(80,50,150,0.9);color:#fff;font-weight:700;cursor:pointer">Pause</button>';
-  html+='<button onclick="goHome();clearInterval(_snakeTimer)" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(0,0,0,0.2);background:rgba(200,160,0,0.9);color:#fff;font-weight:700;cursor:pointer">Quitter</button>';
+  html+='<button onclick="snakePause()" id="snakePauseBtn" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(0,0,0,0.15);background:rgba(60,160,80,0.1);color:#43C463;font-weight:700;cursor:pointer;font-size:0.85rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation">Pause</button>';
+  html+='<button onclick="snakeQuit()" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(0,0,0,0.15);background:rgba(200,50,50,0.1);color:#FF4B4B;font-weight:700;cursor:pointer;font-size:0.85rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation">Quitter</button>';
   html+='</div></div>';
   showCardScreen('snakeGame',html);
   renderSnakeGrid();
+  snakeSetupSwipe();
+  snakeSetupDAS();
   _snakeTimer=setInterval(snakeTick,180);
+}
+function snakeQuit(){clearInterval(_snakeTimer);if(_snakeDAS.timer)clearInterval(_snakeDAS.timer);_snakeData=null;goHome();}
+function snakeSetupDAS(){
+  var dasDelay=170,dasRate=50;
+  function startDAS(dir){
+    snakeDir(dir.x,dir.y);
+    _snakeDAS.timer=setInterval(function(){snakeDir(dir.x,dir.y);},dasRate);
+  }
+  function stopDAS(){
+    if(_snakeDAS.timer){clearInterval(_snakeDAS.timer);_snakeDAS.timer=null;}
+  }
+  var dirs={snakeUpBtn:{x:0,y:-1},snakeDownBtn:{x:0,y:1},snakeLeftBtn:{x:-1,y:0},snakeRightBtn:{x:1,y:0}};
+  for(var id in dirs){
+    var el=document.getElementById(id);
+    if(!el)continue;
+    (function(d){
+      el.addEventListener('touchstart',function(e){e.preventDefault();stopDAS();startDAS(d);},{passive:false});
+      el.addEventListener('touchend',function(){stopDAS();});
+      el.addEventListener('touchcancel',function(){stopDAS();});
+    })(dirs[id]);
+  }
+}
+function snakeSetupSwipe(){
+  var el=document.getElementById('snakeCanvas');if(!el)return;
+  var sx=0,sy=0;
+  el.addEventListener('touchstart',function(e){
+    if(e.touches.length===1){sx=e.touches[0].clientX;sy=e.touches[0].clientY;}
+  },{passive:true});
+  el.addEventListener('touchend',function(e){
+    var dx=e.changedTouches[0].clientX-sx;
+    var dy=e.changedTouches[0].clientY-sy;
+    var absDx=Math.abs(dx),absDy=Math.abs(dy);
+    if(Math.max(absDx,absDy)<20)return;
+    if(absDx>absDy){snakeDir(dx>0?1:-1,0);}
+    else{snakeDir(0,dy>0?1:-1);}
+  },{passive:true});
 }
 function spawnSnakeFood(){
   var d=_snakeData,items='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
@@ -12661,8 +12699,8 @@ function snakePause(){
   var d=_snakeData;if(!d)return;
   d.paused=!d.paused;
   var btn=document.getElementById('snakePauseBtn');
-  if(d.paused){clearInterval(_snakeTimer);if(btn)btn.textContent='\u25B6 Jouer';}
-  else{_snakeTimer=setInterval(snakeTick,180);if(btn)btn.textContent='\u23F8 Pause';}
+  if(d.paused){clearInterval(_snakeTimer);if(btn)btn.textContent='Jouer';}
+  else{_snakeTimer=setInterval(snakeTick,180);if(btn)btn.textContent='Pause';}
 }
 function snakeTick(){
   var d=_snakeData;if(!d||d.over||d.paused)return;
@@ -12704,11 +12742,11 @@ function renderSnakeGrid(){
       var isFood=d.food&&d.food.x===x&&d.food.y===y;
       var bg='rgba(255,255,255,0.03)';
       var ch='';
-      if(d.over&&isHead){bg='#FF4B4B';ch='X';}
-      else if(isHead){bg='#43C463';ch='O';}
-      else if(isSnake){bg='rgba(67,196,99,0.5)';}
-      else if(isFood){bg='rgba(255,200,0,0.4)';ch='<span style="color:#7C3AED;font-weight:900">'+d.food.ch+'</span>';}
-      html+='<div style="width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:'+bg+';font-size:0.65rem;color:#333">'+ch+'</div>';
+      if(d.over&&isHead){bg='linear-gradient(135deg,#FF4B4B,#D50000)';ch='\u2716';}
+      else if(isHead){bg='linear-gradient(135deg,#43C463,#2E7D32)';ch='\u25CF';}
+      else if(isSnake){bg='linear-gradient(135deg,rgba(67,196,99,0.7),rgba(46,125,50,0.7))';}
+      else if(isFood){bg='linear-gradient(135deg,rgba(255,200,0,0.5),rgba(255,152,0,0.5))';ch='<span style="color:#7C3AED;font-weight:900;font-size:0.9rem">'+d.food.ch+'</span>';}
+      html+='<div style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:5px;background:'+bg+';font-size:0.75rem;color:#fff;box-shadow:inset 0 1px 2px rgba(255,255,255,0.3)">'+ch+'</div>';
     }
   }
   el.innerHTML=html;
