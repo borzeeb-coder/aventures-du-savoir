@@ -12622,17 +12622,20 @@ secretUnlock=function(){
 /* ===== 1. SNAKE ===== */
 var _snakeTimer=null,_snakeData=null,_snakeDAS={};
 function startSnake(){
-  var cols=12,rows=12;
+  var cols=14,rows=14;
   var items='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
   var target=items[Math.floor(Math.random()*items.length)];
-  _snakeData={snake:[{x:6,y:6}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
+  _snakeData={snake:[{x:7,y:7}],dir:{x:1,y:0},food:null,score:0,target:target,cols:cols,rows:rows,over:false,paused:false};
   spawnSnakeFood();
-  var bc='width:56px;height:56px;border-radius:14px;border:2px solid rgba(0,0,0,0.15);background:linear-gradient(180deg,rgba(60,160,80,0.95),rgba(40,120,60,0.95));color:#fff;font-size:1.6rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 3px 0 rgba(30,80,40,0.5);-webkit-tap-highlight-color:transparent;touch-action:manipulation';
+  var bc='width:60px;height:60px;border-radius:16px;border:2px solid rgba(0,0,0,0.15);background:linear-gradient(180deg,rgba(60,160,80,0.95),rgba(40,120,60,0.95));color:#fff;font-size:1.8rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 4px 0 rgba(30,80,40,0.5);-webkit-tap-highlight-color:transparent;touch-action:manipulation';
   var html='<div style="text-align:center;padding:4px;user-select:none">';
-  html+='<div style="font-size:1.2rem;font-weight:800;color:#333;margin-bottom:2px">Trouve : <span style="color:#7C3AED;font-size:1.4rem">'+target+'</span></div>';
-  html+='<div style="font-size:0.9rem;color:#666;margin-bottom:6px">Score: <span id="snakeScore" style="color:#7C3AED;font-weight:800">0</span></div>';
+  html+='<div style="font-size:1.3rem;font-weight:800;color:#333;margin-bottom:2px">Trouve : <span style="color:#7C3AED;font-size:1.5rem">'+target+'</span></div>';
+  html+='<div style="font-size:1rem;color:#666;margin-bottom:6px">Score: <span id="snakeScore" style="color:#7C3AED;font-weight:800">0</span></div>';
   html+='<div id="snakeCanvas" style="display:inline-grid;grid-template-columns:repeat('+cols+',28px);gap:1px;background:rgba(0,0,0,0.1);border-radius:12px;padding:4px;border:2px solid rgba(0,0,0,0.15)"></div>';
-  html+='<div style="margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:6px">';
+  html+='<div id="snakeGameOver" style="display:none;margin-top:10px"><div style="font-size:1.1rem;font-weight:800;color:#FF4B4B;margin-bottom:8px">Game Over !</div>';
+  html+='<button onclick="startSnake()" style="padding:12px 28px;border-radius:14px;border:3px solid #43C463;background:linear-gradient(135deg,#43C463,#2E7D32);color:#fff;font-size:1.1rem;font-weight:800;cursor:pointer;box-shadow:0 4px 0 #1B5E20;-webkit-tap-highlight-color:transparent;touch-action:manipulation">Rejouer</button>';
+  html+=' <button onclick="snakeQuit()" style="padding:12px 20px;border-radius:14px;border:2px solid rgba(0,0,0,0.15);background:rgba(200,50,50,0.1);color:#FF4B4B;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation">Quitter</button></div>';
+  html+='<div id="snakeControls" style="margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:6px">';
   html+='<button onclick="snakeDir(0,-1)" id="snakeUpBtn" style="'+bc+'">\u25B2</button>';
   html+='<div style="display:flex;gap:8px;justify-content:center">';
   html+='<button onclick="snakeDir(-1,0)" id="snakeLeftBtn" style="'+bc+'">\u25C0</button>';
@@ -12641,7 +12644,6 @@ function startSnake(){
   html+='</div></div>';
   html+='<div style="margin-top:8px;display:flex;gap:8px;justify-content:center">';
   html+='<button onclick="snakePause()" id="snakePauseBtn" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(0,0,0,0.15);background:rgba(60,160,80,0.1);color:#43C463;font-weight:700;cursor:pointer;font-size:0.85rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation">Pause</button>';
-  html+='<button onclick="snakeQuit()" style="padding:8px 16px;border-radius:10px;border:2px solid rgba(0,0,0,0.15);background:rgba(200,50,50,0.1);color:#FF4B4B;font-weight:700;cursor:pointer;font-size:0.85rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation">Quitter</button>';
   html+='</div></div>';
   showCardScreen('snakeGame',html);
   renderSnakeGrid();
@@ -12725,11 +12727,13 @@ function snakeTick(){
   renderSnakeGrid();
 }
 function snakeDie(){
-  var d=_snakeData;d.over=true;clearInterval(_snakeTimer);
+  var d=_snakeData;d.over=true;clearInterval(_snakeTimer);if(_snakeDAS.timer)clearInterval(_snakeDAS.timer);
   soundWrong();owlSay('Perdu ! Retente ta chance !');
   renderSnakeGrid();
   var el=document.getElementById('snakeCanvas');
   if(el){el.style.opacity='0.5';el.style.filter='grayscale(1)';}
+  var go=document.getElementById('snakeGameOver');if(go)go.style.display='block';
+  var ctrl=document.getElementById('snakeControls');if(ctrl)ctrl.style.display='none';
 }
 function renderSnakeGrid(){
   var d=_snakeData;if(!d)return;
